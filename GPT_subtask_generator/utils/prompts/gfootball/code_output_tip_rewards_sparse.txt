@@ -1,0 +1,16 @@
+The reply should be the code of a gym-style reward wrapper: "class CheckpointRewardWrapper(gym.RewardWrapper)"
+Like the given example, The class must have five functions:
+def reset(self), def get_state(self, to_pickle), def set_state(self, state) and def reward(self, reward)
+
+You need to write a simple sparse reward function that provides a sparse reward when the agent reaches a specific target position, just like the example.
+But the position should be determined by yourself based on the task goals and the number of agents.
+
+The output of the reward(self, reward) function should be a list of length {number_of_agents}. Each element of the list is a scalar value of the corresponding agent.
+
+Some important rules that you must follow:
+    (1) The code output should be formatted as a python code string: "```python ... ```".
+    (2) Write your own CheckpointRewardWrapper with a new reward function. The example just helps you to understand the output structure, but you should not just copy the contents.
+    (3) Ensure that in the reward(self, reward) function, all return values directed by the if statements adhere to the output requirements.
+
+
+

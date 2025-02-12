@@ -21,7 +21,6 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         return from_pickle
 
     def reward(self, reward):
-        # print("RRRRRRR",reward)
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
                       "checkpoint_reward": [0.0] * len(reward)}
