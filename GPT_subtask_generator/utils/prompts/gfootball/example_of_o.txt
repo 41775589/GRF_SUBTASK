@@ -1,0 +1,4 @@
+The observation o of one of the agents in the 5 vs 5 football game is:
+{obs_o}
+Here are the explanations of the observations exposed by the environment:
+{obs_exp}

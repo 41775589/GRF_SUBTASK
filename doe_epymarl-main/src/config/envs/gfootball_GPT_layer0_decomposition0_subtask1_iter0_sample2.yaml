@@ -1,7 +1,7 @@
 env: gfootball
 env_args:
   map_name: scenario_layer0_decomposition0_subtask1
-  num_agents: 3
+  num_agents: 2
   representation: simple115
   rewards: scoring, reward_layer0_decomposition0_subtask1_iter0_sample2
   time_limit: 150

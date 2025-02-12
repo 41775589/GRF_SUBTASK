@@ -33,7 +33,8 @@ critic_type: "ac_critic"
 
 name: "doe_ia2c"
 
-t_max: 20050000
+
+t_max: 5000000
 
 
 # DoE Coef

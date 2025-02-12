@@ -21,7 +21,7 @@ doe_classifier_cfg:
     - 0
     - 1
   save_classifier: true
-  save_doe_name: save_mlp_classifier.pt
+  save_doe_name: cls_layer0_decomposition0_subtask0_iter0_sample2.pt
 entropy_coef: 0.001
 group_id: 0
 hidden_dim: 128
@@ -43,6 +43,6 @@ standardise_returns: false
 standardise_rewards: true
 t_max: 1000000
 target_update_interval_or_tau: 0.01
-time_stamp: 2024-11-20-15-20-30
+time_stamp: 2024-11-27-02-22-42
 use_doe: false
 use_rnn: true
