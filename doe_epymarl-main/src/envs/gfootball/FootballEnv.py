@@ -71,7 +71,6 @@ class GoogleFootballEnv(MultiAgentEnv):
             gym.spaces.Box(low=obs_space_low, high=obs_space_high, dtype=self.env.observation_space.dtype) for _ in range(self.n_agents)
         ]
 
-
         self.n_actions = self.action_space[0].n
         self.obs = None
 
@@ -83,8 +82,6 @@ class GoogleFootballEnv(MultiAgentEnv):
             actions = _actions
         self.time_step += 1
         obs, rewards, done, infos = self.env.step(actions.tolist())
-        # print("rrrrrr",rewards)
-        # print("iiiiii",infos)
 
         self.obs = obs
 

@@ -1,6 +1,0 @@
-The main task of the game is {main_task}.
-Divide the {num_agents} agents in the main task in to {num_groups} groups and design a subtask curriculum for each group.
-Write your own decomposition. The example just helps you to understand the output structure.
-Let's think step by step. It's useful to give analyse like the example does.
-You must follow the structure shown in the example, but not the contents.
-

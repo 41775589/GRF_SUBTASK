@@ -1,8 +1,0 @@
-The current branch of task tree is:{current_branch_summary}
-Determine if further decomposition is needed.
-If needed, specify the new decomposition and update the current subtask description to avoid repetitive task learning.
-Important: The total number of agents for the subtasks you decompose must not exceed the number of agents for the current subtask.
-Note that if the number of agents for the current subtask is 1, further decomposition is not needed.
-Let's think step by step.
-You must follow the structure shown in the example, but not the contents.
-You could consider the action set in the rules, and your knowledge of the football training in the real world.

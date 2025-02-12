@@ -1,0 +1,2 @@
+A observation o of one of the agents in the 5 vs 5 football game is:
+{obs_o}

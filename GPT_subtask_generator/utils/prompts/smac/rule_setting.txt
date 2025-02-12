@@ -1,7 +1,0 @@
-In the game, each scenario is a confrontation between two armies, where you will battle against an enemy army controlled by built-in AI.
-The episode ends when all units of either army have been destroyed or when a pre-specified time limit is reached (in which case the game is counted as a defeat for the allied agents).
-The discrete set of actions that agents can take includes move[direction], attack[enemy_id], stop, and no-op.
-As healing units, Medivacs use heal[agent_id] actions instead of attack[enemy_id].
-The feature vector observed by each agent contains the following attributes for both allied and enemy units within the sight range: distance, relative x coordinate, relative y coordinate, health, shield, and unit type.
-Shields serve as an additional source of protection that needs to be removed before any damage can be done to the health of units.
-All Protos units have shields that can regenerate if no new damage is dealt.

@@ -1,4 +1,0 @@
-Select a StarCraft2 map for the following task.
-The subtask is {training_goal}, and the number of agents you are training in this subtask is {number_of_agents}.
-Make sure you select the map from the following map registry: {map_registry}
-

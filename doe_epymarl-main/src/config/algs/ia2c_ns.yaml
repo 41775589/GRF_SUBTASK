@@ -31,7 +31,3 @@ critic_type: "ac_critic_ns"
 name: "ia2c_ns"
 
 t_max: 20050000
-
-use_doe: false
-save_buffer: true
-save_doe_cls: true

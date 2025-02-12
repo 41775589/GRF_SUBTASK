@@ -1,7 +1,0 @@
-Write the reward_battle function for the following task.
-The subtask is {training_goal}, and the number of agents you are training in this subtask is {number_of_agents}.
-The code of the environment is: {env_code}
-Make sure your function name is "reward_battle". The function you write will replace the original reward_battle(self) in the environment file.
-Importantly, do not only follow the idea of the original reward_battle. Use other variable defined in the environment. For example, rel_x and rel_y.
-
-

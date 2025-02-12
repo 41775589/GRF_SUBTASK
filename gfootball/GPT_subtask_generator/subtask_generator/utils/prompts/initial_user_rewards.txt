@@ -1,0 +1,7 @@
+Write the checkpoints function for the following task.
+The subtask is {training_goal}, and the number of agents you are training in this subtask is {number_of_agents}.
+Make sure your function name is "CheckpointRewardWrapper(gym.RewardWrapper)".
+The code of the environment is: {env_code}
+The CheckpointRewardWrapper(gym.RewardWrapper) you write will be put in: {wrappers}
+
+

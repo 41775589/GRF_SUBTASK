@@ -1,6 +1,6 @@
 """ LLM for expert policy classification """
 
-class LLMClassifier:
+class LLMlassifier:
 
     def __init__(self):
         ...

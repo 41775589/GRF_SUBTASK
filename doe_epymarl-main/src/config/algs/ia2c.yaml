@@ -31,30 +31,4 @@ critic_type: "ac_critic"
 
 name: "ia2c"
 
-t_max: 1000000
-
-use_doe: false
-save_buffer: true
-save_doe_cls: true
-
-doe_classifier_cfg:
-  doe_type: mlp
-  load_mode: train
-  save_classifier: true
-  save_doe_name: save_mlp_classifier.pt
-  load_doe_name: load_mlp_classifier.pt
-  load_doe_buffer_path: 'GRF_SUBTASK/doe_epymarl-main/results/buffer/grf'
-  mlp:
-    hidden_sizes:
-      - 128
-    batch_size: 512
-    test_fraction: 0.1
-    learning_rate: 1e-2
-
-  # 2s3z/3m
-  role_ids:
-    defence:  # classifier.role_list=[0,1,1,0,0]
-      - 0 # agent id
-    attack:
-      - 2
-      - 1
+t_max: 20050000

@@ -121,15 +121,7 @@ class MLPClassifier:
         ...
     
     def save(self, pathname):
-
-        # torch.save(self.mlps,pathname)
-        save_dict = {
-            "mlps": self.mlps,
-            "learning_rates": self.learning_rates,  # 学习率
-            # "role_list": self.role_list,  # 角色列表
-            "network_arch":self.network_arch,
-        }
-        torch.save(save_dict, pathname)
+        torch.save(self.mlps, pathname)
 
     
     @classmethod
@@ -138,9 +130,7 @@ class MLPClassifier:
         if load_mode == "train":
             classifier = cls.from_config_train(n_agents, cfg, buffer_path)
             if cfg.get("save_classifier", False):
-                # 此处把cls存在buffer的文件夹下
-                save_dir = os.path.dirname(buffer_path)
-                save_path = os.path.join(save_dir, cfg["save_doe_name"])
+                save_path = os.path.join(buffer_path, cfg.save_doe_name)
                 classifier.save(save_path)
             return classifier
         elif load_mode == "load":
@@ -170,7 +160,7 @@ class MLPClassifier:
         """
         if not os.path.exists(buffer_path):
             raise FileNotFoundError(f"Buffer file not found at {buffer_path}")
-        exp_buffers = torch.load(os.path.join(buffer_path))
+        exp_buffers = torch.load(os.path.join(buffer_path, "buffer.pt"))
 
         # 考虑有时候用episode data而不是transitions,getattr
         transition_data = exp_buffers.transition_data
@@ -239,35 +229,22 @@ class MLPClassifier:
 
     @classmethod
     def from_config_load(cls, n_agents, cfg, buffer_path):
-        print("NNNNNN",n_agents)
-
+        classifier = cls(
+            n_agents,
+            train_dataloader=None, 
+            test_dataloader=None,
+            network_arch=None, 
+            role_list=None
+        )
         # absolute_path = os.path.abspath(cfg.load_doe_name)
-        absolute_path = os.path.join(buffer_path, cfg["load_doe_name"])
-        loaded_dict = torch.load(absolute_path)
+        absolute_path = os.path.join(buffer_path, cfg.load_doe_name)
+        loaded_mlps = torch.load(absolute_path)
         
         # sanity check
-        if not isinstance(loaded_dict['mlps'], list) or not all(isinstance(mlp, torch.nn.Module) for mlp in loaded_dict['mlps']):
+        if not isinstance(loaded_mlps, list) or not all(isinstance(mlp, torch.nn.Module) for mlp in loaded_mlps):
             raise TypeError("Loaded object is not a list of torch.nn.Modules")
-
-        # classifier = cls(
-        #     n_agents,
-        #     train_dataloader=None,
-        #     test_dataloader=None,
-        #     network_arch=None,
-        #     role_list=None
-        # )
-
-        classifier = MLPClassifier(
-            n_agents=loaded_dict['n_agents'],  # 提取 n_agents
-            train_dataloader=None,  # 假设不用重新加载数据
-            test_dataloader=None,  # 假设不用重新加载数据
-            network_arch=loaded_dict['network_arch'],  # 提取网络结构
-            role_list=loaded_dict['role_list'],  # 提取角色列表
-            learning_rate=loaded_dict['learning_rates'][0],  # 使用第一个学习率
-        )
-
-        classifier.mlps = loaded_dict['mlps']
-        classifier.learning_rates = loaded_dict['learning_rates']
+        
+        classifier.mlps = loaded_mlps
         return classifier
 
 

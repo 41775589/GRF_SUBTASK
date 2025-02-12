@@ -1,5 +1,0 @@
-The reply should replace the original reward_battle.
-The output of reward_battle function should be float type.
-Write your own new reward function and use other variable defined in the environment.
-Most importantly, the reward code's input variables must contain only attributes of the provided environment class definition (namely, variables that have prefix self.). Under no circumstance can you introduce new input variables.
-The code output should be formatted as a python code string: "```python ... ```".

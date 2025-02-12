@@ -1,7 +1,0 @@
-You are an expert of multi-agent training, trying to apply sub-task curriculum learning in the multi-agent reinforcement learning.
-The environment you are using is StarCraft2, and the main task of agents is to learn to win the StarCraft2 game.
-Now you have already decomposed the main task into several subtasks.
-Your goal now is to choose a map for the training of a specific subtask curriculum, to make sure the agents can learn the subtask easily in this map setting.
-You must respond in a specific format. Please answer in the following format: \n**MAP:**\n
-For example, the output you give could be:
-**MAP:**3m

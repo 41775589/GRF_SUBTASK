@@ -53,9 +53,9 @@ def run(_run, _config, _log):
     args.unique_token = unique_token
     if args.use_tensorboard:
         tb_logs_direc = os.path.join(
-            dirname(dirname(abspath(__file__))), "results", "tb_logs",args.time_stamp
+            dirname(dirname(abspath(__file__))), "results", "tb_logs"
         )
-        tb_exp_direc = os.path.join(tb_logs_direc, f'layer{args.layer_id}_decomposition{args.decomposition_id}_subtask{args.group_id}_iter{args.iter_id}_sample{args.sample_id}')
+        tb_exp_direc = os.path.join(tb_logs_direc, "{}").format(unique_token)
         logger.setup_tb(tb_exp_direc)
 
     if args.use_wandb:
@@ -147,11 +147,9 @@ def run_sequential(args, logger):
     # 如果要使用doe，那么加载对应agent的doe cls，并add到mac、learner
     # doe cls的所有函数都有buffer path，存储和加载都是通过 buffer path + save/load name.pt
     # buffer path等于所有doe相关的文件夹，可以改名字
-    if hasattr(args, 'doe_classifier_cfg'):
-        load_doe_buffer_path = args.doe_classifier_cfg["load_doe_buffer_path"]
+    load_doe_buffer_path = args.doe_classifier_cfg.load_doe_buffer_path
 
-
-    if args.use_doe:
+    if args.use_doe:  
         # 如果使用doe训练，那么在这里load doe cls；
         # 如果是第一次分解，显然不会用doe，也不用load doe cls
         # 如果是后续分解，不使用doe训练（采用普通merge训练的方法作为baseline），也不需要 load
@@ -170,11 +168,11 @@ def run_sequential(args, logger):
             buffer_path = load_doe_buffer_path, # merge buffer load path,
             load_mode='load'
         )
-
+        
         # 为 MAC 设置 DoE classifier
         if hasattr(mac, 'set_doe_classifier'):
             mac.set_doe_classifier(doe_classifier)
-
+        
         # 为 Learner 设置 DoE classifier
         if hasattr(learner, 'set_doe_classifier'):
             learner.set_doe_classifier(doe_classifier)
@@ -305,11 +303,11 @@ def run_sequential(args, logger):
     if args.save_buffer:
         # 创建在训练结束时存储buffer用于DoE的路径
         # buffer_save_path = load_doe_buffer_path + new exp name
-        buffer_save_path = os.path.join(dirname(dirname(abspath(__file__))), args.local_results_path, "buffers", args.env, args.time_stamp)
+        buffer_save_path = os.path.join(dirname(dirname(abspath(__file__))), args.local_results_path, "buffers", args.env)
         os.makedirs(buffer_save_path, exist_ok=True)
 
         """名字需要重新考虑 group id 方便后续 merge"""
-        buffer_save_path_curr = buffer_save_path + f'/buffer_layer{args.layer_id}_decomposition{args.decomposition_id}_subtask{args.group_id}_iter{args.iter_id}_sample{args.sample_id}.pt'
+        buffer_save_path_curr = buffer_save_path + f'/group_{group_id}'
         th.save(buffer.data, buffer_save_path_curr)
         logger.console_logger.info(f"Save buffer to {buffer_save_path} for DoE Classifier")
         # 目前在from config train中，写死的buffer名字为 load bufferpath+buffer.pt，需要改命名

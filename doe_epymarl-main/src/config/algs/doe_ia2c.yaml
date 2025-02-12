@@ -33,15 +33,12 @@ critic_type: "ac_critic"
 
 name: "doe_ia2c"
 
-
-t_max: 5000000
+t_max: 20050000
 
 
 # DoE Coef
 use_doe: true
 doe_type: "mlp"
-save_buffer: true
-save_doe_cls: true
 
 ent_coef: 1.0 # needed to override the ent_coef called elsewhere
 

@@ -26,9 +26,9 @@
 env: gfootball
 
 env_args:
-  map_name: "5_vs_5"
+  map_name: "academy_counterattack_hard"
   representation: "simple115"
-  num_agents: 5
+  num_agents: 4
   time_limit: 150
   rewards: 'scoring, checkpoints'
 
@@ -38,4 +38,4 @@ test_interval: 10000
 log_interval: 10000
 runner_log_interval: 10000
 learner_log_interval: 10000
-t_max: 1000000
+t_max: 2050000

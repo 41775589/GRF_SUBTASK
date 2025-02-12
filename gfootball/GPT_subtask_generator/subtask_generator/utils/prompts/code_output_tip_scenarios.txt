@@ -1,0 +1,5 @@
+The reply should be a scenario setting function.
+Your scenario setting function should only use the configurations used in the examples.
+Make sure your function name is "def build_scenario(builder)" and follows the structure of the examples.
+The code output should be formatted as a python code string: "```python ... ```".
+

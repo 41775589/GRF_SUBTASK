@@ -336,7 +336,6 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
     return reward
 
 
-
 class FrameStack(gym.Wrapper):
   """Stack k last observations."""
 

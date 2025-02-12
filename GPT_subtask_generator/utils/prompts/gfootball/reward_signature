@@ -1,3 +1,0 @@
-def reward(self, reward: list[float]) -> tuple[list[float], dict[str, list[float]]]:
-    ...
-    return reward, {}

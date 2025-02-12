@@ -1,0 +1,9 @@
+The reply should be the code of a gym-style "class CheckpointRewardWrapper(gym.RewardWrapper)"
+Like the given example, The class must have four functions:
+def reset(self), def get_state(self, to_pickle), def set_state(self, state) and def reward(self, reward)
+In the function def reward(self, reward), you can use the observations from the environment to define your own reward function.
+The observation is a list of length {number_of_agents}. Each element o of the observation list is the observation dictionary dict corresponding to the agent. An example of o is {example_of_o}
+The output of the reward(self, reward) function should be a list of length {number_of_agents}. Each element of the list is a scalar value of the corresponding agent.
+Write your own CheckpointRewardWrapper with a new reward function, and try to use other keys in the observation dictionary.
+The example just helps you to understand the output structure, but you should not just copy the contents.
+The code output should be formatted as a python code string: "```python ... ```".
