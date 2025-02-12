@@ -383,7 +383,7 @@ def train_merge_team(groups, is_doe, layer, decompose_id, buffer_dir, max_reward
 
 
 
-def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, n_improve_iter):
+def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, n_improve_iter, use_sparse_reward):
     workspace_dir = Path.cwd()
     logging.info(f"Workspace: {workspace_dir}")
     logging.info(f"Project Root: {ROOT_DIR}")
@@ -398,6 +398,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     observation_processor = f'{ROOT_DIR}/env_code/{task}/observation_processor.py'
     scenario_builder = f'{ROOT_DIR}/env_code/{task}/scenario_builder.py'
     reward_wrapper_example = f'{ROOT_DIR}/env_code/{task}/reward_wrapper_example.py'
+    reward_wrapper_example_sparse = f'{ROOT_DIR}/env_code/{task}/reward_wrapper_example_sparse.py'
     obs_o = f'{ROOT_DIR}/env_code/{task}/obs_o.py'
     obs_exp = f'{ROOT_DIR}/env_code/{task}/obs_exp.py'
     # config = f'{ROOT_DIR}/env_code/{task}/config.py'
@@ -414,6 +415,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     # wrappers = file_to_string(wrappers)
 
     reward_wrapper_example = file_to_string(reward_wrapper_example)
+    reward_wrapper_example_sparse = file_to_string(reward_wrapper_example_sparse)
     obs_o = file_to_string(obs_o)
     obs_exp = file_to_string(obs_exp)
 
@@ -453,6 +455,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     initial_system_scenarios = file_to_string(f'{prompt_dir}/{task}/initial_system_scenarios.txt')
     initial_user_scenarios = file_to_string(f'{prompt_dir}/{task}/initial_user_scenarios.txt')
     initial_system_rewards = file_to_string(f'{prompt_dir}/{task}/initial_system_rewards.txt')
+    initial_system_rewards_sparse = file_to_string(f'{prompt_dir}/{task}/initial_system_rewards_sparse.txt')
     initial_user_rewards = file_to_string(f'{prompt_dir}/{task}/initial_user_rewards.txt')
     reward_signature = file_to_string(f'{prompt_dir}/{task}/reward_signature')
 
@@ -476,14 +479,19 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     )
 
     example_rewards = file_to_string(f'{prompt_dir}/{task}/example_rewards.txt')
+    example_rewards_sparse = file_to_string(f'{prompt_dir}/{task}/example_rewards_sparse.txt')
     example_rewards = example_rewards.format(
         reward_wrapper=reward_wrapper_example
+    )
+    example_rewards_sparse = example_rewards_sparse.format(
+        reward_wrapper=reward_wrapper_example_sparse
     )
     example_of_o = file_to_string(f'{prompt_dir}/{task}/example_of_o.txt')
     example_of_o = example_of_o.format(obs_o=obs_o, obs_exp=obs_exp)
 
     code_output_tip_scenarios = file_to_string(f'{prompt_dir}/{task}/code_output_tip_scenarios.txt')
     code_output_tip_rewards = file_to_string(f'{prompt_dir}/{task}/code_output_tip_rewards.txt')
+    code_output_tip_rewards_sparse = file_to_string(f'{prompt_dir}/{task}/code_output_tip_rewards_sparse.txt')
     rule_setting = file_to_string(f'{prompt_dir}/{task}/rule_setting.txt')
 
     main_task = "learn to play a 5 vs 5 football game"
@@ -699,12 +707,20 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
             logging.info(
                 f"Rewards Generation: Generating {n_reward} samples for Decomposition {response_id} Group{group_id} with {model}")
 
-            curr_code_output_tip_rewards = code_output_tip_rewards.format(number_of_agents=group['number_of_agents'],
-                                                                          example_of_o=example_of_o, reward_signature=reward_signature)
-            cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
-            cur_initial_user_rewards = initial_user_rewards.format(training_goal=group['training_goal'],
-                                                                   number_of_agents=group['number_of_agents'],
-                                                                   env_code=env_code, )
+            if not use_sparse_reward:
+                curr_code_output_tip_rewards = code_output_tip_rewards.format(
+                    number_of_agents=group['number_of_agents'],
+                    example_of_o=example_of_o, reward_signature=reward_signature)
+                cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
+                cur_initial_user_rewards = initial_user_rewards.format(training_goal=group['training_goal'],
+                                                                       number_of_agents=group['number_of_agents'],
+                                                                       env_code=env_code, )
+            else:
+                curr_code_output_tip_rewards = code_output_tip_rewards_sparse.format(number_of_agents=group['number_of_agents'])
+                cur_initial_system_rewards = initial_system_rewards_sparse + example_rewards_sparse + curr_code_output_tip_rewards
+                cur_initial_user_rewards = initial_user_rewards.format(training_goal=group['training_goal'],
+                                                                       number_of_agents=group['number_of_agents'],
+                                                                       env_code=env_code, )
 
             cur_messages_r = copy.deepcopy(messages)
             cur_messages_r.append({"role": "assistant", "content": response_cur})
@@ -1065,4 +1081,4 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
 
 if __name__ == "__main__":
     main(model="gpt-3.5-turbo", n_decomposition=1, n_reward=3, temperature=1, task="gfootball", alg_cfg="ia2c",
-         use_doe=False, n_improve_iter=3)
+         use_doe=False, n_improve_iter=3, use_sparse_reward=False)
