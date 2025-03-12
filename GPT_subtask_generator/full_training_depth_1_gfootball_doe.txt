@@ -1,0 +1,244 @@
+[DEBUG 01:51:12] git.cmd Popen(['git', 'version'], cwd=/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/gfootball/GPT_subtask_generator/subtask_generator, stdin=None, shell=False, universal_newlines=False)
+[DEBUG 01:51:12] git.cmd Popen(['git', 'version'], cwd=/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/gfootball/GPT_subtask_generator/subtask_generator, stdin=None, shell=False, universal_newlines=False)
+[INFO 01:51:12] root Saving to FileStorageObserver in results/sacred.
+[DEBUG 01:51:12] pymarl Using capture mode "fd"
+[INFO 01:51:12] pymarl Running command 'my_main'
+[INFO 01:51:12] pymarl Started run with ID "2"
+[DEBUG 01:51:12] pymarl Starting Heartbeat
+[DEBUG 01:51:12] my_main Started
+[WARNING 01:51:12] my_main CUDA flag use_cuda was switched OFF automatically because no CUDA devices are available!
+AAAAAAAAAA namespace(runner='parallel', mac='doe_mac', env='gfootball', common_reward=True, reward_scalarisation='sum', env_args={'map_name': '5_vs_5', 'representation': 'simple115', 'num_agents': 5, 'time_limit': 150, 'rewards': 'scoring, checkpoints', 'seed': 533544399}, batch_size_run=10, test_nepisode=30, test_interval=10000, test_greedy=True, log_interval=10000, runner_log_interval=10000, learner_log_interval=10000, t_max=10000, use_cuda=False, buffer_cpu_only=True, use_tensorboard=True, use_wandb=False, wandb_team=None, wandb_project=None, wandb_mode='offline', wandb_save_model=False, save_model=False, save_model_interval=50000, checkpoint_path='', evaluate=False, render=False, load_step=0, save_replay=False, local_results_path='results', gamma=0.99, batch_size=10, buffer_size=10, lr=0.0005, optim_alpha=0.99, optim_eps=1e-05, grad_norm_clip=10, add_value_last_step=True, agent='rnn', hidden_dim=128, obs_agent_id=True, obs_last_action=False, repeat_id=1, label='default_label', hypergroup=None, action_selector='soft_policies', agent_output_type='pi_logits', base_ent=1.0, base_lr=1.0, boost_ent_coef=1.0, boost_lr_coef=1.0, critic_type='ac_critic', decomposition_id=0, doe_classifier_cfg={'doe_type': 'mlp', 'load_doe_buffer_path': '/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/results/buffers/gfootball/2024-11-27-01-31-39', 'load_doe_name': 'doe_ia2c_layer0_decomposition0_merged.pt', 'load_mode': 'train', 'mlp': {'batch_size': 512, 'hidden_sizes': [128], 'learning_rate': 0.01, 'test_fraction': 0.1}, 'role_ids': {'goal_0': [0, 1], 'goal_1': [2, 3, 4]}, 'save_classifier': True, 'save_doe_name': 'merged_doe_buffer.pt'}, doe_type='mlp', ent_coef=1.0, entropy_coef=0.01, group_id='target', iter_id='target', layer_id='target', learner='doe_ia2c_learner', mask_before_softmax=True, name='doe_ia2c', obs_individual_obs=False, q_nstep=5, sample_id='target', save_buffer=True, save_doe_cls=True, standardise_returns=False, standardise_rewards=True, target_update_interval_or_tau=0.01, time_stamp='2024-11-27-01-31-39', use_doe=True, use_rnn=True, seed=533544399, device='cpu')
+[INFO 01:51:12] my_main Experiment Parameters:
+[INFO 01:51:12] my_main 
+
+{   'action_selector': 'soft_policies',
+    'add_value_last_step': True,
+    'agent': 'rnn',
+    'agent_output_type': 'pi_logits',
+    'base_ent': 1.0,
+    'base_lr': 1.0,
+    'batch_size': 10,
+    'batch_size_run': 10,
+    'boost_ent_coef': 1.0,
+    'boost_lr_coef': 1.0,
+    'buffer_cpu_only': True,
+    'buffer_size': 10,
+    'checkpoint_path': '',
+    'common_reward': True,
+    'critic_type': 'ac_critic',
+    'decomposition_id': 0,
+    'doe_classifier_cfg': {   'doe_type': 'mlp',
+                              'load_doe_buffer_path': '/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/results/buffers/gfootball/2024-11-27-01-31-39',
+                              'load_doe_name': 'doe_ia2c_layer0_decomposition0_merged.pt',
+                              'load_mode': 'train',
+                              'mlp': {   'batch_size': 512,
+                                         'hidden_sizes': [   128],
+                                         'learning_rate': 0.01,
+                                         'test_fraction': 0.1},
+                              'role_ids': {   'goal_0': [   0,
+                                                            1],
+                                              'goal_1': [   2,
+                                                            3,
+                                                            4]},
+                              'save_classifier': True,
+                              'save_doe_name': 'merged_doe_buffer.pt'},
+    'doe_type': 'mlp',
+    'ent_coef': 1.0,
+    'entropy_coef': 0.01,
+    'env': 'gfootball',
+    'env_args': {   'map_name': '5_vs_5',
+                    'num_agents': 5,
+                    'representation': 'simple115',
+                    'rewards': 'scoring, '
+                               'checkpoints',
+                    'seed': 533544399,
+                    'time_limit': 150},
+    'evaluate': False,
+    'gamma': 0.99,
+    'grad_norm_clip': 10,
+    'group_id': 'target',
+    'hidden_dim': 128,
+    'hypergroup': None,
+    'iter_id': 'target',
+    'label': 'default_label',
+    'layer_id': 'target',
+    'learner': 'doe_ia2c_learner',
+    'learner_log_interval': 10000,
+    'load_step': 0,
+    'local_results_path': 'results',
+    'log_interval': 10000,
+    'lr': 0.0005,
+    'mac': 'doe_mac',
+    'mask_before_softmax': True,
+    'name': 'doe_ia2c',
+    'obs_agent_id': True,
+    'obs_individual_obs': False,
+    'obs_last_action': False,
+    'optim_alpha': 0.99,
+    'optim_eps': 1e-05,
+    'q_nstep': 5,
+    'render': False,
+    'repeat_id': 1,
+    'reward_scalarisation': 'sum',
+    'runner': 'parallel',
+    'runner_log_interval': 10000,
+    'sample_id': 'target',
+    'save_buffer': True,
+    'save_doe_cls': True,
+    'save_model': False,
+    'save_model_interval': 50000,
+    'save_replay': False,
+    'seed': 533544399,
+    'standardise_returns': False,
+    'standardise_rewards': True,
+    't_max': 10000,
+    'target_update_interval_or_tau': 0.01,
+    'test_greedy': True,
+    'test_interval': 10000,
+    'test_nepisode': 30,
+    'time_stamp': '2024-11-27-01-31-39',
+    'use_cuda': False,
+    'use_doe': True,
+    'use_rnn': True,
+    'use_tensorboard': True,
+    'use_wandb': False,
+    'wandb_mode': 'offline',
+    'wandb_project': None,
+    'wandb_save_model': False,
+    'wandb_team': None}
+
+[INFO 01:51:12] my_main *******************
+[INFO 01:51:12] my_main Tensorboard logging dir:
+[INFO 01:51:12] my_main /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/results/tb_logs/2024-11-27-01-31-39/layertarget_decomposition0_subtasktarget_itertarget_sampletarget
+[INFO 01:51:12] my_main *******************
+NNNNNN 5
+/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/src/modules/doe/mlp_class.py:246: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  loaded_dict = torch.load(absolute_path)
+DoE_classifier is set to mac and learner
+[INFO 01:51:13] my_main Beginning training for 10000 timesteps
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:13] absl Dump "episode_done": count limit reached / disabled
+[INFO 01:51:14] my_main t_env: 1500 / 10000
+[INFO 01:51:14] my_main Estimated time left: 1 seconds. Time passed: 1 seconds
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:14] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:15] absl Dump "lost_score": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:16] absl Dump "lost_score": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:17] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "lost_score": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:18] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:20] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "lost_score": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "lost_score": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:21] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:23] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:25] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[DEBUG 01:51:26] absl Dump "episode_done": count limit reached / disabled
+[INFO 01:51:28] my_main Recent Stats | t_env:      10500 | Episode:       70
+advantage_mean:            0.0035	agent_grad_norm:           0.0009	critic_grad_norm:          0.0178	critic_loss:               0.0001
+ep_length_mean:          150.0000	pg_loss:                  -0.0192	pi_max:                    0.0632	q_taken_mean:             -0.0766
+return_mean:               0.0000	return_std:                0.0000	score_reward_mean:         0.0000	target_mean:              -0.0731
+td_error_abs:              0.0065	test_ep_length_mean:     150.0000	test_return_mean:         -0.5000	test_return_std:           1.5000
+test_score_reward_mean:    0.0000	
+[INFO 01:51:28] my_main Save buffer to /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/results/buffers/gfootball/2024-11-27-01-31-39 for DoE Classifier
+/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/src/modules/doe/mlp_class.py:173: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  exp_buffers = torch.load(os.path.join(buffer_path))
+[INFO 01:51:28] my_main Save buffer to /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-1118/doe_epymarl-main/results/buffers/gfootball/2024-11-27-01-31-39 for DoE Classifier
+[INFO 01:51:28] my_main Finished Training
+Exiting Main
+Stopping all threads
+Thread Thread-1 is alive! Is daemon: False
+Thread joined
+Exiting script
+[DEBUG 01:51:29] my_main Finished after 0:00:17.
+[INFO 01:51:29] pymarl Completed after 0:00:17
+[DEBUG 01:51:29] pymarl Stopping Heartbeat

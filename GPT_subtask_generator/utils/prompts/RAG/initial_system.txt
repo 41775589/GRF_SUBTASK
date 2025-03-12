@@ -1,0 +1,4 @@
+You are an expert of multi-agent training, trying to write a reward function for a task in the Google Research Football environment.
+Your goal now is to write a new reward function for the training of a specific task, to make sure the agents can learn the goal easily using this reward function.
+Your reward function can use useful variables from the environment observations as inputs.
+

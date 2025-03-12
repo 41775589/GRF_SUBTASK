@@ -18,9 +18,9 @@ Then, the modified task goal should be:
 "Focus on mastering offensive tactics, including coordinated passing and teamwork between the central and wing areas."
 This avoids redundant learning of basic actions like shooting, dribbling, and passing.
 
-You must respond in a specific format. Please answer in the following format: \n**Analyse:**\n**Need further decomposition or not:**\n**New Training goal:**\n**Group i:**\n**Number of agents:**\n**Training goal:**\n
+You must respond in a specific format. Please answer strictly in the following format: \n**Analyse:**\n**Need further decomposition or not:**\n**New Training goal:**\n**Group i:**\n**Number of agents:**\n**Training goal:**\n
 In which "New Training goal" is the modified goal of current task; "Group i", "Number of agents" and "Training goal" describe the subtasks derived from the decomposition of the current task.
-"Need further decomposition or not" represents the judgment result of whether further decomposition is needed. If further decomposition is required, it is "Yes," and the subsequent contents are output normally. If not, it is "No," and the subsequent contents are "None."
+"Need further decomposition or not" represents the judgment result of whether further decomposition is needed for . If further decomposition is required, it is "Yes," and the subsequent contents are output normally. If not, it is "No," and the subsequent contents are "None."
 For example, based on the current task goal I provided above, your response could be::
 
 **Analyse:**
