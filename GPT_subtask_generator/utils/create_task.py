@@ -15,6 +15,7 @@ def create_task(root_dir, task, layer, response_id, response_r_id, num_agents, g
     data["env_args"]["num_agents"] = num_agents
     data["env_args"]["map_name"] = f'scenario_layer{layer}_decomposition{response_id}_subtask{group_id}'
     data["env_args"]["rewards"] = f'scoring, reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}'
+    # data["env_args"]["rewards"] = 'scoring, reward_test'
 
     # data["t_max"] = 200
     
@@ -59,6 +60,50 @@ def create_train_cfg(root_dir, Time, algs_name, layer, response_id, response_r_i
         data["doe_classifier_cfg"]["role_ids"]['task'].append(i)
 
     data["doe_classifier_cfg"]["save_doe_name"] = f"cls_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.pt"
+
+
+    # Write the new YAML file
+    with open(output_file, 'w') as new_yamlfile:
+        yaml.safe_dump(data, new_yamlfile)
+
+
+def create_task_RAG(root_dir, task, num_agents, reward_id, map_name):
+    # Create task YAML file
+    input_file = f"{root_dir}/{task}.yaml"
+    output_file = f"{root_dir}/{task}_RAG_reward{reward_id}.yaml"
+
+    with open(input_file, 'r') as yamlfile:
+        data = yaml.safe_load(yamlfile)
+
+    data["env_args"]["num_agents"] = num_agents
+    data["env_args"]["rewards"] = f'scoring, reward_{reward_id}'
+    data["env_args"]["map_name"] = map_name
+
+
+    # Write the new YAML file
+    with open(output_file, 'w') as new_yamlfile:
+        yaml.safe_dump(data, new_yamlfile)
+
+def create_train_cfg_RAG(root_dir, Time, algs_name, reward_id, num_agents):
+    # Create task YAML file
+    input_file = f"{root_dir}/{algs_name}.yaml"
+    output_file = f"{root_dir}/{algs_name}_RAG_reward{reward_id}.yaml"
+
+    with open(input_file, 'r') as yamlfile:
+        data = yaml.safe_load(yamlfile)
+
+    data["layer_id"] = reward_id
+    data["decomposition_id"] = 0
+    data["group_id"] = 0
+    data["iter_id"] = 0
+    data["sample_id"] = 0
+    data["time_stamp"] = Time
+
+    data["doe_classifier_cfg"]["role_ids"]={"task":[]}
+    for i in range(num_agents):
+        data["doe_classifier_cfg"]["role_ids"]['task'].append(i)
+
+    data["doe_classifier_cfg"]["save_doe_name"] = f"cls_0.pt"
 
 
     # Write the new YAML file

@@ -28,7 +28,6 @@ sys.path.append(SRC_DIR)
 
 from run import *
 
-
 OpenAI.api_base = "https://api.ohmygpt.com"
 client = OpenAI(api_key="KEY")
 
@@ -428,7 +427,7 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
 
 
 
-def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_doe, n_improve_iter, use_sparse_reward):
+def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_doe, n_improve_iter):
     workspace_dir = Path.cwd()
     logging.info(f"Workspace: {workspace_dir}")
     logging.info(f"Project Root: {ROOT_DIR}")
@@ -443,7 +442,6 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
     observation_processor = f'{ROOT_DIR}/env_code/{task_env}/observation_processor.py'
     scenario_builder = f'{ROOT_DIR}/env_code/{task_env}/scenario_builder.py'
     reward_wrapper_example = f'{ROOT_DIR}/env_code/{task_env}/reward_wrapper_example.py'
-    reward_wrapper_example_sparse = f'{ROOT_DIR}/env_code/{task_env}/reward_wrapper_example_sparse.py'
     obs_o = f'{ROOT_DIR}/env_code/{task_env}/obs_o.py'
     obs_exp = f'{ROOT_DIR}/env_code/{task_env}/obs_exp.py'
     example_of_task_tree = f'{ROOT_DIR}/env_code/{task_env}/task_tree_example.py'
@@ -463,7 +461,6 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
     # wrappers = file_to_string(wrappers)
 
     reward_wrapper_example = file_to_string(reward_wrapper_example)
-    reward_wrapper_example_sparse = file_to_string(reward_wrapper_example_sparse)
     obs_o = file_to_string(obs_o)
     obs_exp = file_to_string(obs_exp)
     example_of_task_tree = file_to_string(example_of_task_tree)
@@ -507,7 +504,6 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
     initial_system_scenarios = file_to_string(f'{prompt_dir}/{task_env}/initial_system_scenarios.txt')
     initial_user_scenarios = file_to_string(f'{prompt_dir}/{task_env}/initial_user_scenarios.txt')
     initial_system_rewards = file_to_string(f'{prompt_dir}/{task_env}/initial_system_rewards.txt')
-    initial_system_rewards_sparse = file_to_string(f'{prompt_dir}/{task_env}/initial_system_rewards_sparse.txt')
     initial_user_rewards = file_to_string(f'{prompt_dir}/{task_env}/initial_user_rewards.txt')
     reward_signature = file_to_string(f'{prompt_dir}/{task_env}/reward_signature')
 
@@ -531,19 +527,14 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
     )
 
     example_rewards = file_to_string(f'{prompt_dir}/{task_env}/example_rewards.txt')
-    example_rewards_sparse = file_to_string(f'{prompt_dir}/{task_env}/example_rewards_sparse.txt')
     example_rewards = example_rewards.format(
         reward_wrapper=reward_wrapper_example
-    )
-    example_rewards_sparse = example_rewards_sparse.format(
-        reward_wrapper=reward_wrapper_example_sparse
     )
     example_of_o = file_to_string(f'{prompt_dir}/{task_env}/example_of_o.txt')
     example_of_o = example_of_o.format(obs_o=obs_o, obs_exp=obs_exp)
 
     code_output_tip_scenarios = file_to_string(f'{prompt_dir}/{task_env}/code_output_tip_scenarios.txt')
     code_output_tip_rewards = file_to_string(f'{prompt_dir}/{task_env}/code_output_tip_rewards.txt')
-    code_output_tip_rewards_sparse = file_to_string(f'{prompt_dir}/{task_env}/code_output_tip_rewards_sparse.txt')
     rule_setting = file_to_string(f'{prompt_dir}/{task_env}/rule_setting.txt')
 
     main_task = "learn to play a 5 vs 5 football game"
@@ -783,9 +774,10 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
                 break
 
 
+
         # 打印任务树
         import pprint
-        pprint.pprint("Final Task Tree:",task_tree)
+        pprint.pprint({"Final Task Tree": task_tree})
 
         response_cur = responses[response_id].message.content
         # responses是 len=2 的list，每个都是dict
@@ -793,7 +785,7 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
         # 这里的命名文件等待zihao更新，用于创建env和reward
         # response id 代表分解第几种分解方案，samples；layer0代表只分解一层
         with open(f"{OUTPUT_DIR}/decomposition{response_id}.py", 'w') as file:
-            file.writelines(task_tree + '\n')
+            file.writelines(str(task_tree) + '\n')
 
 #####################################################################################################################################
 
@@ -885,13 +877,15 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
                             scenario_code_string = "\n".join(lines[i:])
 
                     # Check for at least two occurrences of e_PlayerRole_GK
-                    if scenario_code_string.count("e_PlayerRole_GK") == 2:
+                    if scenario_code_string.count("e_PlayerRole_GK") == 2 and "e_PlayerRole." not in scenario_code_string:
                         break  # Satisfied condition, proceed to save the code
                     else:
-                        print(f"Wrong Scenario Code with only one goal keeper. Retrying...")
+                        print(f"Wrong Scenario Code with only one goal keeper or fully qualified names. Retrying...")
                         # Re-generate response
                         cur_messages_s.append({"role": "assistant",
-                                               "content": "Regenerate the scenario, ensuring that each team has exactly one e_PlayerRole_GK."})
+                                               "content": "Regenerate the scenario, ensuring that:"
+                                                          "1. Each team has **exactly one goalkeeper ('e_PlayerRole_GK')**."
+                                                          "2. Do **NOT** use fully qualified names (FQN) like 'e_PlayerRole.e_PlayerRole_GK'. Instead, use **direct values** (e.g., 'e_PlayerRole_GK', 'e_PlayerRole_CF')."})
                         response_scenario_cur = client.chat.completions.create(model=model,
                                                                                messages=cur_messages_s,
                                                                                temperature=temperature,
@@ -920,23 +914,13 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
                 logging.info(
                     f"Rewards Generation: Generating {n_reward} samples for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
 
-
-
-                if not use_sparse_reward:
-                    curr_code_output_tip_rewards = code_output_tip_rewards.format(
-                        number_of_agents=task['number_of_agents'],
-                        example_of_o=example_of_o, reward_signature=reward_signature)
-                    cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
-                    cur_initial_user_rewards = initial_user_rewards.format(training_goal=task['training_goal'],
-                                                                           number_of_agents=task['number_of_agents'],
-                                                                           env_code=env_code, )
-                else:
-                    curr_code_output_tip_rewards = code_output_tip_rewards_sparse.format(
-                        number_of_agents=task['number_of_agents'])
-                    cur_initial_system_rewards = initial_system_rewards_sparse + example_rewards_sparse + curr_code_output_tip_rewards
-                    cur_initial_user_rewards = initial_user_rewards.format(training_goal=task['training_goal'],
-                                                                           number_of_agents=task['number_of_agents'],
-                                                                           env_code=env_code, )
+                curr_code_output_tip_rewards = code_output_tip_rewards.format(
+                    number_of_agents=task['number_of_agents'],
+                    example_of_o=example_of_o, reward_signature=reward_signature)
+                cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
+                cur_initial_user_rewards = initial_user_rewards.format(training_goal=task['training_goal'],
+                                                                       number_of_agents=task['number_of_agents'],
+                                                                       env_code=env_code, )
 
                 cur_messages_r = copy.deepcopy(messages)
                 cur_messages_r.append({"role": "assistant", "content": f"Current entire task tree is:\n{current_tree}"})
@@ -1221,19 +1205,24 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
 
                                 code_feedbacks.append(code_feedback)
                                 content += code_feedback
+                                # The token is too long for the message with Traceback (error reward functions). So only good reward has this
+                                content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
+                                                                          example_of_o=example_of_o,
+                                                                          reward_signature=reward_signature)
                         else:
                             print("Spotting errors in the reward function")
                             # Otherwise, provide execution traceback error feedback
                             score_reward_mean.append(DUMMY_FAILURE)
                             content += execution_error_feedback.format(traceback_msg=traceback_msg)
 
-                        content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
-                                                                  example_of_o=example_of_o,
-                                                                  reward_signature=reward_signature)
+                        # The token is too long for the message with Traceback (error reward functions).
+                        # content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
+                        #                                           example_of_o=example_of_o,
+                        #                                           reward_signature=reward_signature)
                         contents.append(content)
 
                     # Repeat the iteration if all code generation failed
-                    if not exec_success and n_decomposition != 1:
+                    if not exec_success and n_reward != 1:
                         execute_rates.append(0.)
                         max_scores.append(DUMMY_FAILURE)
                         best_code_paths.append(None)
@@ -1248,7 +1237,7 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
 
                     max_score = score_reward_mean[best_sample_idx]
                     # max_success_reward_correlation = reward_correlations[best_sample_idx]
-                    execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_decomposition
+                    execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_reward
 
                     # Update the best Eureka Output
                     if max_score > max_score_overall:
@@ -1299,12 +1288,15 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
         """
         use_doe=True
         print("Start merging and training on the target task")
-        rl_runs = train_merge_team(task_tree[0], use_doe, layer="target", decompose_id=response_id, group_id = "target", iter_id = "target", sample_id = "target", buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task_env}/{Time}', max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time)
+        rl_runs = train_merge_team(task_tree[0], use_doe, layer="target", decompose_id=response_id, group_id = "target", iter_id = "target",
+                                   sample_id = "target", buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task_env}/{Time}',
+                                   max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time,
+                                   task_env = task_env, suffix = suffix, rl_runs = [])
 
     # 完成了所有方案 n decomposition plan 的任务生成，Execute the Main task using w/w. DOE:
 
 
 
 if __name__ == "__main__":
-    main(model="gpt-3.5-turbo", n_decomposition=1, n_reward=3, temperature=1, task_env="gfootball", alg_cfg="ia2c",
-         use_doe=False, n_improve_iter=3, use_sparse_reward=False)
+    main(model="gpt-4-turbo", n_decomposition=1, n_reward=5, temperature=1, task_env="gfootball", alg_cfg="ia2c",
+         use_doe=False, n_improve_iter=2)
