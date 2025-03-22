@@ -1,0 +1,6 @@
+The training goal is: {task}
+We trained an RL policy using the provided reward function code.
+The code is {reward_function}.
+During training, at certain checkpoints, we tracked the mean values of the individual components in the reward function, the original scoring reward function, and the entire reward function.
+The tracked values and corresponding trained episodes number are listed below:
+{content}

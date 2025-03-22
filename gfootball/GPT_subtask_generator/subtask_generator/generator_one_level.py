@@ -363,6 +363,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     logging.info(f"Using LLM: {model}")
 
     # env_init = f'{ROOT_DIR}/env_code/__init__.py'
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
     env = f'{ROOT_DIR}/env_code/football_env.py'
     env_core = f'{ROOT_DIR}/env_code/football_env_core.py'
     # action_set= f'{ROOT_DIR}/env_code/football_action_set.py'
@@ -372,6 +373,18 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     obs_o = f'{ROOT_DIR}/env_code/obs_o.py'
     # config = f'{ROOT_DIR}/env_code/config.py'
     wrappers = f'{ROOT_DIR}/env_code/wrappers.py'
+=======
+    env = f'{ROOT_DIR}/env_code/{task}/football_env.py'
+    env_core = f'{ROOT_DIR}/env_code/{task}/football_env_core.py'
+    # action_set= f'{ROOT_DIR}/env_code/{task}/football_action_set.py'
+    observation_processor = f'{ROOT_DIR}/env_code/{task}/observation_processor.py'
+    scenario_builder = f'{ROOT_DIR}/env_code/{task}/scenario_builder.py'
+    reward_wrapper_example = f'{ROOT_DIR}/env_code/{task}/reward_wrapper_example.py'
+    obs_o = f'{ROOT_DIR}/env_code/{task}/obs_o.py'
+    obs_exp = f'{ROOT_DIR}/env_code/{task}/obs_exp.py'
+    # config = f'{ROOT_DIR}/env_code/{task}/config.py'
+    # wrappers = f'{ROOT_DIR}/env_code/{task}/wrappers.py'
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
 
     # env_init_code_string  = file_to_string(env_init)
     env_code_string = file_to_string(env)
@@ -417,6 +430,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     # output_file_scenario = f"{parent_dir}/scenarios/scenario_{suffix.lower()}.py"
 
     # Loading all text prompts
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
     initial_system_get_decomposition = file_to_string(f'{prompt_dir}/initial_system_get_decomposition.txt')
     initial_user_get_decomposition = file_to_string(f'{prompt_dir}/initial_user_get_decomposition.txt')
     initial_system_scenarios = file_to_string(f'{prompt_dir}/initial_system_scenarios.txt')
@@ -429,6 +443,21 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     policy_feedback = file_to_string(f'{prompt_dir}/policy_feedback.txt')
 
     example_scenarios = file_to_string(f'{prompt_dir}/example_scenarios.txt')
+=======
+    initial_system_get_decomposition = file_to_string(f'{prompt_dir}/{task}/initial_system_get_decomposition.txt')
+    initial_user_get_decomposition = file_to_string(f'{prompt_dir}/{task}/initial_user_get_decomposition.txt')
+    initial_system_scenarios = file_to_string(f'{prompt_dir}/{task}/initial_system_scenarios.txt')
+    initial_user_scenarios = file_to_string(f'{prompt_dir}/{task}/initial_user_scenarios.txt')
+    initial_system_rewards = file_to_string(f'{prompt_dir}/{task}/initial_system_rewards.txt')
+    initial_user_rewards = file_to_string(f'{prompt_dir}/{task}/initial_user_rewards.txt')
+    reward_signature = file_to_string(f'{prompt_dir}/{task}/reward_signature')
+
+    execution_error_feedback = file_to_string(f'{prompt_dir}/{task}/execution_error_feedback.txt')
+    code_feedback = file_to_string(f'{prompt_dir}/{task}/code_feedback.txt')
+    policy_feedback = file_to_string(f'{prompt_dir}/{task}/policy_feedback.txt')
+
+    example_scenarios = file_to_string(f'{prompt_dir}/{task}/example_scenarios.txt')
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
     example_scenarios = example_scenarios.format(
         three_vs_one_with_keeper_code_string=three_vs_one_with_keeper_code_string,
         corner_code_string=corner_code_string,
@@ -443,6 +472,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
         single_goal_versus_lazy_code_string=single_goal_versus_lazy_code_string
     )
 
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
     example_rewards = file_to_string(f'{prompt_dir}/example_rewards.txt')
     example_rewards = example_rewards.format(
         reward_wrapper=reward_wrapper_example
@@ -453,6 +483,18 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
     code_output_tip_scenarios = file_to_string(f'{prompt_dir}/code_output_tip_scenarios.txt')
     code_output_tip_rewards = file_to_string(f'{prompt_dir}/code_output_tip_rewards.txt')
     rule_setting = file_to_string(f'{prompt_dir}/rule_setting.txt')
+=======
+    example_rewards = file_to_string(f'{prompt_dir}/{task}/example_rewards.txt')
+    example_rewards = example_rewards.format(
+        reward_wrapper=reward_wrapper_example
+    )
+    example_of_o = file_to_string(f'{prompt_dir}/{task}/example_of_o.txt')
+    example_of_o = example_of_o.format(obs_o=obs_o, obs_exp=obs_exp)
+
+    code_output_tip_scenarios = file_to_string(f'{prompt_dir}/{task}/code_output_tip_scenarios.txt')
+    code_output_tip_rewards = file_to_string(f'{prompt_dir}/{task}/code_output_tip_rewards.txt')
+    rule_setting = file_to_string(f'{prompt_dir}/{task}/rule_setting.txt')
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
 
     main_task = "learn to play a 5 vs 5 football game"
     num_agents = 5
@@ -633,11 +675,19 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
                 f"Rewards Generation: Generating {n_reward} samples for Decomposition {response_id} Group{group_id} with {model}")
 
             curr_code_output_tip_rewards = code_output_tip_rewards.format(number_of_agents=group['number_of_agents'],
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
                                                                           example_of_o=example_of_o)
             cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
             cur_initial_user_rewards = initial_user_rewards.format(training_goal=group['training_goal'],
                                                                    number_of_agents=group['number_of_agents'],
                                                                    env_code=env_code, wrappers=wrappers)
+=======
+                                                                          example_of_o=example_of_o, reward_signature=reward_signature)
+            cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
+            cur_initial_user_rewards = initial_user_rewards.format(training_goal=group['training_goal'],
+                                                                   number_of_agents=group['number_of_agents'],
+                                                                   env_code=env_code, )
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
 
             cur_messages_r = copy.deepcopy(messages)
             cur_messages_r.append({"role": "assistant", "content": response_cur})
@@ -780,6 +830,33 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
                             f'--env-config={task}{suffix}_decomposition{response_id}_subtask{group_id}',
                         ]
                         process = subprocess.Popen(params, stdout=f, stderr=f)
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
+=======
+
+                        # 获取文件的初始修改时间
+                        while True:
+                            initial_mtime = os.path.getmtime(rl_filepath)
+                            initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
+                            start_time = datetime.datetime.now()
+                            delta_time = start_time - initial_mtime   # 时间差
+                            delta_seconds = delta_time.total_seconds()  # 时间差转成秒
+                            if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
+                                print(f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
+                                process.kill()  # 终止子进程
+                                break
+                            # while process.poll() is None:  # 检查子进程是否还在运行
+                            #     # 检查文件的最后修改时间
+                            #     current_mtime = os.path.getmtime(rl_filepath)
+                            #     # 如果文件超过了 1 分钟没有更新
+                            #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
+                            #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
+                            #         process.terminate()  # 终止子进程
+                            #         break
+                                # 等待一段时间后再检查
+                            time.sleep(1)
+
+                        process.wait()
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
                     # Modified the check of successful training
                     block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
                     rl_runs.append(process)
@@ -850,7 +927,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
                     contents.append(content)
 
                 # Repeat the iteration if all code generation failed
-                if not exec_success and n_decomposition != 1:
+                if not exec_success and n_reward != 1:
                     execute_rates.append(0.)
                     max_scores.append(DUMMY_FAILURE)
                     max_successes_reward_correlation.append(DUMMY_FAILURE)
@@ -865,7 +942,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
 
                 max_score = score_reward_mean[best_sample_idx]
                 # max_success_reward_correlation = reward_correlations[best_sample_idx]
-                execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_decomposition
+                execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_reward
 
                 # Update the best Eureka Output
                 if max_score > max_score_overall:
@@ -921,5 +998,10 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD:gfootball/GPT_subtask_generator/subtask_generator/generator_one_level.py
     main(model="gpt-3.5-turbo", n_decomposition=1, n_reward=1, temperature=1, task="gfootball", alg_cfg="ia2c",
          use_doe=True, n_improve_iter=2)
+=======
+    main(model="gpt-3.5-turbo", n_decomposition=1, n_reward=3, temperature=1, task="gfootball", alg_cfg="ia2c",
+         use_doe=False, n_improve_iter=3)
+>>>>>>> origin/HEAD:GPT_subtask_generator/generator_one_level.py
