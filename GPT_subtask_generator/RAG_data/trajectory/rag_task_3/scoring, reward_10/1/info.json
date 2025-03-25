@@ -1,0 +1,44 @@
+{
+  "component_shoot_accuracy_reward_0_mean": [
+    0.32
+  ],
+  "component_shoot_accuracy_reward_0_mean_T": [
+    1500
+  ],
+  "final_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.6700000047683716
+    }
+  ],
+  "final_reward_mean_T": [
+    1500
+  ],
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 82.52000035047531
+    }
+  ],
+  "return_mean_T": [
+    1500
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 18.93514199932696
+    }
+  ],
+  "return_std_T": [
+    1500
+  ],
+  "score_reward_mean": [
+    0.0
+  ],
+  "score_reward_mean_T": [
+    1500
+  ]
+}

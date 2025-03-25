@@ -1,0 +1,57 @@
+{
+  "component_shoot_accuracy_reward_0_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:39.494458"
+    ],
+    "values": [
+      0.32
+    ]
+  },
+  "final_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:39.494596"
+    ],
+    "values": [
+      0.6700000047683716
+    ]
+  },
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:39.490126"
+    ],
+    "values": [
+      82.52000035047531
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:39.490463"
+    ],
+    "values": [
+      18.93514199932696
+    ]
+  },
+  "score_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:39.490564"
+    ],
+    "values": [
+      0.0
+    ]
+  }
+}

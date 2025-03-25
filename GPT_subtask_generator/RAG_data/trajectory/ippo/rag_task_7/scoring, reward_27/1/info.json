@@ -1,0 +1,5488 @@
+{
+  "advantage_mean": [
+    0.01556079610188802,
+    -0.3059683430989583,
+    -0.12541103108723958,
+    0.5287755940755209,
+    0.12676840209960938,
+    -0.4886136067708333,
+    -1.2074725748697916,
+    0.16533610026041667,
+    0.81604296875,
+    0.5862979736328126,
+    0.19839766438802084,
+    -0.21281864420572916,
+    0.4139191487630208,
+    -0.2775586954752604,
+    -0.072259765625,
+    -0.08579268391927083,
+    -0.3022126871744792,
+    -0.04023314412434896,
+    -0.32108976236979164,
+    -0.18329207356770832,
+    0.238656494140625,
+    0.23682175699869792,
+    -0.5872931315104166,
+    0.041060948689778644,
+    -0.36882210286458333,
+    -0.006625345865885417,
+    0.07352680969238282,
+    -0.07604434204101562,
+    -0.04786465962727864,
+    -0.09070294189453125,
+    0.205721435546875,
+    0.24423868815104166,
+    -0.010698618570963542,
+    0.2229686279296875,
+    0.46107853190104164,
+    0.4941980794270833,
+    -0.347234619140625,
+    0.813830322265625,
+    -0.28355619303385415,
+    0.017236653645833332,
+    0.3316597493489583,
+    0.13313543701171876,
+    -0.148931884765625,
+    -0.5727613932291666,
+    -0.01906090291341146,
+    0.013873591105143229,
+    0.032926177978515624,
+    -0.3600083821614583
+  ],
+  "advantage_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "agent_grad_norm": [
+    0.32291314005851746,
+    0.363025039434433,
+    0.31549498438835144,
+    0.26144763827323914,
+    0.4929015338420868,
+    0.3698214888572693,
+    1.0203912258148193,
+    0.43628937005996704,
+    0.22515855729579926,
+    0.3484053313732147,
+    0.2777520418167114,
+    0.3494560718536377,
+    0.24023064970970154,
+    0.4204949736595154,
+    0.21667447686195374,
+    0.2169300615787506,
+    0.24968895316123962,
+    0.26555880904197693,
+    0.15880052745342255,
+    0.12979483604431152,
+    0.46911484003067017,
+    0.17374129593372345,
+    0.6369937062263489,
+    0.10832285135984421,
+    0.25390708446502686,
+    0.4205347001552582,
+    0.10410825163125992,
+    0.09706801921129227,
+    0.24853159487247467,
+    0.08569734543561935,
+    0.16478706896305084,
+    0.1443735510110855,
+    0.1331915706396103,
+    0.24590036273002625,
+    0.14824065566062927,
+    0.32410869002342224,
+    0.308606892824173,
+    0.761424720287323,
+    0.3083942234516144,
+    0.3483831584453583,
+    0.7057061195373535,
+    0.22468602657318115,
+    0.5790309309959412,
+    0.4410102367401123,
+    0.35580337047576904,
+    0.5053081512451172,
+    0.2741049528121948,
+    0.48493555188179016
+  ],
+  "agent_grad_norm_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "component_base_score_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "component_base_score_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "component_close_call_penalty_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.2
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.15
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.12142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.17142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.15714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.15
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1357142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.09285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.10714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08571428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.014285714285714285
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07142857142857142
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08571428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    }
+  ],
+  "component_close_call_penalty_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "component_tackle_attempt_penalty_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.12
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05285714285714289
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.002857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0014285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0014285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0014285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "component_tackle_attempt_penalty_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "component_tackle_success_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.014285714285714285
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "component_tackle_success_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "critic_grad_norm": [
+    0.6105358600616455,
+    2.1737618446350098,
+    1.4755594730377197,
+    4.784531116485596,
+    1.3153895139694214,
+    5.661337375640869,
+    14.308884620666504,
+    3.282650947570801,
+    13.698838233947754,
+    13.120957374572754,
+    4.942545413970947,
+    6.230868339538574,
+    10.89193058013916,
+    7.4849371910095215,
+    5.235466480255127,
+    3.490968704223633,
+    12.003316879272461,
+    4.607688903808594,
+    8.955565452575684,
+    7.049191474914551,
+    13.051854133605957,
+    8.295178413391113,
+    19.054943084716797,
+    1.7457414865493774,
+    15.177963256835938,
+    4.997213363647461,
+    7.221914768218994,
+    5.327267169952393,
+    4.378941535949707,
+    3.5349202156066895,
+    6.463550567626953,
+    14.920352935791016,
+    6.879940509796143,
+    9.085874557495117,
+    31.452070236206055,
+    23.21896743774414,
+    19.82053565979004,
+    61.79893112182617,
+    16.432050704956055,
+    6.4301886558532715,
+    14.012728691101074,
+    25.11417579650879,
+    17.045875549316406,
+    49.80829620361328,
+    13.518972396850586,
+    2.5776116847991943,
+    6.859601020812988,
+    30.95173454284668
+  ],
+  "critic_grad_norm_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "critic_loss": [
+    18.716894149780273,
+    17.49945831298828,
+    14.841140747070312,
+    15.392395973205566,
+    15.66336727142334,
+    16.065731048583984,
+    21.498397827148438,
+    15.207529067993164,
+    9.365006446838379,
+    11.368634223937988,
+    9.0878324508667,
+    10.451108932495117,
+    8.103364944458008,
+    8.691488265991211,
+    15.77696704864502,
+    13.110393524169922,
+    10.469893455505371,
+    8.271533966064453,
+    3.1947531700134277,
+    10.50500774383545,
+    12.295555114746094,
+    5.697723865509033,
+    8.7518949508667,
+    3.4233853816986084,
+    8.287764549255371,
+    6.793691635131836,
+    4.351206302642822,
+    4.634190559387207,
+    8.115621566772461,
+    7.171406269073486,
+    6.041392803192139,
+    10.484012603759766,
+    7.197879791259766,
+    11.186713218688965,
+    6.40102481842041,
+    6.496666431427002,
+    6.187811374664307,
+    16.490365982055664,
+    14.269177436828613,
+    13.785204887390137,
+    9.870171546936035,
+    18.272531509399414,
+    9.913822174072266,
+    12.127976417541504,
+    9.540175437927246,
+    5.313012599945068,
+    10.456863403320312,
+    14.043028831481934
+  ],
+  "critic_loss_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "ep_length_mean": [
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0
+  ],
+  "ep_length_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "episode": [
+    70,
+    140,
+    210,
+    280,
+    350,
+    420,
+    490,
+    560,
+    630,
+    700,
+    770,
+    840,
+    910,
+    980,
+    1050,
+    1120,
+    1190,
+    1260,
+    1330,
+    1400,
+    1470,
+    1540,
+    1610,
+    1680,
+    1750,
+    1820,
+    1890,
+    1960,
+    2030,
+    2100,
+    2170,
+    2240,
+    2310,
+    2380,
+    2450,
+    2520,
+    2590,
+    2660,
+    2730,
+    2800,
+    2870,
+    2940,
+    3010,
+    3080,
+    3150,
+    3220,
+    3290
+  ],
+  "episode_T": [
+    10500,
+    21000,
+    31500,
+    42000,
+    52500,
+    63000,
+    73500,
+    84000,
+    94500,
+    105000,
+    115500,
+    126000,
+    136500,
+    147000,
+    157500,
+    168000,
+    178500,
+    189000,
+    199500,
+    210000,
+    220500,
+    231000,
+    241500,
+    252000,
+    262500,
+    273000,
+    283500,
+    294000,
+    304500,
+    315000,
+    325500,
+    336000,
+    346500,
+    357000,
+    367500,
+    378000,
+    388500,
+    399000,
+    409500,
+    420000,
+    430500,
+    441000,
+    451500,
+    462000,
+    472500,
+    483000,
+    493500
+  ],
+  "final_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.3200000084936619
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.20285714556063925
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.17000000125595502
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.12428571432828903
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.17285714287843024
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.15714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1514285714498588
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1357142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.09285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.10714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.10714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08571428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.09285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.014285714285714285
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05857142859271595
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.09285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07142857142857142
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.14285714285714285
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05714285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.19285714285714287
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03571428571428571
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.07857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06428571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02142857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.02857142857142857
+    }
+  ],
+  "final_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "pg_loss": [
+    -0.04471933841705322,
+    0.2968352735042572,
+    0.11550869792699814,
+    -0.5373362302780151,
+    -0.1413535177707672,
+    0.48650267720222473,
+    1.1808960437774658,
+    -0.1747579276561737,
+    -0.8192586302757263,
+    -0.589189887046814,
+    -0.19858421385288239,
+    0.21025151014328003,
+    -0.41488903760910034,
+    0.2769477367401123,
+    0.0702228769659996,
+    0.08538944274187088,
+    0.3012922704219818,
+    0.03369506821036339,
+    0.31981968879699707,
+    0.18129996955394745,
+    -0.24104483425617218,
+    -0.23860356211662292,
+    0.580051839351654,
+    -0.04146305471658707,
+    0.3691135346889496,
+    0.0005572916707023978,
+    -0.07475291192531586,
+    0.0746433213353157,
+    0.0461886003613472,
+    0.08937347680330276,
+    -0.20570050179958344,
+    -0.2456575483083725,
+    0.010333008132874966,
+    -0.2248310148715973,
+    -0.4616720378398895,
+    -0.49826574325561523,
+    0.3426494002342224,
+    -0.8236398100852966,
+    0.2810521721839905,
+    -0.02137191966176033,
+    -0.3413521647453308,
+    -0.1343628317117691,
+    0.14567577838897705,
+    0.5729550123214722,
+    0.011580129154026508,
+    -0.02559742145240307,
+    -0.0359346941113472,
+    0.356085866689682
+  ],
+  "pg_loss_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "pi_max": [
+    0.06555287679036459,
+    0.10135605875651042,
+    0.11540496826171875,
+    0.1786844482421875,
+    0.4648928629557292,
+    0.4078800455729167,
+    0.43783011881510414,
+    0.35451066080729166,
+    0.46099226888020833,
+    0.53888623046875,
+    0.4939482014973958,
+    0.5063856201171875,
+    0.5101456298828125,
+    0.6908770345052083,
+    0.7756661783854166,
+    0.8293102213541667,
+    0.7588773600260417,
+    0.6140985514322916,
+    0.84231689453125,
+    0.7707495930989583,
+    0.7192589518229167,
+    0.7222035319010417,
+    0.6704957682291667,
+    0.893499267578125,
+    0.8735276692708334,
+    0.7572916666666667,
+    0.5935282389322917,
+    0.594087646484375,
+    0.7712747395833334,
+    0.8622914225260416,
+    0.8990226236979166,
+    0.8878527018229166,
+    0.8546173502604166,
+    0.7917861328125,
+    0.7638436686197917,
+    0.68309326171875,
+    0.50563037109375,
+    0.4145220947265625,
+    0.5010318603515626,
+    0.56498681640625,
+    0.4765570068359375,
+    0.6681306966145834,
+    0.6820126953125,
+    0.7897403971354167,
+    0.7330411783854167,
+    0.4654569498697917,
+    0.5169512532552083,
+    0.47487019856770835
+  ],
+  "pi_max_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "q_taken_mean": [
+    -0.0173375244140625,
+    0.5548610026041667,
+    0.83420654296875,
+    0.4427451171875,
+    0.09649058024088542,
+    0.9528277180989584,
+    0.753990234375,
+    0.46176180013020834,
+    0.6977840169270834,
+    0.7666053059895833,
+    1.4248746744791667,
+    2.1353896484375,
+    1.4998463541666667,
+    2.1186258138020833,
+    1.4114259440104167,
+    1.4350481770833334,
+    2.0134833984375,
+    1.7308795572916666,
+    2.5081168619791665,
+    1.7423489583333334,
+    1.2060154622395833,
+    1.8844724934895833,
+    2.2481044921875,
+    2.3648865559895835,
+    2.3131477864583334,
+    2.08158154296875,
+    2.4068662109375,
+    2.416907877604167,
+    2.247961263020833,
+    2.1758489583333334,
+    2.3959365234375,
+    2.0583603515625,
+    2.6288984375,
+    2.2893824869791666,
+    2.177960286458333,
+    2.3275113932291664,
+    2.9122451171875,
+    1.256873779296875,
+    2.2196292317708335,
+    2.2532236328125,
+    2.187622721354167,
+    1.6254713541666668,
+    2.59498681640625,
+    3.062537760416667,
+    2.7943828125,
+    3.0721061197916666,
+    2.69762744140625,
+    2.396437174479167
+  ],
+  "q_taken_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -44.46000083759427
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -35.401428998687436
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -27.814285853398697
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -25.027142889691252
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -29.932857149307218
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -24.255714291547026
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -24.82428571560553
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -20.03714285758989
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -19.30285714854087
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -16.794285717606545
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -13.19428571505206
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.511428573195424
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.214285714285714
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.4
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.88714285727058
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.300000000106436
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.661428573727608
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.728571428997176
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.751428571449859
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.45
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.837142857164144
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.194285714307002
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.560000000042574
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -8.864285715030773
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.035714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.542857142857143
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.730000000447035
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.430000000021288
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.121428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.405714285905873
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.331428572109767
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.778571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.77714285744088
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.985714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.878571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.285714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.721428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.271428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.864285714817898
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.535714285714286
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.088571429146187
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.628571428571428
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.984285715648106
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.757142857142858
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.121428571428572
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.685714285714285
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.837142857270582
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.221428571428572
+    }
+  ],
+  "return_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 24.852332493757828
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 19.269320853293394
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 12.759078466192769
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.376524452422696
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 14.164671562081454
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.592084207162022
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 12.496427327103149
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.827645720353345
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 13.231099426535438
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.63805683185332
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.539015907595717
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.668927300889614
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.56204230597337
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.459701257901878
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.990088533340478
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.2309651598640645
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.167611533179635
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.252707657074133
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.026654859847879
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.356413277067073
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.280358367474419
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.635273139724147
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.978740258328196
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.909910806471145
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.75716638775661
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.69882703798246
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.591042695895009
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.182705630073078
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.777915491168255
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.528406937796635
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.588259827800982
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.176877051955193
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.5976720389110355
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.853555609302074
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.847693692339796
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.831587556918077
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.679297634169753
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.672075758385859
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.577096933361197
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.668862308504797
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.288984700890152
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.352203612467739
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.88755888431134
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.419692280755507
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.5372577972390475
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.408826752106313
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.377353339765241
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.14563475408458
+    }
+  ],
+  "return_std_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "score_reward_mean": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.014285714285714285,
+    0.0,
+    0.0,
+    0.0,
+    -0.014285714285714285,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.014285714285714285,
+    -0.014285714285714285,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.014285714285714285,
+    0.0,
+    0.0,
+    -0.02857142857142857,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "score_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "target_mean": [
+    -0.0017767333984375,
+    0.24889265950520834,
+    0.7087955729166666,
+    0.971520751953125,
+    0.22325899251302084,
+    0.4642141520182292,
+    -0.45348225911458334,
+    0.627097900390625,
+    1.5138271484375,
+    1.3529033203125,
+    1.6232724609375,
+    1.9225709635416666,
+    1.9137652994791667,
+    1.8410670572916668,
+    1.3391661783854167,
+    1.3492555338541667,
+    1.7112706705729166,
+    1.690646484375,
+    2.1870270182291667,
+    1.5590569661458333,
+    1.444671875,
+    2.1212942708333333,
+    1.6608111979166666,
+    2.4059474283854168,
+    1.9443255208333334,
+    2.074956217447917,
+    2.4803929036458334,
+    2.3408636067708333,
+    2.2000966796875,
+    2.0851458333333333,
+    2.601658203125,
+    2.3025989583333333,
+    2.61819970703125,
+    2.5123509114583333,
+    2.639038736979167,
+    2.8217093098958332,
+    2.5650104166666665,
+    2.0707041015625,
+    1.9360729166666666,
+    2.2704602864583334,
+    2.5192823893229166,
+    1.7586067708333333,
+    2.4460548502604165,
+    2.4897760416666666,
+    2.775321940104167,
+    3.0859798177083335,
+    2.7305533854166666,
+    2.0364287109375
+  ],
+  "target_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "td_error_abs": [
+    3.5684391276041665,
+    3.26141796875,
+    3.047200846354167,
+    3.1951536458333334,
+    3.3767506510416667,
+    3.0397952473958334,
+    3.6007701822916665,
+    3.0630380859375,
+    2.42412939453125,
+    2.462150716145833,
+    1.7796082356770833,
+    1.0120360514322917,
+    1.3935418294270834,
+    0.9464107259114584,
+    1.7531038411458333,
+    1.6536412760416668,
+    1.0173992513020833,
+    1.1635486653645832,
+    0.6871798502604166,
+    1.1983028971354166,
+    1.6800314127604166,
+    0.9029291178385417,
+    1.1753740234375,
+    0.6232521565755208,
+    0.94380419921875,
+    0.9185350748697917,
+    0.6853536783854167,
+    0.6374666748046875,
+    1.097297119140625,
+    0.9569032389322917,
+    0.9229461263020833,
+    1.3365240885416667,
+    0.7369962565104167,
+    1.2982858072916668,
+    1.148175048828125,
+    1.2166661783854167,
+    0.8459031575520833,
+    2.2285680338541667,
+    1.4391048177083334,
+    1.4726572265625,
+    1.4370094401041666,
+    2.1155065104166666,
+    1.1441847330729167,
+    1.0978806966145833,
+    1.08502587890625,
+    0.7807791341145833,
+    1.20273095703125,
+    1.4072496744791667
+  ],
+  "td_error_abs_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_component_base_score_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_component_base_score_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_component_close_call_penalty_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.2
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.23333333333333334
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.25
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    }
+  ],
+  "test_component_close_call_penalty_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_component_tackle_attempt_penalty_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333336
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.026666666666666665
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0033333333333333335
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0033333333333333335
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_component_tackle_attempt_penalty_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_component_tackle_success_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "test_component_tackle_success_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_ep_length_mean": [
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0,
+    150.0
+  ],
+  "test_ep_length_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_final_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.28333333830038704
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.39333333522081376
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0866666667163372
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.25
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.16666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.0033333333830038708
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.1
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.11666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.05
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.06666666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.03333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.25
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.08333333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.016666666666666666
+    }
+  ],
+  "test_final_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -34.85666724865635
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -35.42333356191715
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -28.13666673079133
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -31.63333334128062
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -32.92000000923872
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -23.00666666701436
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -18.65333333835006
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -18.090000003079574
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -16.460000002632537
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -19.673333334426086
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.77000000004967
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.833333333333334
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -13.556666666766008
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.083333333333334
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.573333333432675
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.283333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.933333334078391
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.220000000049671
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.753333333383004
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.933333333333334
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.646666666865348
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.836666667461396
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.883333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -14.836666666716336
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -13.716666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.583333333333334
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.55
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.633333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.633333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -13.243333333482346
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -14.816666666666666
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.533333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -10.903333333631357
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.15
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.540000001589457
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.426666666815679
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -14.100000004221995
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.190000000596047
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.25
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.7
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.983333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -13.3
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.116666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.616666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -9.766666666666667
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.0
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -11.533333333333333
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -12.183333333333334
+    }
+  ],
+  "test_return_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 17.61322798874629
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 19.074654973523398
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 16.039232846810695
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 17.208085952359404
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 15.915933324524644
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 12.563569910229814
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.784270434554792
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.728252670843197
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.125704072536553
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.11906184231744
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.479235421450019
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.217133803713361
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.685416256966393
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.008415712375465
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.918877586070596
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.31172954155779
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.242666753709063
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.52873704682399
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.970434255622488
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.405379683429304
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.853075165017146
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.082923700151062
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.090914267675293
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 11.351959693817516
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.118582936010993
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.11050980400597
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.109090424707417
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.50432650019044
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 12.166849313697536
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.030713642496925
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 12.94699664872986
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.958190375542916
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.422366417519191
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.105707865448888
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.870987791575631
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.105098532521763
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 10.869989268993885
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.970781635240853
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 5.04933989085042
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.838579803340228
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.293493112378496
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.500769185258003
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.616498738423181
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 9.56441611158546
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 7.137615537107302
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 8.159861109929098
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.625623660372576
+    },
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 6.319920006526103
+    }
+  ],
+  "test_return_std_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ],
+  "test_score_reward_mean": [
+    0.0,
+    -0.03333333333333333,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.03333333333333333,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "test_score_reward_mean_T": [
+    1500,
+    12000,
+    22500,
+    33000,
+    43500,
+    54000,
+    64500,
+    75000,
+    85500,
+    96000,
+    106500,
+    117000,
+    127500,
+    138000,
+    148500,
+    159000,
+    169500,
+    180000,
+    190500,
+    201000,
+    211500,
+    222000,
+    232500,
+    243000,
+    253500,
+    264000,
+    274500,
+    285000,
+    295500,
+    306000,
+    316500,
+    327000,
+    337500,
+    348000,
+    358500,
+    369000,
+    379500,
+    390000,
+    400500,
+    411000,
+    421500,
+    432000,
+    442500,
+    453000,
+    463500,
+    474000,
+    484500,
+    495000
+  ]
+}

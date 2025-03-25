@@ -19,12 +19,8 @@ doe_classifier_cfg:
   role_ids:
     task:
     - 0
-    - 1
-    - 2
-    - 3
-    - 4
   save_classifier: true
-  save_doe_name: cls_0.pt
+  save_doe_name: cls_layer0_decomposition0_subtask0_iter0_sample0.pt
 entropy_coef: 0.001
 group_id: 0
 hidden_dim: 128
@@ -46,6 +42,6 @@ standardise_returns: false
 standardise_rewards: true
 t_max: 1000000
 target_update_interval_or_tau: 0.01
-time_stamp: 2025-03-09-22-26-00
+time_stamp: 2024-11-27-02-22-42
 use_doe: false
 use_rnn: true

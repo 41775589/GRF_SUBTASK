@@ -1,0 +1,46 @@
+{
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-19T08:54:12.458937"
+    ],
+    "values": [
+      34.505000930652024
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-19T08:54:12.459268"
+    ],
+    "values": [
+      35.45446089945833
+    ]
+  },
+  "sticky_actions_1_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-19T08:54:12.459393"
+    ],
+    "values": [
+      0.0
+    ]
+  },
+  "sticky_actions_5_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-19T08:54:12.459487"
+    ],
+    "values": [
+      0.1
+    ]
+  }
+}

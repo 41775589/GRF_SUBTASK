@@ -19,16 +19,30 @@ def get_freest_gpu():
     return freest_gpu['index']
 
 def filter_traceback(s):
+    # lines = s.split('\n')
+    # filtered_lines = []
+    # for i, line in enumerate(lines):
+    #     if line.startswith('Traceback'):
+    #         for j in range(i, len(lines)):
+    #             # if "Set the environment variable HYDRA_FULL_ERROR=1" in lines[j]:
+    #             #     break
+    #             filtered_lines.append(lines[j])
+    #         return '\n'.join(filtered_lines)
+    # return ''  # Return an empty string if no Traceback is found
     lines = s.split('\n')
-    filtered_lines = []
-    for i, line in enumerate(lines):
-        if line.startswith('Traceback'):
-            for j in range(i, len(lines)):
-                # if "Set the environment variable HYDRA_FULL_ERROR=1" in lines[j]:
-                #     break
-                filtered_lines.append(lines[j])
-            return '\n'.join(filtered_lines)
-    return ''  # Return an empty string if no Traceback is found
+    last_traceback_index = -1  # 记录最后一个 'Traceback' 位置
+
+    # 反向查找最后一个 'Traceback'
+    for i in range(len(lines) - 1, -1, -1):
+        if lines[i].startswith('Traceback'):
+            last_traceback_index = i
+            break  # 找到最后一个 'Traceback'，立即退出循环
+
+    # 如果找到了 Traceback，就提取它及其后续内容
+    if last_traceback_index != -1:
+        return '\n'.join(lines[last_traceback_index:])
+
+    return ''  # 没有找到 Traceback，返回空字符串
 
 def block_until_training(rl_filepath, log_status=False, iter_num=-1, response_id=-1):
     # Ensure that the RL training has started before moving on

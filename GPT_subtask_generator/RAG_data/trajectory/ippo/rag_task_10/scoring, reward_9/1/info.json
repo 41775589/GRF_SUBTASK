@@ -1,0 +1,40 @@
+{
+  "component_block_reward_mean": [
+    0.12
+  ],
+  "component_block_reward_mean_T": [
+    1500
+  ],
+  "component_interception_reward_mean": [
+    0.35
+  ],
+  "component_interception_reward_mean_T": [
+    1500
+  ],
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 60.31000014990568
+    }
+  ],
+  "return_mean_T": [
+    1500
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 44.8566483940674
+    }
+  ],
+  "return_std_T": [
+    1500
+  ],
+  "score_reward_mean": [
+    0.0
+  ],
+  "score_reward_mean_T": [
+    1500
+  ]
+}

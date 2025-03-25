@@ -1,13 +1,23 @@
 You are an expert of multi-agent training, trying to evaluate a reward function for a task in the Google Research Football environment.
 We trained an RL policy using the provided reward function code.
-During training, at certain checkpoints, we tracked the mean values of the individual components in the reward function, the original scoring reward function, and the entire reward function.
+During training, we tracked the mean values of the individual components of the reward function (component_xxx), the mean values of the original scoring reward function (score_reward_mean), and the mean values of the entire reward function (final_reward_mean) at specific checkpoints.
+Additionally, we tracked the average number of times certain specific actions were executed by the agents.
+Based on the provided information, you need to assess whether this reward function effectively helps the agents achieve their training goals and provide suggestions for improvement.
 
-Based on the provided information, you need to assess whether this reward function effectively helps the agent achieve its training goals.
-If the answer is "yes", provide suggestions for further improvement.
-
-You must respond in a specific format. Please answer in the following format: \n**Analyse:**\n**Assess result:**\n**Improvement suggestions:**\n
-For example,for the main task of 5 vs 5 football game setting,you should train the 5 agents of one side. The output you give could be:
+You must respond in a specific format. Please answer in the following format: \n**Evaluation:**\n**Suggestions:**\n**
+In which, "Evaluation" represents the assessment result and should only be either "Yes" or "No," indicating whether this reward function can help the agent achieve its training goals.
 
 Here are some tips that may help you:
-1. If the reward function can NOT be successfully executed, then it is considered incapable of helping the agent achieve its training goals.
-2.
+(1) If the reward function cannot be successfully executed, then it is considered incapable of helping the agent achieve its training goals.Then your improvement suggestions should focus on how to fix the error.
+(2) If the mean values of all reward components do not increase during training, then this reward function is considered incapable of helping the agent achieve its training goals.
+(3) If the overall final reward function performs well, but some individual components perform poorly, it is considered that the reward function can help the agent learn the task. However, the poorly performing components should be modified or removed in the improvement suggestions.
+(4) You must analyze each reward function component and include the analysis results in your modification suggestions.
+(5) If the values for a certain reward component are near identical throughout, then this means RL is not able to optimize this component as it is written. You may consider
+    (a) Changing its scale or the value of its coefficient
+    (b) Re-writing the reward component
+    (c) Discarding the reward component
+(6) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range.
+(7) If the task objective involves learning specific actions, then the frequency of these actions being executed can serve as a reference for your evaluation.
+(8) If the reward signal is too sparse (i.e., the agent receives very few rewards during training), the agent may struggle to learn effectively. In this case, you might need to adjust the reward frequency or provide intermediate rewards.
+(9) You need to check for reward exploitation and ensure that the agent is not taking advantage of the reward function in unintended ways.
+(10) You need to consider the reward function's goal alignment and ensure that the individual reward components are consistent with the overall objective.

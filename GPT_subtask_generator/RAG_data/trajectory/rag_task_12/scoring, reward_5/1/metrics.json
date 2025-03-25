@@ -1,0 +1,46 @@
+{
+  "component_stop_sprint_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-21T00:35:31.479500"
+    ],
+    "values": [
+      126.0
+    ]
+  },
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-21T00:35:31.479236"
+    ],
+    "values": [
+      612.1979998696595
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-21T00:35:31.479430"
+    ],
+    "values": [
+      120.13414438679904
+    ]
+  },
+  "score_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-21T00:35:31.479469"
+    ],
+    "values": [
+      0.0
+    ]
+  }
+}
