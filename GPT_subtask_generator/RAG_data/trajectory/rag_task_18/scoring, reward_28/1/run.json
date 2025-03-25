@@ -1,0 +1,87 @@
+{
+  "artifacts": [],
+  "command": "my_main",
+  "experiment": {
+    "base_dir": "/home/zihao/zihao/PycharmProjects/GRF_SUBTASK-0211/doe_epymarl-main/src",
+    "dependencies": [
+      "numpy==1.26.4",
+      "PyYAML==6.0.2",
+      "sacred==0.8.6",
+      "torch==2.5.1"
+    ],
+    "mainfile": "main.py",
+    "name": "pymarl",
+    "repositories": [],
+    "sources": [
+      [
+        "main.py",
+        "_sources/main_b4adb8ced31877efc6e4a508d217fe29.py"
+      ],
+      [
+        "run.py",
+        "_sources/run_e73b36a30faf82d572668b9df01d24dd.py"
+      ],
+      [
+        "utils/logging.py",
+        "_sources/logging_c5e4eb72527526b53c5189a8a6e9808d.py"
+      ]
+    ]
+  },
+  "heartbeat": "2025-03-23T00:51:29.979055",
+  "host": {
+    "ENV": {},
+    "cpu": "12th Gen Intel(R) Core(TM) i7-12700H",
+    "gpus": {
+      "driver_version": "550.120",
+      "gpus": [
+        {
+          "model": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+          "persistence_mode": false,
+          "total_memory": 8192
+        }
+      ]
+    },
+    "hostname": "zihao-Legion-Y9000P-IAH7H",
+    "os": [
+      "Linux",
+      "Linux-6.8.0-52-generic-x86_64-with-glibc2.35"
+    ],
+    "python_version": "3.10.15"
+  },
+  "meta": {
+    "command": "my_main",
+    "config_updates": {},
+    "named_configs": [],
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--id": null,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [],
+      "help": false,
+      "with": false
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2025-03-23T00:11:19.069860",
+  "status": "COMPLETED",
+  "stop_time": "2025-03-23T00:51:29.915727"
+}

@@ -1,0 +1,8 @@
+Please carefully analyze the information below and provide your evaluation result and improve suggestions.
+The training goal is: {training_goal}
+The number of trained agents is: {num_agents}
+We trained an RL policy using the provided reward function code.
+The reward function code is {reward_function}.
+This reward function can NOT be successfully executed, so the "Evaluation" result must be "No"
+Here's the Traceback message. Please output the evaluation result and improve suggestions:
+{content}

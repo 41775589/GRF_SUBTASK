@@ -1,0 +1,34 @@
+{
+  "component_stop_sprint_reward_mean": [
+    126.0
+  ],
+  "component_stop_sprint_reward_mean_T": [
+    1500
+  ],
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 612.1979998696595
+    }
+  ],
+  "return_mean_T": [
+    1500
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 120.13414438679904
+    }
+  ],
+  "return_std_T": [
+    1500
+  ],
+  "score_reward_mean": [
+    0.0
+  ],
+  "score_reward_mean_T": [
+    1500
+  ]
+}

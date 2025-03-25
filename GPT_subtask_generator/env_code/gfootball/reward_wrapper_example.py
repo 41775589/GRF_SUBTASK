@@ -6,8 +6,10 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         self._collected_checkpoints = {}
         self._num_checkpoints = 10
         self._checkpoint_reward = 0.1
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
 
     def reset(self):
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
         self._collected_checkpoints = {}
         return self.env.reset()
 
@@ -68,14 +70,14 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         return reward, components
 
     def step(self, action):
-        # Call the original step method
         observation, reward, done, info = self.env.step(action)
-        # Modify the reward using the reward() method
         reward, components = self.reward(reward)
-        # Add final reward to the info
         info["final_reward"] = sum(reward)
-
-        # Traverse the components dictionary and write each key-value pair into info['component_']
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        obs = self.env.unwrapped.observation()
+        self.sticky_actions_counter.fill(0)
+        for agent_obs in obs:
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                info[f"sticky_actions_{i}"] = action
         return observation, reward, done, info

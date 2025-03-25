@@ -1,6 +1,10 @@
-The training goal is: {task}
+Please carefully analyze the information below and provide your evaluation result and improve suggestions.
+The training goal is: {training_goal}
+The number of trained agents is: {num_agents}
 We trained an RL policy using the provided reward function code.
-The code is {reward_function}.
+The reward function code is {reward_function}.
+This reward function can be successfully executed.
 During training, at certain checkpoints, we tracked the mean values of the individual components in the reward function, the original scoring reward function, and the entire reward function.
+We also tracked the average number of times certain specific actions were executed by the agents.
 The tracked values and corresponding trained episodes number are listed below:
 {content}

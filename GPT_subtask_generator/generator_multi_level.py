@@ -28,6 +28,7 @@ sys.path.append(SRC_DIR)
 
 from run import *
 
+
 OpenAI.api_base = "https://api.ohmygpt.com"
 client = OpenAI(api_key="KEY")
 
@@ -537,9 +538,9 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
     code_output_tip_rewards = file_to_string(f'{prompt_dir}/{task_env}/code_output_tip_rewards.txt')
     rule_setting = file_to_string(f'{prompt_dir}/{task_env}/rule_setting.txt')
 
-    main_task = "learn to play a 5 vs 5 football game"
-    num_agents = 5
-    num_groups = 2
+    main_task = "learn to play a 11 vs 11 football game"
+    num_agents = 11
+    num_groups = 3
 
     initial_system_get_decomposition = initial_system_get_decomposition.format(rule_setting=rule_setting)
     initial_user_get_decomposition = initial_user_get_decomposition.format(main_task=main_task, num_agents=num_agents,
@@ -787,513 +788,513 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
         with open(f"{OUTPUT_DIR}/decomposition{response_id}.py", 'w') as file:
             file.writelines(str(task_tree) + '\n')
 
-#####################################################################################################################################
-
-        max_layer = max(task_tree.keys()) if task_tree else 0
-        max_reward_code_path_for_each_group = {}
-
-        # 从最大层向上遍历
-        for layer in range(max_layer, -1, -1):
-            print(f"Processing Layer {layer}...")
-            tasks = task_tree[layer]
-
-            # 分别训练两个子团队任务
-            # if use_doe, 每个子团队任务训练结束后的buffer要保存，用于训练 doe classifier
-
-            # 用于存储每个group最终选择的最佳奖励函数的路径，训练上层doe时读取对应路径的buffer使用
-
-            for task in tasks:
-                print(f"Processing Task {task['group_number']} from Layer {layer}")
-                group_id = task["group_number"] - 1
-                # Scenario generation
-                logging.info(
-                    f"Scenarios Generation: Generating 1 sample for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
-
-                cur_initial_system_scenarios = initial_system_scenarios.format(
-                    main_task_scenario=five_vs_five_code_string) + code_output_tip_scenarios + example_scenarios
-                cur_initial_user_scenarios = initial_user_scenarios.format(training_goal=task['training_goal'],
-                                                                           number_of_agents=task['number_of_agents'],
-                                                                           scenario_builder_code_string=scenario_builder_code_string)
-                current_tree = json.dumps(task_tree, indent=4)
-                cur_messages_s = copy.deepcopy(messages)
-                cur_messages_s.append({"role": "assistant", "content": f"Current entire task tree is:\n{current_tree}"})
-                cur_messages_s.append({"role": "system", "content": cur_initial_system_scenarios})
-                cur_messages_s.append({"role": "user", "content": cur_initial_user_scenarios})
-
-                response_scenario_cur = client.chat.completions.create(model=model,
-                                                                       messages=cur_messages_s,
-                                                                       temperature=temperature,
-                                                                       n=1)
-                reply_scenario = response_scenario_cur.choices[0].message.content
-
-                # 提取prompt和env代码，生成训练任务scenario
-
-                # # Regex patterns to extract python code enclosed in GPT response
-                # patterns = [
-                #     r'```python(.*?)```',
-                #     r'```(.*?)```',
-                #     r'"""(.*?)"""',
-                #     r'""(.*?)""',
-                #     r'"(.*?)"',
-                # ]
-                # for pattern in patterns:
-                #     scenario_code_string = re.search(pattern, reply_scenario, re.DOTALL)
-                #     if scenario_code_string is not None:
-                #         scenario_code_string = scenario_code_string.group(1).strip()
-                #         break
-                # scenario_code_string = reply_scenario if not scenario_code_string else scenario_code_string
-
-                # print("Scenario Code String 1:", scenario_code_string)
-                def extract_code_scenario(reply_scenario):
-                    # Regex patterns to extract python code enclosed in GPT response
-                    patterns = [
-                        r'```python(.*?)```',
-                        r'```(.*?)```',
-                        r'"""(.*?)"""',
-                        r'""(.*?)""',
-                        r'"(.*?)"',
-                    ]
-                    for pattern in patterns:
-                        scenario_code_string = re.search(pattern, reply_scenario, re.DOTALL)
-                        if scenario_code_string is not None:
-                            return scenario_code_string.group(1).strip()
-                    return reply_scenario
-
-                # # Remove unnecessary imports
-                # lines = scenario_code_string.split("\n")
-                # for i, line in enumerate(lines):
-                #     if line.strip().startswith("def "):
-                #         scenario_code_string = "\n".join(lines[i:])
-
-                # Retry until the scenario has two goal keepers
-                while True:
-                    reply_scenario = response_scenario_cur.choices[0].message.content
-                    scenario_code_string = extract_code_scenario(reply_scenario)
-
-                    # Remove unnecessary imports
-                    lines = scenario_code_string.split("\n")
-                    for i, line in enumerate(lines):
-                        if line.strip().startswith("def "):
-                            scenario_code_string = "\n".join(lines[i:])
-
-                    # Check for at least two occurrences of e_PlayerRole_GK
-                    if scenario_code_string.count("e_PlayerRole_GK") == 2 and "e_PlayerRole." not in scenario_code_string:
-                        break  # Satisfied condition, proceed to save the code
-                    else:
-                        print(f"Wrong Scenario Code with only one goal keeper or fully qualified names. Retrying...")
-                        # Re-generate response
-                        cur_messages_s.append({"role": "assistant",
-                                               "content": "Regenerate the scenario, ensuring that:"
-                                                          "1. Each team has **exactly one goalkeeper ('e_PlayerRole_GK')**."
-                                                          "2. Do **NOT** use fully qualified names (FQN) like 'e_PlayerRole.e_PlayerRole_GK'. Instead, use **direct values** (e.g., 'e_PlayerRole_GK', 'e_PlayerRole_CF')."})
-                        response_scenario_cur = client.chat.completions.create(model=model,
-                                                                               messages=cur_messages_s,
-                                                                               temperature=temperature,
-                                                                               n=1)
-
-                print("Scenario Code String 2:", scenario_code_string)
-
-                # Save the new environment code when the output contains valid code string!
-                with open(f"{MAP_DIR}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py", 'w') as file:
-                    file.writelines("from . import *" + '\n')
-                    file.writelines(scenario_code_string + '\n')
-
-                with open(f"{OUTPUT_DIR}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py", 'w') as file:
-                    file.writelines("from . import *" + '\n')
-                    file.writelines(scenario_code_string + '\n')
-
-                # Save the scenario in the GRF Env
-                with open(f"{GFOOTBALL_DIR}/scenarios/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py",
-                          'w') as file:
-                    file.writelines("from . import *" + '\n')
-                    file.writelines(scenario_code_string + '\n')
-
-                # 生成子任务的环境代码保存到py文件
-
-                # Reward generation and improving:
-                logging.info(
-                    f"Rewards Generation: Generating {n_reward} samples for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
-
-                curr_code_output_tip_rewards = code_output_tip_rewards.format(
-                    number_of_agents=task['number_of_agents'],
-                    example_of_o=example_of_o, reward_signature=reward_signature)
-                cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
-                cur_initial_user_rewards = initial_user_rewards.format(training_goal=task['training_goal'],
-                                                                       number_of_agents=task['number_of_agents'],
-                                                                       env_code=env_code, )
-
-                cur_messages_r = copy.deepcopy(messages)
-                cur_messages_r.append({"role": "assistant", "content": f"Current entire task tree is:\n{current_tree}"})
-                # cur_messages_r.append({"role": "assistant", "content": reply_scenario})
-                cur_messages_r.append({"role": "system", "content": cur_initial_system_rewards})
-                cur_messages_r.append({"role": "user", "content": cur_initial_user_rewards})
-
-                DUMMY_FAILURE = -10000.
-                max_scores = []
-                max_successes_reward_correlation = []
-                execute_rates = []
-                best_code_paths = []
-                max_score_overall = DUMMY_FAILURE
-                max_reward_code_path = None
-                max_reward_code_path_for_each_group[f'group{group_id}'] = None
-
-                # 尝试几次 reward 生成 batch，默认2
-                for iter in range(n_improve_iter):
-                    total_samples_r = 0
-                    responses_r = []
-                    chunk_size_r = n_reward
-
-                    # n reward 为 1
-
-                    while True:
-                        if total_samples_r >= n_reward:
-                            break
-                        for attempt in range(1000):
-                            print("ATTEMPT:", attempt)
-                            try:
-                                reply_rewards_cur = client.chat.completions.create(model=model,
-                                                                                   messages=cur_messages_r,
-                                                                                   temperature=temperature,
-                                                                                   n=chunk_size_r)
-                                total_samples_r += chunk_size
-                                break
-                            except Exception as e:
-                                if attempt >= 10:
-                                    chunk_size = max(int(chunk_size / 2), 1)
-                                    print("Current Chunk Size", chunk_size)
-                                logging.info(f"Attempt {attempt + 1} failed with error: {e}")
-                                time.sleep(1)
-                        if reply_rewards_cur is None:
-                            logging.info("Code terminated due to too many failed attempts!")
-                            exit()
-
-                        responses_r.extend(reply_rewards_cur.choices)
-                    # responses r是一个list，用于存储根据message r询问LLM得到的reward，这里只cue 1次
-
-                    ####################################
-                    code_runs = []
-                    rl_runs = []
-                    #####################################
-
-                    for response_r_id in range(n_reward):
-                        reply_reward = responses_r[response_r_id].message.content
-                        print("REPLY REWARD: ", reply_reward)
-                        print("REWARD TOKEN:", reply_rewards_cur.usage.prompt_tokens)
-                        # Regex patterns to extract python code enclosed in GPT response
-                        patterns = [
-                            r'```python(.*?)```',
-                            r'```(.*?)```',
-                            r'"""(.*?)"""',
-                            r'""(.*?)""',
-                            r'"(.*?)"',
-                        ]
-                        for pattern in patterns:
-                            reward_code_string = re.search(pattern, reply_reward, re.DOTALL)
-                            if reward_code_string is not None:
-                                reward_code_string = reward_code_string.group(1).strip()
-                                break
-                        reward_code_string = reply_reward if not reward_code_string else reward_code_string
-
-                        print("Reward Code String 1:", reward_code_string)
-
-                        # Remove unnecessary imports
-                        lines = reward_code_string.split("\n")
-                        for i, line in enumerate(lines):
-                            if line.strip().startswith("class "):
-                                reward_code_string = "\n".join(lines[i:])
-
-                        print("Reward Code String 2:", reward_code_string)
-
-                        code_runs.append(reward_code_string)
-
-                        # response id是分解几层，response r id是sample的reward function个数
-                        with open(
-                                f"{REWARD_DIR}/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
-                                'w') as file:
-                            file.writelines("import gym" + '\n')
-                            file.writelines("import numpy as np" + '\n')
-                            file.writelines(reward_code_string + '\n')
-
-                        with open(
-                                f"{OUTPUT_DIR}/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
-                                'w') as file:
-                            file.writelines("import gym" + '\n')
-                            file.writelines("import numpy as np" + '\n')
-                            file.writelines(reward_code_string + '\n')
-
-                        # Save the reward function in the GRF Env
-                        with open(
-                                f"{GFOOTBALL_DIR}/rewards/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
-                                'w') as file:
-                            file.writelines("import gym" + '\n')
-                            file.writelines("import numpy as np" + '\n')
-                            file.writelines(reward_code_string + '\n')
-
-
-                        # 到此为止是生成了 for group -> for n_prove 几个reward -> for reward id 第几个reward的train feedback
-
-                        ####################################################################################################################################################################################################
-                        # # Find the freest GPU to run GPU-accelerated RL
-                        # set_freest_gpu()
-
-                        # """
-                        # 这里alg_cfg需要根据分解的子任务，创建对应的doe_ia2c，也就是 doe_classifer_cfg/
-                        #     # 2s3z/3m
-                        #     role_ids:
-                        #         defence:  # classifier.role_list=[0,1,1,0,0]
-                        #             - 0 # agent id
-                        #         attack:
-                        #             - 2
-                        #             - 1
-                        # 在原始的doe代码中（目前版本），cfg文件表示的是两个子团队合并到一起时的任务分配列表
-                        # 即将defence和attack两个子团队合并到一起进行训练时的config设定
-
-                        # 而在每个子团队训练时，需要调用对应的子团队cfg，因此需要在创建子任务后生成各自的yaml文件
-                        # 比如one level分解为group 1和group2，就需要两个不同的cfg
-                        # 分别是 role_ids: defence: -0 和 role_ids: attack: -1
-
-                        # 当然如果group 1 & group 2已经是最小的子任务的话，那么就不要调用doe_ia2c，
-                        # 而是直接调用ia2c进行训练，并且在训练结束后存储各自的buffer.pt
-                        # ref src/run.py Line 150
-                        # 这个buffer pt会用于下次merge这两个子团队时train各自的doe classifier
-                        # 这部分有待一起讨论
-                        # """
-
-                        # 在这里控制是保存buffer还是load buffer，修改 src/main 中 run 的逻辑
-                        # 在单层分解中，为了简化过程，我们设定默认子任务训练都保存buffer
-                        # 在多层分解中，需要额外考虑save/load逻辑
-                        TIMEOUT = 30
-                        #如果是最底层，不用doe
-                        if layer == max_layer:
-                            # Create Task YAML files
-                            create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id, task['number_of_agents'],
-                                        task['group_number'] - 1, iter, suffix)
-                            create_train_cfg(CONFIG_ALGS_DIR, Time, alg_cfg, layer, response_id, response_r_id,
-                                             task['number_of_agents'], task['group_number'] - 1, iter)
-                            # Execute the python file with flags
-                            rl_filepath = f"{OUTPUT_DIR}/{task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.txt"
-                            with open(rl_filepath, 'w') as f:
-                                script_path = f'{SRC_DIR}/main.py'
-                                params = [
-                                    'python', '-u', script_path,
-                                    f'--config={alg_cfg}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}',
-                                    f'--env-config={task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}',
-                                ]
-                                process = subprocess.Popen(params, stdout=f, stderr=f)
-
-                                # 获取文件的初始修改时间
-                                while True:
-                                    initial_mtime = os.path.getmtime(rl_filepath)
-                                    initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
-                                    start_time = datetime.datetime.now()
-                                    delta_time = start_time - initial_mtime  # 时间差
-                                    delta_seconds = delta_time.total_seconds()  # 时间差转成秒
-                                    if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
-                                        print(
-                                            f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
-                                        process.kill()  # 终止子进程
-                                        break
-                                    # while process.poll() is None:  # 检查子进程是否还在运行
-                                    #     # 检查文件的最后修改时间
-                                    #     current_mtime = os.path.getmtime(rl_filepath)
-                                    #     # 如果文件超过了 1 分钟没有更新
-                                    #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
-                                    #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
-                                    #         process.terminate()  # 终止子进程
-                                    #         break
-                                    # 等待一段时间后再检查
-                                    time.sleep(1)
-
-                                process.wait()
-                            # Modified the check of successful training
-                            # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
-                            rl_runs.append(process)
-                        else:
-                            ###############Use doe for training##############
-                            use_doe = True
-                            create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id,
-                                        task['number_of_agents'],
-                                        task['group_number'] - 1, iter, suffix)
-                            child_tasks = get_child_tasks(task_tree, layer, group_id + 1)
-                            rl_runs = train_merge_team(child_tasks, use_doe, layer=layer, decompose_id=response_id,
-                                             group_id = group_id, iter_id = iter, sample_id = response_r_id,
-                                             buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/gfootball/{Time}',
-                                             max_reward_code_path_for_each_group=max_reward_code_path_for_each_group,
-                                             Time=Time, task_env=task_env, suffix=suffix, rl_runs = rl_runs)
-
-
-                    # 完成了reward次数的RL training，收集了所有的traj
-
-                    # Gather RL training results and construct reward reflection
-                    code_feedbacks = []
-                    contents = []
-                    # May add other metrics
-                    score_reward_mean = []
-                    code_paths = []
-
-                    # print("RRRRRRRRR",rl_runs)
-
-                    exec_success = False
-                    for response_r_id, (code_run, rl_run) in enumerate(zip(code_runs, rl_runs)):
-                        rl_run.communicate()
-                        rl_filepath = f"{OUTPUT_DIR}/{task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.txt"
-                        result_path = f'{SACRED_DIR}/{Time}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}/scoring, reward_layer0_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}/1'
-                        code_paths.append(
-                            f"reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py")
-                        try:
-                            with open(rl_filepath, 'r') as f:
-                                stdout_str = f.read()
-                        except:
-                            # content = execution_error_feedback.format(traceback_msg="Code Run cannot be executed due to function signature error! Please re-write an entirely new reward function!")
-                            content = execution_error_feedback.format(
-                                traceback_msg="Code Run cannot be executed because reward class is wrongly formatted! Please re-write an entirely new reward function!")
-                            content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
-                                                                      example_of_o=example_of_o,
-                                                                      reward_signature=reward_signature)
-                            contents.append(content)
-                            score_reward_mean.append(DUMMY_FAILURE)
-                            continue
-
-                        content = ''
-                        traceback_msg = filter_traceback(stdout_str)
-                        done_string = 'absl Dump "episode_done": count limit reached / disabled'
-                        num_done_string = stdout_str.count(done_string)
-
-                        if traceback_msg == '':
-                            if num_done_string < 6:
-                                print("Wrong scenario!")
-                                score_reward_mean.append(DUMMY_FAILURE)
-                                content += execution_error_feedback.format(
-                                    traceback_msg="Wrong Scenario without Goalkeeper")
-                            else:
-                                print("No errors in the reward function")
-                                # If RL execution has no error, provide policy statistics feedback
-                                exec_success = True
-
-                                # tensorboard_logdir = f"{TENSORBOARD_DIR}/{Time}/layer0_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}"
-                                # tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
-
-                                content += policy_feedback
-
-                                with open(f"{result_path}/metrics.json", "r") as file:
-                                    data = json.load(file)
-
-                                corresponding_episodes = data["episode"]['values']
-                                content += f"corresponding episodes: {corresponding_episodes[::10]} \n"
-
-                                component_values = {
-                                    key: value['values'] for key, value in data.items() if key.startswith('component')
-                                }
-                                for key, value in component_values.items():
-                                    value = value[::10]
-                                    content += f"{key}: {value} \n"
-
-                                score_reward_mean_values = data["score_reward_mean"]['values']
-                                # 获取最后10个值
-                                last_10_values = score_reward_mean_values[-10:]
-                                # 计算平均数
-                                average = sum(last_10_values) / len(last_10_values)
-                                score_reward_mean.append(average)
-
-                                content += f"score_reward_mean: {score_reward_mean_values[::10]} \n"
-
-                                final_reward_mean_values = data["final_reward_mean"]['values']
-                                content += f"final_reward_mean: {final_reward_mean_values[::10]} \n"
-
-                                # Here add metrics tracking
-                                # content += f"{metric_name}: {metric_cur}, Max: {metric_cur_max:.2f}, Mean: {metric_cur_mean:.2f}, Min: {metric_cur_min:.2f} \n"
-
-                                code_feedbacks.append(code_feedback)
-                                content += code_feedback
-                                # The token is too long for the message with Traceback (error reward functions). So only good reward has this
-                                content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
-                                                                          example_of_o=example_of_o,
-                                                                          reward_signature=reward_signature)
-                        else:
-                            print("Spotting errors in the reward function")
-                            # Otherwise, provide execution traceback error feedback
-                            score_reward_mean.append(DUMMY_FAILURE)
-                            content += execution_error_feedback.format(traceback_msg=traceback_msg)
-
-                        # The token is too long for the message with Traceback (error reward functions).
-                        # content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
-                        #                                           example_of_o=example_of_o,
-                        #                                           reward_signature=reward_signature)
-                        contents.append(content)
-
-                    # Repeat the iteration if all code generation failed
-                    if not exec_success and n_reward != 1:
-                        execute_rates.append(0.)
-                        max_scores.append(DUMMY_FAILURE)
-                        best_code_paths.append(None)
-                        logging.info(
-                            "All code generation failed! Repeat this iteration from the current message checkpoint!")
-                        continue
-
-                    # Select the best code sample based on the success rate
-                    # print("CCCCCCCCCCC",content)
-                    best_sample_idx = np.argmax(np.array(score_reward_mean))
-                    best_content = contents[best_sample_idx]
-
-                    max_score = score_reward_mean[best_sample_idx]
-                    # max_success_reward_correlation = reward_correlations[best_sample_idx]
-                    execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_reward
-
-                    # Update the best Eureka Output
-                    if max_score > max_score_overall:
-                        max_score_overall = max_score
-                        max_reward_code_path = code_paths[best_sample_idx]
-                        max_reward_code_path_for_each_group[f'group{group_id}'] = max_reward_code_path
-
-                    execute_rates.append(execute_rate)
-                    max_scores.append(max_score)
-                    best_code_paths.append(code_paths[best_sample_idx])
-
-                    logging.info(f"Iteration {iter}: Max Score: {max_score}, Execute Rate: {execute_rate}")
-                    logging.info(f"Iteration {iter}: Best Generation ID: {best_sample_idx}")
-                    logging.info(f"Iteration {iter}: GPT Output Content:\n" + responses_r[
-                        best_sample_idx].message.content + "\n")
-                    logging.info(f"Iteration {iter}: User Content:\n" + best_content + "\n")
-
-                    # Modify: check assistent contents
-                    if len(cur_messages_r) == 5:
-                        cur_messages_r += [
-                            {"role": "assistant", "content": responses_r[best_sample_idx].message.content}]
-                        cur_messages_r += [{"role": "user", "content": best_content}]
-                    else:
-                        assert len(cur_messages_r) == 7
-                        cur_messages_r[-2] = {"role": "assistant",
-                                              "content": responses_r[best_sample_idx].message.content}
-                        cur_messages_r[-1] = {"role": "user", "content": best_content}
-
-                if max_reward_code_path is None:
-                    logging.info("All iterations of code generation failed, aborting...")
-                    logging.info("Please double check the output env_iter*_response*.txt files for repeating errors!")
-                    exit()
-
-        # 完成了 所有子任务 reward 生成，开始train merge team
-        """
-        上面第一阶段子任务训练 alg_cfg 需要用 ia2c/ia2c_ns，不能用 doe 干扰RL训练
-        但是需要 save buffer 并得到 doe cls，然后在第二阶段 merge train 时 merge cls
-        这种写法是每个子任务自己的性能提升自己的表现，先用着，以后的研究中再考虑与merge后技能的表现
-        """
-
-        """To LZH
-        这里暂时采用的绝对路径 buffer_dir 其实就是一组分解plan中每个阶段的doe相关数据，
-        比如分解方案一，分解一层两队，
-        路径就是 results/buffer/grf/decomposition0+ layer0_group0_buffer.pt & layer0_group0_doe.pt & layer0_group1_doe.pt etc.
-        需要调整对应的命名方式，上面只是举例，
-
-        以及这里 decompose_id = 0 是按照第0个decompose方案的意思设计的，如果不对可以改，主要影响 yaml 文件命名
-        """
-        use_doe=True
-        print("Start merging and training on the target task")
-        rl_runs = train_merge_team(task_tree[0], use_doe, layer="target", decompose_id=response_id, group_id = "target", iter_id = "target",
-                                   sample_id = "target", buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task_env}/{Time}',
-                                   max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time,
-                                   task_env = task_env, suffix = suffix, rl_runs = [])
-
-    # 完成了所有方案 n decomposition plan 的任务生成，Execute the Main task using w/w. DOE:
+# #####################################################################################################################################
+#
+#         max_layer = max(task_tree.keys()) if task_tree else 0
+#         max_reward_code_path_for_each_group = {}
+#
+#         # 从最大层向上遍历
+#         for layer in range(max_layer, -1, -1):
+#             print(f"Processing Layer {layer}...")
+#             tasks = task_tree[layer]
+#
+#             # 分别训练两个子团队任务
+#             # if use_doe, 每个子团队任务训练结束后的buffer要保存，用于训练 doe classifier
+#
+#             # 用于存储每个group最终选择的最佳奖励函数的路径，训练上层doe时读取对应路径的buffer使用
+#
+#             for task in tasks:
+#                 print(f"Processing Task {task['group_number']} from Layer {layer}")
+#                 group_id = task["group_number"] - 1
+#                 # Scenario generation
+#                 logging.info(
+#                     f"Scenarios Generation: Generating 1 sample for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
+#
+#                 cur_initial_system_scenarios = initial_system_scenarios.format(
+#                     main_task_scenario=five_vs_five_code_string) + code_output_tip_scenarios + example_scenarios
+#                 cur_initial_user_scenarios = initial_user_scenarios.format(training_goal=task['training_goal'],
+#                                                                            number_of_agents=task['number_of_agents'],
+#                                                                            scenario_builder_code_string=scenario_builder_code_string)
+#                 current_tree = json.dumps(task_tree, indent=4)
+#                 cur_messages_s = copy.deepcopy(messages)
+#                 cur_messages_s.append({"role": "assistant", "content": f"Current entire task tree is:\n{current_tree}"})
+#                 cur_messages_s.append({"role": "system", "content": cur_initial_system_scenarios})
+#                 cur_messages_s.append({"role": "user", "content": cur_initial_user_scenarios})
+#
+#                 response_scenario_cur = client.chat.completions.create(model=model,
+#                                                                        messages=cur_messages_s,
+#                                                                        temperature=temperature,
+#                                                                        n=1)
+#                 reply_scenario = response_scenario_cur.choices[0].message.content
+#
+#                 # 提取prompt和env代码，生成训练任务scenario
+#
+#                 # # Regex patterns to extract python code enclosed in GPT response
+#                 # patterns = [
+#                 #     r'```python(.*?)```',
+#                 #     r'```(.*?)```',
+#                 #     r'"""(.*?)"""',
+#                 #     r'""(.*?)""',
+#                 #     r'"(.*?)"',
+#                 # ]
+#                 # for pattern in patterns:
+#                 #     scenario_code_string = re.search(pattern, reply_scenario, re.DOTALL)
+#                 #     if scenario_code_string is not None:
+#                 #         scenario_code_string = scenario_code_string.group(1).strip()
+#                 #         break
+#                 # scenario_code_string = reply_scenario if not scenario_code_string else scenario_code_string
+#
+#                 # print("Scenario Code String 1:", scenario_code_string)
+#                 def extract_code_scenario(reply_scenario):
+#                     # Regex patterns to extract python code enclosed in GPT response
+#                     patterns = [
+#                         r'```python(.*?)```',
+#                         r'```(.*?)```',
+#                         r'"""(.*?)"""',
+#                         r'""(.*?)""',
+#                         r'"(.*?)"',
+#                     ]
+#                     for pattern in patterns:
+#                         scenario_code_string = re.search(pattern, reply_scenario, re.DOTALL)
+#                         if scenario_code_string is not None:
+#                             return scenario_code_string.group(1).strip()
+#                     return reply_scenario
+#
+#                 # # Remove unnecessary imports
+#                 # lines = scenario_code_string.split("\n")
+#                 # for i, line in enumerate(lines):
+#                 #     if line.strip().startswith("def "):
+#                 #         scenario_code_string = "\n".join(lines[i:])
+#
+#                 # Retry until the scenario has two goal keepers
+#                 while True:
+#                     reply_scenario = response_scenario_cur.choices[0].message.content
+#                     scenario_code_string = extract_code_scenario(reply_scenario)
+#
+#                     # Remove unnecessary imports
+#                     lines = scenario_code_string.split("\n")
+#                     for i, line in enumerate(lines):
+#                         if line.strip().startswith("def "):
+#                             scenario_code_string = "\n".join(lines[i:])
+#
+#                     # Check for at least two occurrences of e_PlayerRole_GK
+#                     if scenario_code_string.count("e_PlayerRole_GK") == 2 and "e_PlayerRole." not in scenario_code_string:
+#                         break  # Satisfied condition, proceed to save the code
+#                     else:
+#                         print(f"Wrong Scenario Code with only one goal keeper or fully qualified names. Retrying...")
+#                         # Re-generate response
+#                         cur_messages_s.append({"role": "assistant",
+#                                                "content": "Regenerate the scenario, ensuring that:"
+#                                                           "1. Each team has **exactly one goalkeeper ('e_PlayerRole_GK')**."
+#                                                           "2. Do **NOT** use fully qualified names (FQN) like 'e_PlayerRole.e_PlayerRole_GK'. Instead, use **direct values** (e.g., 'e_PlayerRole_GK', 'e_PlayerRole_CF')."})
+#                         response_scenario_cur = client.chat.completions.create(model=model,
+#                                                                                messages=cur_messages_s,
+#                                                                                temperature=temperature,
+#                                                                                n=1)
+#
+#                 print("Scenario Code String 2:", scenario_code_string)
+#
+#                 # Save the new environment code when the output contains valid code string!
+#                 with open(f"{MAP_DIR}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py", 'w') as file:
+#                     file.writelines("from . import *" + '\n')
+#                     file.writelines(scenario_code_string + '\n')
+#
+#                 with open(f"{OUTPUT_DIR}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py", 'w') as file:
+#                     file.writelines("from . import *" + '\n')
+#                     file.writelines(scenario_code_string + '\n')
+#
+#                 # Save the scenario in the GRF Env
+#                 with open(f"{GFOOTBALL_DIR}/scenarios/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}.py",
+#                           'w') as file:
+#                     file.writelines("from . import *" + '\n')
+#                     file.writelines(scenario_code_string + '\n')
+#
+#                 # 生成子任务的环境代码保存到py文件
+#
+#                 # Reward generation and improving:
+#                 logging.info(
+#                     f"Rewards Generation: Generating {n_reward} samples for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
+#
+#                 curr_code_output_tip_rewards = code_output_tip_rewards.format(
+#                     number_of_agents=task['number_of_agents'],
+#                     example_of_o=example_of_o, reward_signature=reward_signature)
+#                 cur_initial_system_rewards = initial_system_rewards + example_rewards + curr_code_output_tip_rewards
+#                 cur_initial_user_rewards = initial_user_rewards.format(training_goal=task['training_goal'],
+#                                                                        number_of_agents=task['number_of_agents'],
+#                                                                        env_code=env_code, )
+#
+#                 cur_messages_r = copy.deepcopy(messages)
+#                 cur_messages_r.append({"role": "assistant", "content": f"Current entire task tree is:\n{current_tree}"})
+#                 # cur_messages_r.append({"role": "assistant", "content": reply_scenario})
+#                 cur_messages_r.append({"role": "system", "content": cur_initial_system_rewards})
+#                 cur_messages_r.append({"role": "user", "content": cur_initial_user_rewards})
+#
+#                 DUMMY_FAILURE = -10000.
+#                 max_scores = []
+#                 max_successes_reward_correlation = []
+#                 execute_rates = []
+#                 best_code_paths = []
+#                 max_score_overall = DUMMY_FAILURE
+#                 max_reward_code_path = None
+#                 max_reward_code_path_for_each_group[f'group{group_id}'] = None
+#
+#                 # 尝试几次 reward 生成 batch，默认2
+#                 for iter in range(n_improve_iter):
+#                     total_samples_r = 0
+#                     responses_r = []
+#                     chunk_size_r = n_reward
+#
+#                     # n reward 为 1
+#
+#                     while True:
+#                         if total_samples_r >= n_reward:
+#                             break
+#                         for attempt in range(1000):
+#                             print("ATTEMPT:", attempt)
+#                             try:
+#                                 reply_rewards_cur = client.chat.completions.create(model=model,
+#                                                                                    messages=cur_messages_r,
+#                                                                                    temperature=temperature,
+#                                                                                    n=chunk_size_r)
+#                                 total_samples_r += chunk_size
+#                                 break
+#                             except Exception as e:
+#                                 if attempt >= 10:
+#                                     chunk_size = max(int(chunk_size / 2), 1)
+#                                     print("Current Chunk Size", chunk_size)
+#                                 logging.info(f"Attempt {attempt + 1} failed with error: {e}")
+#                                 time.sleep(1)
+#                         if reply_rewards_cur is None:
+#                             logging.info("Code terminated due to too many failed attempts!")
+#                             exit()
+#
+#                         responses_r.extend(reply_rewards_cur.choices)
+#                     # responses r是一个list，用于存储根据message r询问LLM得到的reward，这里只cue 1次
+#
+#                     ####################################
+#                     code_runs = []
+#                     rl_runs = []
+#                     #####################################
+#
+#                     for response_r_id in range(n_reward):
+#                         reply_reward = responses_r[response_r_id].message.content
+#                         print("REPLY REWARD: ", reply_reward)
+#                         print("REWARD TOKEN:", reply_rewards_cur.usage.prompt_tokens)
+#                         # Regex patterns to extract python code enclosed in GPT response
+#                         patterns = [
+#                             r'```python(.*?)```',
+#                             r'```(.*?)```',
+#                             r'"""(.*?)"""',
+#                             r'""(.*?)""',
+#                             r'"(.*?)"',
+#                         ]
+#                         for pattern in patterns:
+#                             reward_code_string = re.search(pattern, reply_reward, re.DOTALL)
+#                             if reward_code_string is not None:
+#                                 reward_code_string = reward_code_string.group(1).strip()
+#                                 break
+#                         reward_code_string = reply_reward if not reward_code_string else reward_code_string
+#
+#                         print("Reward Code String 1:", reward_code_string)
+#
+#                         # Remove unnecessary imports
+#                         lines = reward_code_string.split("\n")
+#                         for i, line in enumerate(lines):
+#                             if line.strip().startswith("class "):
+#                                 reward_code_string = "\n".join(lines[i:])
+#
+#                         print("Reward Code String 2:", reward_code_string)
+#
+#                         code_runs.append(reward_code_string)
+#
+#                         # response id是分解几层，response r id是sample的reward function个数
+#                         with open(
+#                                 f"{REWARD_DIR}/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
+#                                 'w') as file:
+#                             file.writelines("import gym" + '\n')
+#                             file.writelines("import numpy as np" + '\n')
+#                             file.writelines(reward_code_string + '\n')
+#
+#                         with open(
+#                                 f"{OUTPUT_DIR}/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
+#                                 'w') as file:
+#                             file.writelines("import gym" + '\n')
+#                             file.writelines("import numpy as np" + '\n')
+#                             file.writelines(reward_code_string + '\n')
+#
+#                         # Save the reward function in the GRF Env
+#                         with open(
+#                                 f"{GFOOTBALL_DIR}/rewards/reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py",
+#                                 'w') as file:
+#                             file.writelines("import gym" + '\n')
+#                             file.writelines("import numpy as np" + '\n')
+#                             file.writelines(reward_code_string + '\n')
+#
+#
+#                         # 到此为止是生成了 for group -> for n_prove 几个reward -> for reward id 第几个reward的train feedback
+#
+#                         ####################################################################################################################################################################################################
+#                         # # Find the freest GPU to run GPU-accelerated RL
+#                         # set_freest_gpu()
+#
+#                         # """
+#                         # 这里alg_cfg需要根据分解的子任务，创建对应的doe_ia2c，也就是 doe_classifer_cfg/
+#                         #     # 2s3z/3m
+#                         #     role_ids:
+#                         #         defence:  # classifier.role_list=[0,1,1,0,0]
+#                         #             - 0 # agent id
+#                         #         attack:
+#                         #             - 2
+#                         #             - 1
+#                         # 在原始的doe代码中（目前版本），cfg文件表示的是两个子团队合并到一起时的任务分配列表
+#                         # 即将defence和attack两个子团队合并到一起进行训练时的config设定
+#
+#                         # 而在每个子团队训练时，需要调用对应的子团队cfg，因此需要在创建子任务后生成各自的yaml文件
+#                         # 比如one level分解为group 1和group2，就需要两个不同的cfg
+#                         # 分别是 role_ids: defence: -0 和 role_ids: attack: -1
+#
+#                         # 当然如果group 1 & group 2已经是最小的子任务的话，那么就不要调用doe_ia2c，
+#                         # 而是直接调用ia2c进行训练，并且在训练结束后存储各自的buffer.pt
+#                         # ref src/run.py Line 150
+#                         # 这个buffer pt会用于下次merge这两个子团队时train各自的doe classifier
+#                         # 这部分有待一起讨论
+#                         # """
+#
+#                         # 在这里控制是保存buffer还是load buffer，修改 src/main 中 run 的逻辑
+#                         # 在单层分解中，为了简化过程，我们设定默认子任务训练都保存buffer
+#                         # 在多层分解中，需要额外考虑save/load逻辑
+#                         TIMEOUT = 30
+#                         #如果是最底层，不用doe
+#                         if layer == max_layer:
+#                             # Create Task YAML files
+#                             create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id, task['number_of_agents'],
+#                                         task['group_number'] - 1, iter, suffix)
+#                             create_train_cfg(CONFIG_ALGS_DIR, Time, alg_cfg, layer, response_id, response_r_id,
+#                                              task['number_of_agents'], task['group_number'] - 1, iter)
+#                             # Execute the python file with flags
+#                             rl_filepath = f"{OUTPUT_DIR}/{task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.txt"
+#                             with open(rl_filepath, 'w') as f:
+#                                 script_path = f'{SRC_DIR}/main.py'
+#                                 params = [
+#                                     'python', '-u', script_path,
+#                                     f'--config={alg_cfg}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}',
+#                                     f'--env-config={task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}',
+#                                 ]
+#                                 process = subprocess.Popen(params, stdout=f, stderr=f)
+#
+#                                 # 获取文件的初始修改时间
+#                                 while True:
+#                                     initial_mtime = os.path.getmtime(rl_filepath)
+#                                     initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
+#                                     start_time = datetime.datetime.now()
+#                                     delta_time = start_time - initial_mtime  # 时间差
+#                                     delta_seconds = delta_time.total_seconds()  # 时间差转成秒
+#                                     if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
+#                                         print(
+#                                             f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
+#                                         process.kill()  # 终止子进程
+#                                         break
+#                                     # while process.poll() is None:  # 检查子进程是否还在运行
+#                                     #     # 检查文件的最后修改时间
+#                                     #     current_mtime = os.path.getmtime(rl_filepath)
+#                                     #     # 如果文件超过了 1 分钟没有更新
+#                                     #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
+#                                     #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
+#                                     #         process.terminate()  # 终止子进程
+#                                     #         break
+#                                     # 等待一段时间后再检查
+#                                     time.sleep(1)
+#
+#                                 process.wait()
+#                             # Modified the check of successful training
+#                             # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
+#                             rl_runs.append(process)
+#                         else:
+#                             ###############Use doe for training##############
+#                             use_doe = True
+#                             create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id,
+#                                         task['number_of_agents'],
+#                                         task['group_number'] - 1, iter, suffix)
+#                             child_tasks = get_child_tasks(task_tree, layer, group_id + 1)
+#                             rl_runs = train_merge_team(child_tasks, use_doe, layer=layer, decompose_id=response_id,
+#                                              group_id = group_id, iter_id = iter, sample_id = response_r_id,
+#                                              buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/gfootball/{Time}',
+#                                              max_reward_code_path_for_each_group=max_reward_code_path_for_each_group,
+#                                              Time=Time, task_env=task_env, suffix=suffix, rl_runs = rl_runs)
+#
+#
+#                     # 完成了reward次数的RL training，收集了所有的traj
+#
+#                     # Gather RL training results and construct reward reflection
+#                     code_feedbacks = []
+#                     contents = []
+#                     # May add other metrics
+#                     score_reward_mean = []
+#                     code_paths = []
+#
+#                     # print("RRRRRRRRR",rl_runs)
+#
+#                     exec_success = False
+#                     for response_r_id, (code_run, rl_run) in enumerate(zip(code_runs, rl_runs)):
+#                         rl_run.communicate()
+#                         rl_filepath = f"{OUTPUT_DIR}/{task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.txt"
+#                         result_path = f'{SACRED_DIR}/{Time}/scenario_layer{layer}_decomposition{response_id}_subtask{group_id}/scoring, reward_layer0_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}/1'
+#                         code_paths.append(
+#                             f"reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}.py")
+#                         try:
+#                             with open(rl_filepath, 'r') as f:
+#                                 stdout_str = f.read()
+#                         except:
+#                             # content = execution_error_feedback.format(traceback_msg="Code Run cannot be executed due to function signature error! Please re-write an entirely new reward function!")
+#                             content = execution_error_feedback.format(
+#                                 traceback_msg="Code Run cannot be executed because reward class is wrongly formatted! Please re-write an entirely new reward function!")
+#                             content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
+#                                                                       example_of_o=example_of_o,
+#                                                                       reward_signature=reward_signature)
+#                             contents.append(content)
+#                             score_reward_mean.append(DUMMY_FAILURE)
+#                             continue
+#
+#                         content = ''
+#                         traceback_msg = filter_traceback(stdout_str)
+#                         done_string = 'absl Dump "episode_done": count limit reached / disabled'
+#                         num_done_string = stdout_str.count(done_string)
+#
+#                         if traceback_msg == '':
+#                             if num_done_string < 6:
+#                                 print("Wrong scenario!")
+#                                 score_reward_mean.append(DUMMY_FAILURE)
+#                                 content += execution_error_feedback.format(
+#                                     traceback_msg="Wrong Scenario without Goalkeeper")
+#                             else:
+#                                 print("No errors in the reward function")
+#                                 # If RL execution has no error, provide policy statistics feedback
+#                                 exec_success = True
+#
+#                                 # tensorboard_logdir = f"{TENSORBOARD_DIR}/{Time}/layer0_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}"
+#                                 # tensorboard_logs = load_tensorboard_logs(tensorboard_logdir)
+#
+#                                 content += policy_feedback
+#
+#                                 with open(f"{result_path}/metrics.json", "r") as file:
+#                                     data = json.load(file)
+#
+#                                 corresponding_episodes = data["episode"]['values']
+#                                 content += f"corresponding episodes: {corresponding_episodes[::10]} \n"
+#
+#                                 component_values = {
+#                                     key: value['values'] for key, value in data.items() if key.startswith('component')
+#                                 }
+#                                 for key, value in component_values.items():
+#                                     value = value[::10]
+#                                     content += f"{key}: {value} \n"
+#
+#                                 score_reward_mean_values = data["score_reward_mean"]['values']
+#                                 # 获取最后10个值
+#                                 last_10_values = score_reward_mean_values[-10:]
+#                                 # 计算平均数
+#                                 average = sum(last_10_values) / len(last_10_values)
+#                                 score_reward_mean.append(average)
+#
+#                                 content += f"score_reward_mean: {score_reward_mean_values[::10]} \n"
+#
+#                                 final_reward_mean_values = data["final_reward_mean"]['values']
+#                                 content += f"final_reward_mean: {final_reward_mean_values[::10]} \n"
+#
+#                                 # Here add metrics tracking
+#                                 # content += f"{metric_name}: {metric_cur}, Max: {metric_cur_max:.2f}, Mean: {metric_cur_mean:.2f}, Min: {metric_cur_min:.2f} \n"
+#
+#                                 code_feedbacks.append(code_feedback)
+#                                 content += code_feedback
+#                                 # The token is too long for the message with Traceback (error reward functions). So only good reward has this
+#                                 content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
+#                                                                           example_of_o=example_of_o,
+#                                                                           reward_signature=reward_signature)
+#                         else:
+#                             print("Spotting errors in the reward function")
+#                             # Otherwise, provide execution traceback error feedback
+#                             score_reward_mean.append(DUMMY_FAILURE)
+#                             content += execution_error_feedback.format(traceback_msg=traceback_msg)
+#
+#                         # The token is too long for the message with Traceback (error reward functions).
+#                         # content += code_output_tip_rewards.format(number_of_agents=task['number_of_agents'],
+#                         #                                           example_of_o=example_of_o,
+#                         #                                           reward_signature=reward_signature)
+#                         contents.append(content)
+#
+#                     # Repeat the iteration if all code generation failed
+#                     if not exec_success and n_reward != 1:
+#                         execute_rates.append(0.)
+#                         max_scores.append(DUMMY_FAILURE)
+#                         best_code_paths.append(None)
+#                         logging.info(
+#                             "All code generation failed! Repeat this iteration from the current message checkpoint!")
+#                         continue
+#
+#                     # Select the best code sample based on the success rate
+#                     # print("CCCCCCCCCCC",content)
+#                     best_sample_idx = np.argmax(np.array(score_reward_mean))
+#                     best_content = contents[best_sample_idx]
+#
+#                     max_score = score_reward_mean[best_sample_idx]
+#                     # max_success_reward_correlation = reward_correlations[best_sample_idx]
+#                     execute_rate = np.sum(np.array(score_reward_mean) >= 0.) / n_reward
+#
+#                     # Update the best Eureka Output
+#                     if max_score > max_score_overall:
+#                         max_score_overall = max_score
+#                         max_reward_code_path = code_paths[best_sample_idx]
+#                         max_reward_code_path_for_each_group[f'group{group_id}'] = max_reward_code_path
+#
+#                     execute_rates.append(execute_rate)
+#                     max_scores.append(max_score)
+#                     best_code_paths.append(code_paths[best_sample_idx])
+#
+#                     logging.info(f"Iteration {iter}: Max Score: {max_score}, Execute Rate: {execute_rate}")
+#                     logging.info(f"Iteration {iter}: Best Generation ID: {best_sample_idx}")
+#                     logging.info(f"Iteration {iter}: GPT Output Content:\n" + responses_r[
+#                         best_sample_idx].message.content + "\n")
+#                     logging.info(f"Iteration {iter}: User Content:\n" + best_content + "\n")
+#
+#                     # Modify: check assistent contents
+#                     if len(cur_messages_r) == 5:
+#                         cur_messages_r += [
+#                             {"role": "assistant", "content": responses_r[best_sample_idx].message.content}]
+#                         cur_messages_r += [{"role": "user", "content": best_content}]
+#                     else:
+#                         assert len(cur_messages_r) == 7
+#                         cur_messages_r[-2] = {"role": "assistant",
+#                                               "content": responses_r[best_sample_idx].message.content}
+#                         cur_messages_r[-1] = {"role": "user", "content": best_content}
+#
+#                 if max_reward_code_path is None:
+#                     logging.info("All iterations of code generation failed, aborting...")
+#                     logging.info("Please double check the output env_iter*_response*.txt files for repeating errors!")
+#                     exit()
+#
+#         # 完成了 所有子任务 reward 生成，开始train merge team
+#         """
+#         上面第一阶段子任务训练 alg_cfg 需要用 ia2c/ia2c_ns，不能用 doe 干扰RL训练
+#         但是需要 save buffer 并得到 doe cls，然后在第二阶段 merge train 时 merge cls
+#         这种写法是每个子任务自己的性能提升自己的表现，先用着，以后的研究中再考虑与merge后技能的表现
+#         """
+#
+#         """To LZH
+#         这里暂时采用的绝对路径 buffer_dir 其实就是一组分解plan中每个阶段的doe相关数据，
+#         比如分解方案一，分解一层两队，
+#         路径就是 results/buffer/grf/decomposition0+ layer0_group0_buffer.pt & layer0_group0_doe.pt & layer0_group1_doe.pt etc.
+#         需要调整对应的命名方式，上面只是举例，
+#
+#         以及这里 decompose_id = 0 是按照第0个decompose方案的意思设计的，如果不对可以改，主要影响 yaml 文件命名
+#         """
+#         use_doe=True
+#         print("Start merging and training on the target task")
+#         rl_runs = train_merge_team(task_tree[0], use_doe, layer="target", decompose_id=response_id, group_id = "target", iter_id = "target",
+#                                    sample_id = "target", buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task_env}/{Time}',
+#                                    max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time,
+#                                    task_env = task_env, suffix = suffix, rl_runs = [])
+#
+#     # 完成了所有方案 n decomposition plan 的任务生成，Execute the Main task using w/w. DOE:
 
 
 

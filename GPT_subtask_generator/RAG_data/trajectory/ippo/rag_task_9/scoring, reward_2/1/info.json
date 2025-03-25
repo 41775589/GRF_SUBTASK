@@ -1,0 +1,32 @@
+{
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 21.212999491766094
+    }
+  ],
+  "return_mean_T": [
+    1500
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 3.9989999508128884
+    }
+  ],
+  "return_std_T": [
+    1500
+  ],
+  "sticky_actions_4_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.7
+    }
+  ],
+  "sticky_actions_4_mean_T": [
+    1500
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "final_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.494176"
+    ],
+    "values": [
+      0.0
+    ]
+  },
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.493699"
+    ],
+    "values": [
+      0.04500000067055225
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.494083"
+    ],
+    "values": [
+      0.015000000223517416
+    ]
+  },
+  "sticky_actions_2_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.494251"
+    ],
+    "values": [
+      0.0
+    ]
+  },
+  "sticky_actions_6_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.494319"
+    ],
+    "values": [
+      0.2
+    ]
+  },
+  "sticky_actions_9_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T03:36:50.494391"
+    ],
+    "values": [
+      0.1
+    ]
+  }
+}

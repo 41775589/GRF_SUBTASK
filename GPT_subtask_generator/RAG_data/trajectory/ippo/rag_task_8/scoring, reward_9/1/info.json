@@ -1,0 +1,78 @@
+{
+  "final_reward_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "final_reward_mean_T": [
+    1500
+  ],
+  "return_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": -0.2
+    }
+  ],
+  "return_mean_T": [
+    1500
+  ],
+  "return_std": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.6000000000000001
+    }
+  ],
+  "return_std_T": [
+    1500
+  ],
+  "score_reward_mean": [
+    0.0
+  ],
+  "score_reward_mean_T": [
+    1500
+  ],
+  "sticky_actions_0_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "sticky_actions_0_mean_T": [
+    1500
+  ],
+  "sticky_actions_1_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.0
+    }
+  ],
+  "sticky_actions_1_mean_T": [
+    1500
+  ],
+  "sticky_actions_5_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.1
+    }
+  ],
+  "sticky_actions_5_mean_T": [
+    1500
+  ],
+  "sticky_actions_8_mean": [
+    {
+      "dtype": "float64",
+      "py/object": "numpy.float64",
+      "value": 0.6
+    }
+  ],
+  "sticky_actions_8_mean_T": [
+    1500
+  ]
+}

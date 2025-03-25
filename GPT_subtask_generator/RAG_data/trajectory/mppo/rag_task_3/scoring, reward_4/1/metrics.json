@@ -1,0 +1,123 @@
+{
+  "component_shots_on_target_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.938059"
+    ],
+    "values": [
+      2.9
+    ]
+  },
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937649"
+    ],
+    "values": [
+      0.04193798797205091
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937815"
+    ],
+    "values": [
+      0.07381162594921678
+    ]
+  },
+  "sticky_actions_0_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.938039"
+    ],
+    "values": [
+      0.1
+    ]
+  },
+  "sticky_actions_1_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.938004"
+    ],
+    "values": [
+      0.2
+    ]
+  },
+  "sticky_actions_2_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937874"
+    ],
+    "values": [
+      0.0
+    ]
+  },
+  "sticky_actions_3_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937983"
+    ],
+    "values": [
+      0.2
+    ]
+  },
+  "sticky_actions_4_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937849"
+    ],
+    "values": [
+      0.0
+    ]
+  },
+  "sticky_actions_6_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.938022"
+    ],
+    "values": [
+      0.2
+    ]
+  },
+  "sticky_actions_7_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937895"
+    ],
+    "values": [
+      0.2
+    ]
+  },
+  "sticky_actions_8_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-23T22:52:02.937916"
+    ],
+    "values": [
+      0.4
+    ]
+  }
+}

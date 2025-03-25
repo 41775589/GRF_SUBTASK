@@ -1,0 +1,46 @@
+{
+  "component_agent_0_stamina_preservation_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-20T06:18:39.409106"
+    ],
+    "values": [
+      0.01
+    ]
+  },
+  "final_reward_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-20T06:18:39.409159"
+    ],
+    "values": [
+      0.010000000149011612
+    ]
+  },
+  "return_mean": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-20T06:18:39.408790"
+    ],
+    "values": [
+      1.1700000204145908
+    ]
+  },
+  "return_std": {
+    "steps": [
+      1500
+    ],
+    "timestamps": [
+      "2025-03-20T06:18:39.409035"
+    ],
+    "values": [
+      0.6573431389522228
+    ]
+  }
+}

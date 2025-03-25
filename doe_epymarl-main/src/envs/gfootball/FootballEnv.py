@@ -65,8 +65,14 @@ class GoogleFootballEnv(MultiAgentEnv):
         obs_space_low = self.env.observation_space.low[0]
         obs_space_high = self.env.observation_space.high[0]
 
+
         self.action_space = [gym.spaces.Discrete(
             self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
+        # if isinstance(self.env.action_space, gym.spaces.Discrete):  # 处理 num_agents=1 的情况
+        #     self.action_space = [gym.spaces.Discrete(self.env.action_space.n)]
+        # else:  # 处理 num_agents>1 的情况
+        #     self.action_space = [gym.spaces.Discrete(self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
+
         self.observation_space = [
             gym.spaces.Box(low=obs_space_low, high=obs_space_high, dtype=self.env.observation_space.dtype) for _ in range(self.n_agents)
         ]
