@@ -1,56 +1,53 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a specialized reward for executing high passes with precision."""
-    
+    """
+    A wrapper that adds a dense reward for specific high pass skill enhancements in Google Research Football environment.
+    This encourages agents to execute high passes efficiently under the designated circumstances to approach learning
+    trajectory control, power assessment, and situational application of high passes.
+    """
+
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        # Probable score impacts when a high pass is executed precisely
-        self.pass_success_threshold = 0.85  # assuming normalized distance measure
-        self.high_pass_reward = 0.5
+        self.pass_accuracy_threshold = 0.5  # Hypothetical threshold to consider a high pass 'accurate'
+        self.high_pass_reward = 0.3  # Reward for executing a precise high pass
+        self.last_high_pass_pos = None
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.last_high_pass_pos = None
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {}
-        return self.env.get_state(to_pickle)
+        state = self.env.get_state(to_pickle)
+        state['last_high_pass_pos'] = self.last_high_pass_pos
+        return state
 
     def set_state(self, state):
-        from_pickle = self.env.set_state(state)
-        # Load any necessary state here if required
-        return from_pickle
+        self.last_high_pass_pos = state.get('last_high_pass_pos', None)
+        self.env.set_state(state)
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy(),
-                      "precision_pass_reward": [0.0] * len(reward)}
+        components = {"base_score_reward": reward.copy(), "high_pass_reward": [0.0] * len(reward)}
 
-        if observation is None:
-            return reward, components
+        for rew_index, o in enumerate(observation):
+            if o['game_mode'] == 6:  # Assuming mode 6 is a high pass context
+                ball_pos = o['ball']
+                ball_direction = o['ball_direction']
+                
+                # Check if a high pass has been executed recently
+                if self.last_high_pass_pos is not None:
+                    distance_travelled = np.linalg.norm(self.last_high_pass_pos - ball_pos[:2])
+                    # Reward if the ball travels a distance greater than a threshold
+                    if distance_travelled > self.pass_accuracy_threshold:
+                        components['high_pass_reward'][rew_index] = self.high_pass_reward
+                        reward[rew_index] += components['high_pass_reward'][rew_index]
+                
+                # Update the last known high pass ball position
+                self.last_high_pass_pos = ball_pos[:2]
 
-        assert len(reward) == len(observation)
-        
-        for rew_index in range(len(reward)):
-            o = observation[rew_index]
-            # Assume that a strategy for executing high pass is implemented as a sticky action
-            current_action = o['sticky_actions'][9]  # example index for 'pass' action
-
-            # Calculate the efficiency of the pass
-            if current_action == 1:  # assuming '1' denotes the ongoing high pass action
-                ball_position = o['ball']  # ball position as [x, y, z]
-                goal_position = [1, 0, 0]  # hypothetical position of the goal
-
-                # Calculate Euclidean distance to the goal
-                distance = np.linalg.norm(np.array(ball_position) - np.array(goal_position))
-
-                # Check if the pass is precise and efficient
-                if distance < self.pass_success_threshold:
-                    components["precision_pass_reward"][rew_index] = self.high_pass_reward
-                    reward[rew_index] += components["precision_pass_reward"][rew_index]
-        
         return reward, components
 
     def step(self, action):
@@ -59,12 +56,9 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        
-        # Update sticky actions info
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
                 info[f"sticky_actions_{i}"] = action
-        
         return observation, reward, done, info

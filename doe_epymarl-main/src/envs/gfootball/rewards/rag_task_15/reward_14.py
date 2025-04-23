@@ -1,14 +1,18 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a dense reward for mastering long pass accuracy."""
-    
+    """
+    A wrapper that adds rewards based on the accuracy and distance of long passes
+    in the Google Research Football environment. This encourages mastering the 
+    technical and precision aspects of long passes under varying match conditions.
+    """
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        # Define the long pass range as distance between passer and receiver.
-        self.long_pass_minimum_distance = 0.5
-        self.long_pass_accuracy_reward = 0.5
+        
+        # Define thresholds for long pass detection
+        self.long_pass_min_distance = 0.3  # Minimum distance a ball must travel to be considered a long pass
+        self.accuracy_threshold = 0.1      # Maximum distance from a teammate to consider the pass successful
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
@@ -23,45 +27,58 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         return from_pickle
 
     def reward(self, reward):
-        # Getting underlying environment observation
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "long_pass_accuracy_reward": [0.0] * len(reward)}
-
+                      "long_pass_reward": [0.0] * len(reward)}
+        
         if observation is None:
             return reward, components
 
-        assert len(reward) == len(observation)
-
         for rew_index in range(len(reward)):
             o = observation[rew_index]
-            if 'ball_owned_team' in o and o['ball_owned_team'] == o['active']:
-                # Assuming player indices match their array positions
-                ball_owner_position = np.array(o['left_team'][o['active']])
-                # Iterate through all players to check for potential receivers
-                for idx, teammate_pos in enumerate(o['left_team']):
-                    if idx != o['active']:
-                        teammate_position = np.array(teammate_pos)
-                        distance = np.linalg.norm(teammate_position - ball_owner_position)
-                        if distance >= self.long_pass_minimum_distance:
-                            # Reward for executing a successful long pass
-                            components["long_pass_accuracy_reward"][rew_index] = self.long_pass_accuracy_reward
-                            break
+            
+            # Rewards are only computed when the ball is owned by the team
+            if o['ball_owned_team'] != o['team']:
+                continue
+            
+            ball_pos_before = o['ball']
+            ball_dir = o['ball_direction']
+            ball_pos_after = ball_pos_before + ball_dir
+            ball_travel_distance = np.linalg.norm(ball_dir[:2])
+            
+            # Check if pass is a long pass
+            if ball_travel_distance >= self.long_pass_min_distance:
+                # Determine closest teammate distance after pass
+                own_team = o['left_team'] if o['team'] == 0 else o['right_team']
+                distances = [
+                    np.linalg.norm(ball_pos_after[:2] - player_pos[:2])
+                    for player_pos in own_team
+                ]
+                min_distance = min(distances) if distances else float('inf')
+                
+                # If pass is close to any teammate, consider it accurate
+                if min_distance <= self.accuracy_threshold:
+                    components["long_pass_reward"][rew_index] = 1.0
+                    reward[rew_index] += components["long_pass_reward"][rew_index]
 
-        # Update rewards
-        reward = [base + comp for base, comp in zip(components["base_score_reward"], components["long_pass_accuracy_reward"])]
         return reward, components
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)
+        
+        # Apply the custom reward modifications
         reward, components = self.reward(reward)
+        
+        # Accumulate final reward and breakdown in info dictionary for analysis
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        # Update the sticky actions counter
+        
+        # Update sticky actions for transparency in debugging
         obs = self.env.unwrapped.observation()
-        self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
-                info[f"sticky_actions_{i}"] = action
+                self.sticky_actions_counter[i] = action 
+        
+        # Return the processed results
         return observation, reward, done, info

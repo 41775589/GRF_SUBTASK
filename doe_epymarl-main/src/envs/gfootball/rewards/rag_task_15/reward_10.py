@@ -1,59 +1,52 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a dense reward based on long pass accuracy and dynamics."""
-
+    """
+    A wrapper that adds a reward for successful long passes under different match conditions. 
+    Each such pass that meets criteria based on distance, accuracy, and game conditions grants extra rewards.
+    """
+    
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.pass_origin = None
-        self.long_pass_threshold = 0.3  # Threshold to determine a long pass based on distance
-        self.long_pass_reward = 0.5  # Extra reward for successful long pass
+        self.pass_length_threshold = 0.3
+        self.extra_reward_for_pass = 0.5
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.pass_origin = None
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {
-            'pass_origin': self.pass_origin
-        }
+        to_pickle['CheckpointRewardWrapper'] = "State_Custom_Backup"
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.pass_origin = from_pickle['CheckpointRewardWrapper']['pass_origin']
         return from_pickle
 
     def reward(self, reward):
+        components = {"base_score_reward": reward.copy(), "long_pass_reward": [0.0, 0.0]}
         observation = self.env.unwrapped.observation()
-        components = {
-            "base_score_reward": reward.copy(),
-            "long_pass_reward": [0.0] * len(reward)
-        }
+
         if observation is None:
             return reward, components
 
         for rew_index in range(len(reward)):
             o = observation[rew_index]
+            # Check if a pass was performed by checking ball ownership changes and long distance.
+            if ('ball_owned_team' in o and o['ball_owned_team'] == 1 and  # assuming control by the right team
+                    'ball_owned_player' in o and o['ball_owned_player'] != -1):  # the ball is owned by a player
+                current_ball_pos = o['ball'][:2]
+                prev_step_ball_pos = current_ball_pos - o['ball_direction'][:2]
+                dist = np.linalg.norm(current_ball_pos - prev_step_ball_pos)
 
-            if 'ball_owned_team' not in o or o['ball_owned_team'] != o['active']:
-                self.pass_origin = None
-                continue
-
-            if self.pass_origin is not None:
-                # Calculate the distance the ball has travelled since the long pass initiation
-                current_pos = o['ball'][:2]
-                distance = np.linalg.norm(np.array(self.pass_origin) - np.array(current_pos))
-                if distance > self.long_pass_threshold:
-                    components["long_pass_reward"][rew_index] = self.long_pass_reward
-                    reward[rew_index] += components["long_pass_reward"][rew_index]
-                    self.pass_origin = None  # Reset after rewarding to prevent multiple rewards for the same pass
-
-            # Check if a new pass is initiated
-            if 'ball_direction' in o and np.linalg.norm(o['ball_direction'][:2]) > 0:
-                self.pass_origin = o['ball'][:2]
+                # Rewarding only passes longer than a certain threshold, assumed no change of possession
+                if dist > self.pass_length_threshold:
+                    game_mode = o['game_mode']
+                    # Amplify reward if challenging conditions are met (e.g., during a free kick or in normal play)
+                    if game_mode in {0, 3}:  # 0 == Normal, 3 == FreeKick
+                        components['long_pass_reward'][rew_index] = self.extra_reward_for_pass
+                        reward[rew_index] += components['long_pass_reward'][rew_index]
 
         return reward, components
 
@@ -63,4 +56,9 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        obs = self.env.unwrapped.observation()
+        self.sticky_actions_counter.fill(0)
+        for agent_obs in obs:
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                info[f"sticky_actions_{i}"] = action
         return observation, reward, done, info

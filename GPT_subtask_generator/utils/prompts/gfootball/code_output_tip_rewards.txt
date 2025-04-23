@@ -16,3 +16,5 @@ Some important rules that you must follow:
     (4) Ensure that in the reward(self, reward) function, all return values directed by the if statements adhere to the output requirements, which include a reward list and a components dictionary.
     (5) Ensure that the "base_score_reward" is included in the reward components. This component represents the reward before it is wrapped, and you can use it in any way you prefer.
     (6) It's a good idea to introduce a coefficient parameter to each component, making it easier to adjust the reward function later
+    (7) **Important** Do NOT assume the meaning of anything in the observation (e.g. sticky actions, game mode). You've got everything in the explanation of the observation.
+    (8) **Important** Don NOT design reward functions solely based on actions, especially for those not included in the sticky actions. Instead, design them comprehensively by considering factors like position, outcome, and overall effectiveness.

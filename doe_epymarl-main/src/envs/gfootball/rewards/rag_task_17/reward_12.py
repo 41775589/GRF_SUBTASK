@@ -1,59 +1,66 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that rewards mastering High Pass and wide midfield responsibilities."""
+    """A wrapper that incentivizes agents to utilize wide midfield areas and execute high passes effectively."""
     
     def __init__(self, env):
-        gym.RewardWrapper.__init__(self, env)
+        super().__init__(env)
+        self._num_zonal_checks = 6  # Number of zones across the width
+        self._zone_rewards_collected = {}
+        self.horizontal_zones = np.linspace(-0.42, 0.42, self._num_zonal_checks + 1)
+        self.high_pass_action = 9  # Assuming that action 9 corresponds to the high pass
+        self.zoom_coefficient = 0.1  # Reward scaling for successful high pass in the zone
+
+        # Sticky actions tracking per zone
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        
-        # Number of lateral high-pass actions successfully completed
-        self.lateral_high_pass_counter = [0, 0]
 
     def reset(self):
+        self._zone_rewards_collected = {}
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.lateral_high_pass_counter = [0, 0]
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['lateral_high_pass_counter'] = self.lateral_high_pass_counter
+        to_pickle['CheckpointRewardWrapper'] = self._zone_rewards_collected
         return self.env.get_state(to_pickle)
-
+    
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.lateral_high_pass_counter = from_pickle['lateral_high_pass_counter']
+        self._zone_rewards_collected = from_pickle['CheckpointRewardWrapper']
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy(), "positioning_reward": [0.0] * len(reward)}
+        components = {"base_score_reward": reward.copy(),
+                      "zonal_positioning_reward": [0.0] * len(reward),
+                      "high_pass_reward": [0.0] * len(reward)}
         
         if observation is None:
             return reward, components
 
         assert len(reward) == len(observation)
-
-        for idx, obs in enumerate(observation):
-            is_left_side = obs['right_team'][obs['active']][0] < 0
-            player_with_ball = obs['ball_owned_player'] == obs['active']
-            is_high_pass = self.sticky_actions_counter[5] == 1  # assuming index 5 is the high pass
+        
+        for rew_index in range(len(reward)):
+            o = observation[rew_index]
             
-            # Encourage lateral passing and positioning on the wide areas of the field 
-            if player_with_ball and is_high_pass and abs(obs['right_team'][obs['active']][1]) > 0.2:
-                if is_left_side:
-                    # Player is on the left and passes to the right wide area
-                    if obs['ball'][0] - obs['right_team'][obs['active']][0] > 0.5:
-                        components["positioning_reward"][idx] = 0.3
-                        self.lateral_high_pass_counter[idx] += 1
-                else:
-                    # Player is on the right and passes to the left wide area
-                    if obs['ball'][0] - obs['right_team'][obs['active']][0] < -0.5:
-                        components["positioning_reward"][idx] = 0.3
-                        self.lateral_high_pass_counter[idx] += 1
-            
-            # Combine the rewards
-            reward[idx] = reward[idx] + components["positioning_reward"][idx]
+            active_player_position = o['left_team'][o['active']]
+            active_player_y = active_player_position[1]  # Y coordinate of the active player
 
+            # Check which zone the active player is in
+            zonal_index = np.digitize([active_player_y], self.horizontal_zones) - 1
+            
+            if zonal_index < 0 or zonal_index >= self._num_zonal_checks:
+                continue
+
+            # Check and reward if the player is performing a high pass in the zone
+            if o['sticky_actions'][self.high_pass_action]:
+                if zonal_index not in self._zone_rewards_collected:
+                    components["high_pass_reward"][rew_index] = self.zoom_coefficient
+                    reward[rew_index] += components["high_pass_reward"][rew_index]
+                    self._zone_rewards_collected[zonal_index] = True
+                
+            components["zonal_positioning_reward"][rew_index] = zonal_index / self._num_zonal_checks
+            reward[rew_index] += components["zonal_positioning_reward"][rew_index]
+        
         return reward, components
 
     def step(self, action):
@@ -62,10 +69,10 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, act in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += act
-                info[f"sticky_actions_{i}"] = act
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                info[f"sticky_actions_{i}"] = action
         return observation, reward, done, info

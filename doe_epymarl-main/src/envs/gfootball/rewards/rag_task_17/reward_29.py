@@ -1,60 +1,75 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a reward for wide midfield responsibilities."""
-
+    """
+    A wrapper that rewards agents for executing wide midfield roles effectively,
+    particularly focusing on high pass execution, correct positioning, and facilitating lateral play.
+    """
     def __init__(self, env):
-        super(CheckpointRewardWrapper, self).__init__(env)
+        gym.RewardWrapper.__init__(self, env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.midfield_mastered = np.zeros(2, dtype=bool)
+        # Define high pass and lateral movement thresholds
+        self.high_pass_action = 7  # Assuming index 7 is high pass in sticky actions
+        self.lateral_position_threshold = 0.3  # Y-position threshold for lateral expansion
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.midfield_mastered.fill(False)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {'midfield_mastered': self.midfield_mastered}
+        to_pickle['CheckpointRewardWrapper_counter'] = self.sticky_actions_counter.copy()
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.midfield_mastered = from_pickle['CheckpointRewardWrapper']['midfield_mastered']
+        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper_counter']
         return from_pickle
 
     def reward(self, reward):
-        observation = self.env.unwrapped.observation()
+        # Initial components for the calculation of the reward
         components = {"base_score_reward": reward.copy(),
-                      "midfield_mastering_reward": [0.0] * len(reward)}
+                      "high_pass_reward": [0.0, 0.0],
+                      "position_reward": [0.0, 0.0]}
+
+        observation = self.env.unwrapped.observation()
+
         if observation is None:
             return reward, components
 
-        # Iterate over each agent's observation
-        for i in range(len(observation)):
-            o = observation[i]
+        assert len(reward) == len(observation)
 
-            # Reward increased sideline activity and transitioning via high passes
-            if 'right_team_roles' in o and o['right_team_roles'][o['active']] in [6, 7]:  # 6 and 7 are LM and RM roles
-                sideline_position = abs(o['right_team'][o['active']][1])  # y position tells us how far from the center
-                high_pass_action = o['sticky_actions'][9]  # index 9 can be a high pass if configured correctly
+        for rew_index in range(len(reward)):
+            # Access each agent's observation
+            o = observation[rew_index]
 
-                # Check if player is near the sidelines and using high pass
-                if sideline_position > 0.3 and high_pass_action:
-                    components['midfield_mastering_reward'][i] = 1.0
-                    self.midfield_mastered[i] = True
-                    reward[i] += components['midfield_mastering_reward'][i]
+            # Reward for executing a high pass
+            if o['sticky_actions'][self.high_pass_action]:
+                components["high_pass_reward"][rew_index] = 0.5  # Assuming a high value for successful execution
 
+            # Reward based on lateral positioning to promote field expansion
+            player_y_position = o['left_team'][o['active']][1]  # Based on active player's Y position
+            if abs(player_y_position) > self.lateral_position_threshold:
+                components["position_reward"][rew_index] = 0.3  # Reward for good lateral positioning
+
+            # Summarize all components to obtain the final reward for this step
+            reward[rew_index] += (components["high_pass_reward"][rew_index] +
+                                  components["position_reward"][rew_index])
+        
         return reward, components
 
     def step(self, action):
+        # Get the outputs from the original environment's step function
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
-        info['final_reward'] = sum(reward)
+        
+        # Add modified reward to info for monitoring
+        info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        obs = self.env.unwrapped.observation()
+
+        # Update sticky actions counter for observation
         self.sticky_actions_counter.fill(0)
-        for agent_obs in obs:
+        for agent_obs in observation:
             for i, action in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += action
+                info[f"sticky_actions_{i}"] = action
         return observation, reward, done, info

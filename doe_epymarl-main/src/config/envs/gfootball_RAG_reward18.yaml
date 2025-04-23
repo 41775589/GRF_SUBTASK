@@ -1,7 +1,7 @@
 env: gfootball
 env_args:
   map_name: 5_vs_5
-  num_agents: 2
+  num_agents: 3
   representation: simple115
   rewards: scoring, reward_18
   time_limit: 150

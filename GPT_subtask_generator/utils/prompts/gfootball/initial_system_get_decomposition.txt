@@ -3,6 +3,7 @@ The environment you are using is Google Research Football, and the main task of 
 The football game rules are: {rule_setting}.
 You are trying to divide all agents in to a given number of groups and design a subtask curriculum for each group, in order to learn the main task better.
 Your goal is to decompose the main task into subtasks and assign one subtask to each group, including details of：number of agents in this group, the subtask training goal of this group.
+Please ensure that the Number of agents in each subtask is at least 2.
 You must respond in a specific format. Please answer in the following format: \n**Analyse:**\n**Group i:**\n**Number of agents:**\n**Training goal:**\n
 For example,for the main task of 5 vs 5 football game setting,you should train the 5 agents of one side. The output you give could be:
 

@@ -2,18 +2,21 @@ import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
     """
-    A wrapper that adds a dense reward for technical aspects and accuracy of long passes.
+    A wrapper that adds a dense reward for mastering the technical aspects and precision of long passes.
     """
 
     def __init__(self, env):
         super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self._num_checkpoints = 5
-        self._checkpoint_reward = 0.2
+        
+        # Define checkpoints based on ball travel distance
+        # Define checkpoint rewards and distance thresholds for long passes.
+        self.long_pass_thresholds = np.linspace(0.2, 0.9, 5)  # Progressive thresholds for longer passes
+        self.long_pass_rewards = np.linspace(0.1, 0.5, 5)     # Progressive rewards for each threshold
 
-    def reset(self):
+    def reset(self, **kwargs):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        return self.env.reset()
+        return self.env.reset(**kwargs)
 
     def get_state(self, to_pickle):
         to_pickle['CheckpointRewardWrapper'] = {}
@@ -26,17 +29,31 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "long_pass_accuracy": [0.0] * len(reward)}
+                      "long_pass_reward": [0.0, 0.0]}
 
-        for rew_index in range(len(reward)):
-            o = observation[rew_index]
-            if o['game_mode'] in {0, 2, 3, 4, 5, 6} and o['ball_owned_team'] == 0:
-                dist = np.linalg.norm(o['ball_direction'][:2]) # Considering only x and y
-                # Reward calculated based on distance covering, assuming long passes > 0.5 in the normalized field
-                if dist > 0.5:
-                    components["long_pass_accuracy"][rew_index] = self._checkpoint_reward
-                    reward[rew_index] += components["long_pass_accuracy"][rew_index]
+        if observation is None:
+            return reward, components
+
+        for agent_idx in range(len(reward)):
+            # Extract relevant information for agent
+            o = observation[agent_idx]
+            ball_pos_last = o['ball']
+            ball_direction = o['ball_direction']
+
+            # We assume ball_direction gives the movement of the ball in the last step
+            # Calculate the distance the ball traveled in the last action
+            distance_traveled = np.linalg.norm(ball_direction[:2])  # Ignore z-axis
+
+            # Check if the pass was long enough to get a reward
+            for i, threshold in enumerate(self.long_pass_thresholds):
+                if distance_traveled >= threshold:
+                    # Reward only the best long pass achieved
+                    components["long_pass_reward"][agent_idx] = max(components["long_pass_reward"][agent_idx],
+                                                                    self.long_pass_rewards[i])
         
+        # Update reward with additional long pass rewards
+        reward = [base + bonus for base, bonus in zip(reward, components['long_pass_reward'])]
+
         return reward, components
 
     def step(self, action):
@@ -45,9 +62,10 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, action in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += action
+            for idx, action in enumerate(agent_obs['sticky_actions']):
+                info[f"sticky_actions_{idx}"] = action
         return observation, reward, done, info

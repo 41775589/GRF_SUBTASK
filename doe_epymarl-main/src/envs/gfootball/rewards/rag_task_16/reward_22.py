@@ -1,62 +1,63 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a precision pass reward focused on executing high passes."""
+    """
+    A wrapper that incentivizes learning high passes with precision.
+    Rewards are given based on trajectory control, power assessment, and
+    appropriate situational usage of high passes.
+    """
 
     def __init__(self, env):
-        gym.RewardWrapper.__init__(self, env)
+        super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.high_pass_score_reward = 0.2  # Reward for executing a high pass
-        self.pass_completion_bonus = 0.1   # Extra reward for completing the pass
+        self.high_pass_reward = 0.2  # Reward magnitude for executing a high pass
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter
+        to_pickle['CheckpointRewardWrapper'] = {
+            'sticky_actions_counter': self.sticky_actions_counter
+        }
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = from_pickle.get('sticky_actions_counter', np.zeros(10, dtype=int))
+        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']['sticky_actions_counter']
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy(),
-                      "precision_pass_reward": [0.0] * len(reward)}
+        components = {
+            "base_score_reward": reward.copy(),  # base rewards from the original environment
+            "high_pass_reward": [0.0, 0.0]  # initially no high pass rewards
+        }
 
         if observation is None:
             return reward, components
 
-        for rew_index in range(len(reward)):
-            o = observation[rew_index]
-            
-            # Dynamic reward for managing a high pass:
-            if 'game_mode' in o and o['game_mode'] == 6:  # Assuming game_mode 6 relates to high passes
-                components["precision_pass_reward"][rew_index] += self.high_pass_score_reward
+        assert len(reward) == len(observation)
 
-                # Additional bonus for completing the high pass:
-                if 'ball_owned_player' in o and o['ball_owned_player'] == o['designated'] and \
-                   o['ball_owned_team'] == rew_index % 2:
-                    components["precision_pass_reward"][rew_index] += self.pass_completion_bonus
-
-            # Updating the actual reward with the added component
-            reward[rew_index] += components["precision_pass_reward"][rew_index]
+        # Calculate reward components based on the behavior
+        for rew_index, o in enumerate(observation):
+            # Check for high passes: represented by ball's movement in the z-direction
+            if o.get('ball_direction', [0, 0, 0])[2] > 0.05:
+                # Additional checks:
+                # - Ball should be owned by the same team
+                # - Ensure the ball's y movement is minimal compared to its z direction
+                if (o['ball_owned_team'] == 0 and
+                    abs(o['ball_direction'][1]) < abs(o['ball_direction'][2])):
+                    # Apply high pass reward based on z-direction velocity further normalized by distance to teammates
+                    components["high_pass_reward"][rew_index] = self.high_pass_reward * min(1, o['ball_direction'][2] / 0.1)
+                    reward[rew_index] += components["high_pass_reward"][rew_index]
 
         return reward, components
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
-        info["final_reward"] = sum(reward)
+        info["final_reward"] = sum(reward)  # Total reward for logging
         for key, value in components.items():
-            info[f"component_{key}"] = sum(value)
-        obs = self.env.unwrapped.observation()
-        self.sticky_actions_counter.fill(0)
-        for agent_obs in obs:
-            for i, action in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += action
-                info[f"sticky_actions_{i}"] = self.sticky_actions_counter[i]
+            info[f"component_{key}"] = sum(value)  # Logging individual components
         return observation, reward, done, info

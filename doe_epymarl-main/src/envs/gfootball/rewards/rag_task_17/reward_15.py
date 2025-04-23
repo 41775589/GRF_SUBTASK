@@ -1,70 +1,68 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds rewards based on wide midfield responsibilities, focusing on high passes and wide positioning to stretch the defense."""
-
+    """
+    A wrapper that enhances the reward function to focus on mastering High Pass 
+    and positioning, particularly for wide midfield players, to expand the field of play 
+    and support lateral transitions.
+    """
     def __init__(self, env):
-        super().__init__(env)
+        super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        # Variables for handling high passes and position tracking
-        self.high_pass_reward = 0.05
-        self.positioning_reward = 0.02
-        self.wide_flank_position_threshold = 0.7  # Position threshold to be considered wide on the y-axis
 
     def reset(self):
-        """ Resets the sticky action counter on environment reset. """
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        """ State retrieval functionality to handle wrapper's state data. """
-        to_pickle['CheckpointRewardWrapper'] = self.sticky_actions_counter.tolist()
+        to_pickle['CheckpointRewardWrapper'] = {}
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
-        """ Restores state data for the environment and this wrapper. """
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = np.array(from_pickle['CheckpointRewardWrapper'], dtype=int)
         return from_pickle
 
     def reward(self, reward):
-        """
-        Adjusts the reward based on midfield wide opener responsibilities.
-        Adds bonus rewards for effective high passes, positioning on the flank, and supporting lateral transitions.
-        """
-        observation = self.env.unwrapped.observation()
+        # Initialize the reward components
         components = {"base_score_reward": reward.copy(),
-                      "high_pass_reward": [0.0] * len(reward),
-                      "positioning_reward": [0.0] * len(reward)}
+                      "positional_expansion_reward": [0.0] * len(reward),
+                      "high_pass_execution_reward": [0.0] * len(reward)}
 
-        for idx, (o, rew) in enumerate(zip(observation, reward)):
-            # Check for high pass action
-            if o['sticky_actions'][9]:  # Assuming index 9 is for high pass action
-                components["high_pass_reward"][idx] = self.high_pass_reward
-                reward[idx] += components["high_pass_reward"][idx]
+        observation = self.env.unwrapped.observation()
+        if observation is None:
+            return reward, components
 
-            # Reward for positioning on the right or left flank
-            if abs(o['right_team'][idx][1]) >= self.wide_flank_position_threshold or \
-               abs(o['left_team'][idx][1]) >= self.wide_flank_position_threshold:
-                components["positioning_reward"][idx] = self.positioning_reward
-                reward[idx] += components["positioning_reward"][idx]
+        assert len(reward) == len(observation)
+
+        for rew_index in range(len(reward)):
+            o = observation[rew_index]
+            player_position = o['left_team'] if o['active'] < len(o['left_team']) else o['right_team'][o['active'] - len(o['left_team'])]
+
+            # Reward wide midfielders for their lateral movement
+            if o['left_team_roles'][o['active']] == 6 or o['right_team_roles'][o['active']] == 7:  # Assuming roles 6 and 7 indicate wide midfield roles
+                # Encourage using the full width of the pitch
+                width_position = abs(player_position[1])  # y-coordinate
+                components['positional_expansion_reward'][rew_index] = 0.1 * width_position
+            
+            # Reward execution of high passes
+            if o['game_mode'] == 5 and o['sticky_actions'][9] == 1:  # Assuming index 9 indicates a high pass action
+                components['high_pass_execution_reward'][rew_index] = 0.5
+            
+            # Aggregate the rewards
+            reward[rew_index] += (components['positional_expansion_reward'][rew_index] +
+                                  components['high_pass_execution_reward'][rew_index])
 
         return reward, components
 
     def step(self, action):
-        """
-        Obtain observations and rewards from environment, apply reward modifications, and provide agent information.
-        """
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
-        info["final_reward"] = sum(reward)
+        info['final_reward'] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, action_active in enumerate(agent_obs['sticky_actions']):
-                if action_active:
-                    self.sticky_actions_counter[i] += 1
-                    info[f"sticky_actions_{i}"] = action_active
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                self.sticky_actions_counter[i] = action
         return observation, reward, done, info

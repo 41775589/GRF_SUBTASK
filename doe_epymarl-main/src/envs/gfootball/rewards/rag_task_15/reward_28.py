@@ -1,61 +1,78 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a reward for mastering long passes."""
-
+    """
+    A wrapper that focuses on rewarding accurate long passes in different game conditions.
+    The task includes understanding and mastering the precision of long passes under varying match conditions.
+    """
     def __init__(self, env):
-        gym.RewardWrapper.__init__(self, env)
-        self.pass_thresholds = np.linspace(0.2, 0.8, num=4)  # Thresholds for ball travel to consider a long pass
-        self.pass_reward = 0.5  # Reward for achieving each long pass tier
-        self.long_pass_counter = 0  # To keep track of how many different pass thresholds were reached
-        self.sticky_actions_counter = np.zeros(10, dtype=int)  # Track sticky actions
+        super().__init__(env)
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.pass_length_threshold = 0.5  # Define a threshold for what is considered a 'long pass'
+        self.pass_accuracy_reward = 0.5  # Reward for making a precise pass
+        self.observed_passes = {}  # Store observations of passes to check changes
 
     def reset(self):
-        self.long_pass_counter = 0
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.observed_passes.clear()
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['long_pass_counter'] = self.long_pass_counter
+        to_pickle['CheckpointRewardWrapper'] = self.observed_passes
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.long_pass_counter = from_pickle['long_pass_counter']
+        self.observed_passes = from_pickle['CheckpointRewardWrapper']
+        self.reset()
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
                       "long_pass_reward": [0.0] * len(reward)}
-
         if observation is None:
             return reward, components
 
+        assert len(reward) == len(observation)
+
         for rew_index in range(len(reward)):
             o = observation[rew_index]
-            current_pass_length = np.linalg.norm(o['ball_direction'][:2])
+            components["base_score_reward"][rew_index] = reward[rew_index]
 
-            # Calculate the accumulated long pass reward based on ball direction length
-            for threshold in self.pass_thresholds:
-                if current_pass_length > threshold:
-                    if self.long_pass_counter < len(self.pass_thresholds):
-                        components["long_pass_reward"][rew_index] += self.pass_reward
-                        self.long_pass_counter += 1
+            if not self.observed_passes.get(rew_index):
+                self.observed_passes[rew_index] = {'previous_ball_position': None}
+            
+            current_ball_position = o['ball'][:2]  # Taking only x, y for simplicity
+            previous_ball_position = self.observed_passes[rew_index]['previous_ball_position']
+            
+            if previous_ball_position and (o['ball_owned_team'] == 0 or o['ball_owned_team'] == 1):
+                distance = np.linalg.norm(np.array(previous_ball_position) - np.array(current_ball_position))
+                # Check if the ball was passed long distance and owned by the same team
+                if distance > self.pass_length_threshold and o['ball_owned_player'] != -1:
+                    components['long_pass_reward'][rew_index] = self.pass_accuracy_reward
+                    reward[rew_index] += components['long_pass_reward'][rew_index]
+                    
+            # Update the ball position for next step calculation
+            self.observed_passes[rew_index]['previous_ball_position'] = current_ball_position
 
-        # Sum up the base and long pass rewards
-        total_reward = [sum(x) for x in zip(reward, components["long_pass_reward"])]
-        return total_reward, components
+        return reward, components
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
+
+        # Update reward info for monitoring
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        
+        # Update sticky actions count
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
+                self.sticky_actions_counter[i] += action
                 info[f"sticky_actions_{i}"] = action
+
         return observation, reward, done, info

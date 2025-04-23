@@ -1,31 +1,32 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """Wrapper that adds a dense reward tailored for practicing high passes with precision."""
+    """A wrapper that rewards technical skills for executing high passes with precision in football."""
 
     def __init__(self, env):
-        super().__init__(env)
-        # Parameters defining the rewards for high passes
-        self.ball_height_threshold = 0.15  # Threshold for the ball height to be considered 'high'
-        self.precision_multiplier = 5  # Multiplier for precision of the landing of the pass near the teammate
+        super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        # Define some arbitrary height as 'high' pass (for example, z>0.2 in ball coordinate)
+        self.high_pass_height_threshold = 0.2
+        self.high_pass_skill_reward = 0.5
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {}
+        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle['sticky_actions_counter']
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "high_pass_reward": [0.0] * len(reward)}
+                      "high_pass_skill_reward": [0.0] * len(reward)}
 
         if observation is None:
             return reward, components
@@ -34,23 +35,18 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
 
         for rew_index in range(len(reward)):
             o = observation[rew_index]
-            # Reward for high ball trajectories
-            if o['ball'][2] >= self.ball_height_threshold:
-                # Identify the target player to be rewarded, typically the teammate in right position.
-                target_player_x, target_player_y = self.identify_target_player_position(o)
 
-                # Calculate the distance to the targeted position to determine precision
-                precision = np.sqrt((o['ball'][0] - target_player_x) ** 2 + (o['ball'][1] - target_player_y) ** 2)
-                precision_reward = max(0, self.precision_multiplier * (1 - precision))
+            height_of_ball_pass = o['ball'][2]
+            game_mode = o['game_mode']
 
-                components["high_pass_reward"][rew_index] = precision_reward
-                reward[rew_index] += precision_reward
+            # Reward high passes in relevant game modes
+            if height_of_ball_pass > self.high_pass_height_threshold:
+                # Focus on game modes where high passes are typical and useful
+                if game_mode in [0, 1, 2, 3, 5]:  # Normal play, kick off, goal kick, free kick, throw in
+                    components["high_pass_skill_reward"][rew_index] = self.high_pass_skill_reward
+                    reward[rew_index] += components["high_pass_skill_reward"][rew_index]
 
         return reward, components
-
-    def identify_target_player_position(self, observation):
-        # Dummy function: replace it with actual logic to find the target teammate's position
-        return 0.5, 0  # Assume an arbitrary position in this example
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)

@@ -1,65 +1,64 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that rewards precise high kicks."""
+    """A wrapper that emphasizes the training of high passes in football by adding a reward based on the pass precision and effectiveness."""
 
     def __init__(self, env):
         super().__init__(env)
-        self.reset()
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.pass_accuracy_threshold = 0.3  # Hypothetical threshold for considering pass as accurate
+        self.high_pass_reward_coefficient = 2.0
 
     def reset(self):
-        """Reset the high kick positions tracker."""
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        """Store checkpoint wrapper state in a picklable format."""
+        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter.copy()
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
-        """Restore checkpoint wrapper state from a picklable format."""
-        return self.env.set_state(state)
+        from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle.get('sticky_actions_counter', np.zeros(10, dtype=int))
+        return from_pickle
 
     def reward(self, reward):
-        """
-        Reward agents for executing skillful high kicks (passes) under various conditions,
-        with additional reward components for trajectory control and power assessment.
-        """
         observation = self.env.unwrapped.observation()
-        new_rewards = reward.copy()
-        reward_components = {"base_score_reward": reward, "high_kick_reward": [0.0] * len(reward)}
-
+        components = {
+            "base_score_reward": reward.copy(),
+            "high_pass_reward": [0.0] * len(reward)
+        }
+        
         if observation is None:
-            return reward, reward_components
+            return reward, components
 
         for i in range(len(reward)):
-            player_obs = observation[i]
-            
-            # Check if the player performed a high pass using 'ball_direction' and 'ball_rotation' data
-            if player_obs['ball_owned_team'] == 0 and player_obs['ball'][2] > 0.15:
-                # Assuming ball[2] represents height and a height greater than 0.15 is considered high
-                ball_direction = player_obs['ball_direction']
-                ball_speed_vertical = ball_direction[2]
-                
-                # High vertical velocity indicates a strong kick aimed upwards
-                if ball_speed_vertical > 0.1:
-                    # Award players for effective control (higher vertical velocity of the ball)
-                    reward_component = 0.2 * ball_speed_vertical
-                    new_rewards[i] += reward_component
-                    reward_components["high_kick_reward"][i] = reward_component
-                
-                # Additional reward if the ball is moving towards an advantageous position
-                if player_obs['ball'][0] > 0.8:  # more towards the opponent's goal
-                    new_rewards[i] += 0.1
-                    reward_components["high_kick_reward"][i] += 0.1
+            obs = observation[i]
+            ball = obs['ball']
+            ball_direction = obs['ball_direction']
+            active_player_idx = obs['active']
 
-        return new_rewards, reward_components
+            # Check for high trajectory and correct direction (towards teammates on the front)
+            if ball[2] > self.pass_accuracy_threshold and obs['ball_owned_team'] == 0 and obs['ball_owned_player'] == active_player_idx:
+                dist = np.linalg.norm(ball[:2] - obs['right_team'][active_player_idx][:2])
+                if dist > 0.3:  # Minimum distance for a meaningful high pass
+                    components["high_pass_reward"][i] = self.high_pass_reward_coefficient
+                    reward[i] += components["high_pass_reward"][i]
+        
+        return reward, components
 
     def step(self, action):
-        """Perform a step in the environment and augment the reward using reward function."""
         observation, reward, done, info = self.env.step(action)
-        new_reward, reward_components = self.reward(reward)
-        info['final_reward'] = sum(new_reward)
-        for key, value in reward_components.items():
+        reward, components = self.reward(reward)
+        info["final_reward"] = sum(reward)
+        for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        return observation, new_reward, done, info
+
+        obs = self.env.unwrapped.observation()
+        self.sticky_actions_counter.fill(0)
+        for agent_obs in obs:
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                self.sticky_actions_counter[i] += action
+                info[f"sticky_actions_{i}"] = action
+                
+        return observation, reward, done, info

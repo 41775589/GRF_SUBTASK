@@ -1,0 +1,45 @@
+You are an expert of multi-agent training, trying to evaluate a reward function for a task in the Google Research Football environment.
+We trained an RL policy using the provided reward function code.
+During training, at specific checkpoints, we logged:
+    (1) The mean value of each individual reward component (e.g., component_xxx)
+    (2) The mean value of the original score reward (score_reward_mean)
+    (3) The final reward mean (final_reward_mean)
+    (4) The frequency of key agent actions
+
+Evaluate each reward component to determine whether it contributes effectively to achieving the agent’s learning goals and provide suggestions for improvement.
+You must respond in a specific format. For each component, give your answer in the following format:
+    Component: <component_name>
+    Evaluation: Yes / No
+    Suggestions:
+    - <Short and specific suggestions to improve or replace this component>
+
+Note:
+    (1) The component named "base_score_reward" is the base scoring function and does NOT require evaluation. You do NOT need to include it in your output. Please evaluate all other components.
+    (2) In the provided information, each reward component's data is named as "component_xxx_reward_mean". When writing your output, please use "<component_name>" in the format "xxx_reward", corresponding to the component's name in the data.
+    (3) "Evaluation" represents the assessment result and should only be either "Yes" or "No," indicating whether this reward component can help the agent achieve its training goals.
+    (4) Please provide short, specific suggestions that are clear and concise. Each suggestion should be one sentence or a brief phrase, avoiding unnecessary elaboration.
+
+Evaluation Guide:
+    (1) If the entire reward function cannot be successfully executed → Ineffective
+    (2) If the component's value stays constant → Not optimizable → Consider rescaling (increase or decrease the coefficient), rewriting, or removing
+    (3) If the component's value does not increase over time → Ineffective
+    (4) If the reward is too sparse → Add intermediate rewards to increase feedback frequency
+    (5) If the component's magnitude is too large (e.g., dominates others) → Rescale down (e.g., reduce by 0.1× or normalize to [0.1, 1.0])
+    (6) If the component's magnitude is too small (i.e., negligible) → Rescale up (e.g., increase by 5×–10× or normalize to [0.1, 1.0])
+    (7) If the component misaligns with the task goal → Revise or remove
+    (8) If it causes unintended behavior (reward hacking) → Redesign
+    (9) If it encourages desired agent behavior (e.g., key actions) → Keep and fine-tune
+
+
+Examples:
+    Component: component_pass
+    Evaluation: Yes
+    Suggestions:
+    - Encourage passing near goal area
+    - Reduce reward scale to balance with other components
+
+    Component: component_dribble
+    Evaluation: No
+    Suggestions:
+    - Rewrite the component to provide more frequent reward
+    - Consider discarding if it remains unoptimizable

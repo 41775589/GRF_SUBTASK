@@ -1,60 +1,56 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a reward for learning offensive skills including passing, shooting, and dribbling."""
+    """A wrapper that focuses on offensive skills reinforcement in football scenarios.
+       It particularly rewards passes, shots, dribbles, and sprints that lead towards scoring opportunities."""
 
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.pass_completion_reward = 0.3
-        self.shot_on_target_reward = 0.5
-        self.successful_dribble_reward = 0.2
-        self.passing_reward = 0.1
-        self.shooting_reward = 0.2
-        self.dribbling_reward = 0.15
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {}
+        to_pickle['CheckpointRewardWrapper'] = self.sticky_actions_counter
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "pass_completion_reward": 0.0,
-                      "shot_on_target_reward": 0.0,
-                      "successful_dribble_reward": 0.0}
+                      "pass_bonus": [0.0] * len(reward),
+                      "shot_bonus": [0.0] * len(reward),
+                      "dribble_bonus": [0.0] * len(reward),
+                      "sprint_bonus": [0.0] * len(reward)}
 
         if observation is None:
             return reward, components
 
-        # Components of reward based on the offensive actions
-        for rew_index, o in enumerate(observation):
-            # Pass completion
-            if 'ball_direction' in o:
-                if np.linalg.norm(o['ball_direction']) > 0:
-                    components["pass_completion_reward"] = self.pass_completion_reward
-                    reward[rew_index] += self.passing_reward * self.pass_completion_reward
+        for rew_index in range(len(reward)):
+            o = observation[rew_index]
+            # Checking if there was any sticky action for passing or dribbling
+            if o['sticky_actions'][7] or o['sticky_actions'][1]:  # Long Pass or Short Pass
+                components["pass_bonus"][rew_index] = 0.02
+            if o['sticky_actions'][9]:  # Dribble
+                components["dribble_bonus"][rew_index] = 0.01
+            if o['sticky_actions'][8]:  # Sprint
+                components["sprint_bonus"][rew_index] = 0.01
 
-            # Shot on target (approximated by ball moving significantly towards opponent's goal)
-            if 'ball' in o:
-                if o['ball'][0] > 0.5:  # Assuming right side is the opponent's side
-                    components["shot_on_target_reward"] = self.shot_on_target_reward
-                    reward[rew_index] += self.shooting_reward * self.shot_on_target_reward
-            
-            # Successful dribble (ball moving while in dribbling mode)
-            if 'sticky_actions' in o:
-                # Assume that action 9 corresponds to dribble
-                if o['sticky_actions'][9] == 1 and np.linalg.norm(o['ball_direction']) > 0:
-                    components["successful_dribble_reward"] = self.successful_dribble_reward
-                    reward[rew_index] += self.dribbling_reward * self.successful_dribble_reward
+            # Check if shot was taken
+            if o['game_mode'] == 6 and (o['ball_owned_team'] == o['left_team_roles'][rew_index] or 
+                                         o['ball_owned_team'] == o['right_team_roles'][rew_index]):  # Game mode 6 is a shot
+                components["shot_bonus"][rew_index] = 0.05
+
+            reward[rew_index] += (components["pass_bonus"][rew_index] +
+                                  components["shot_bonus"][rew_index] +
+                                  components["dribble_bonus"][rew_index] +
+                                  components["sprint_bonus"][rew_index])
 
         return reward, components
 
@@ -63,13 +59,5 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         reward, components = self.reward(reward)
         info["final_reward"] = sum(reward)
         for key, value in components.items():
-            info[f"component_{key}"] = value
-        obs = self.env.unwrapped.observation()
-        self.sticky_actions_counter.fill(0)
-        for agent_obs in obs:
-            for i, action in enumerate(agent_obs['sticky_actions']):
-                # Update count for sticky actions
-                if action == 1:
-                    self.sticky_actions_counter[i] += 1
-                info[f"sticky_actions_{i}"] = self.sticky_actions_counter[i]
+            info[f"component_{key}"] = sum(value)
         return observation, reward, done, info

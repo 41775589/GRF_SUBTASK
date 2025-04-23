@@ -4,6 +4,7 @@ ball_direction - [x, y, z] ball movement vector.
 ball_rotation - [x, y, z] rotation angles in radians.
 ball_owned_team - {-1, 0, 1}, -1 = ball not owned, 0 = left team, 1 = right team.
 ball_owned_player - {0..N-1} integer denoting index of the player owning the ball.
+
 Left team:
 left_team - N-elements vector with [x, y] positions of players.
 left_team_direction - N-elements vector with [x, y] movement vectors of players.
@@ -21,6 +22,7 @@ left_team_roles - N-elements vector denoting roles of players. The meaning is:
 7 = e_PlayerRole_RM - right midfield,
 8 = e_PlayerRole_AM - attack midfield,
 9 = e_PlayerRole_CF - central front,
+
 Right team:
 right_team - same as for left team.
 right_team_direction - same as for left team.
@@ -28,10 +30,12 @@ right_team_tired_factor - same as for left team.
 right_team_yellow_card - same as for left team.
 right_team_active - same as for left team.
 right_team_roles - same as for left team.
+
 Controlled player information:
 active - {0..N-1} integer denoting index of the controlled players.
 designated - {0..N-1} integer denoting index of the designated player - the player leading the game, for example the one owning the ball. In non-multiagent mode it is always equal to active.
-sticky_actions - 10-elements vectors of 0s or 1s denoting whether corresponding action is active:
+
+sticky_actions - 10-elements vectors of 0s or 1s denoting whether corresponding action is active. The corresponding indices are:
 0 - action_left
 1 - action_top_left
 2 - action_top
@@ -42,10 +46,11 @@ sticky_actions - 10-elements vectors of 0s or 1s denoting whether corresponding 
 7 - action_bottom_left
 8 - action_sprint
 9 - action_dribble
+
 Match state:
 score - pair of integers denoting number of goals for left and right teams, respectively.
 steps_left - how many steps are left till the end of the match.
-game_mode - current game mode, one of:
+game_mode - current game mode. The corresponding indices are:
 0 = e_GameMode_Normal
 1 = e_GameMode_KickOff
 2 = e_GameMode_GoalKick
