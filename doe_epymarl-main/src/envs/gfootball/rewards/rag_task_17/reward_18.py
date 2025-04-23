@@ -1,67 +1,73 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a checkpoint reward focused on wide midfield play, high passes, and positioning."""
-
+    """
+    A wrapper that adds a dense reward for mastering Wide Midfield responsibilities, focusing on High Pass execution
+    and proper positioning to expand the field of play and support lateral transitions.
+    """
     def __init__(self, env):
         super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.high_pass_usage = 0
-        
-        # Specific checkpoints related to midfield wide play
-        self.midfield_checkpoints = [
-            [-0.4, 0.4], [0.0, 0.4], [0.4, 0.4],  # Top wide positions
-            [-0.4, 0.0], [0.0, 0.0], [0.4, 0.0],  # Middle wide positions
-            [-0.4, -0.4], [0.0, -0.4], [0.4, -0.4] # Bottom wide positions
-        ]
-        self.checkpoint_counter = np.zeros(len(self.midfield_checkpoints), dtype=int)
+        self.high_pass_reward = 0.05
+        self.positioning_reward_multiplier = 0.02
 
     def reset(self):
-        """Reset reward wrapper state for a new episode."""
-        self.sticky_actions_counter.fill(0)
-        self.checkpoint_counter.fill(0)
-        self.high_pass_usage = 0
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
+    def get_state(self, to_pickle):
+        to_pickle['CheckpointRewardWrapper'] = {}
+        return self.env.get_state(to_pickle)
+
+    def set_state(self, state):
+        from_pickle = self.env.set_state(state)
+        # Specific states are not being restored as no internal state is stored in this example.
+        return from_pickle
+
     def reward(self, reward):
-        """Compute additional reward for mastering wide midfield gameplay."""
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "positioning_reward": [0.0] * len(reward),
-                      "passing_reward": [0.0] * len(reward)}
+                      "high_pass_reward": [0.0] * len(reward),
+                      "positioning_reward": [0.0] * len(reward)}
 
         if observation is None:
             return reward, components
 
+        assert len(reward) == len(observation)
+
         for rew_index in range(len(reward)):
             o = observation[rew_index]
-            player_pos = np.array(o['left_team'][o['active']] if o['ball_owned_team'] == 0 else o['right_team'][o['active']])
-            
-            for idx, checkpoint in enumerate(self.midfield_checkpoints):
-                if self.checkpoint_counter[idx] == 0 and np.linalg.norm(player_pos - checkpoint) < 0.1:
-                    components["positioning_reward"][rew_index] += 0.1
-                    self.checkpoint_counter[idx] = 1
-            
-            # Reward for effective high passes
-            if o['sticky_actions'][6] == 1:  # Action high pass is detected as activated
-                components["passing_reward"][rew_index] += 0.05
-                self.high_pass_usage += 1
 
-        for rw_index in range(len(reward)):
-            reward[rw_index] += components["positioning_reward"][rw_index] + components["passing_reward"][rw_index]
+            # Reward execution of high pass (index in sticky actions array for high pass action)
+            if o['sticky_actions'][5] == 1:  # Assuming index 5 refers to High Pass
+                components["high_pass_reward"][rew_index] = self.high_pass_reward
+                reward[rew_index] += self.high_pass_reward
+
+            # Positioning reward based on the player's x-position. Encouraging wider positions.
+            player_pos = o['left_team'][o['active']]
+            positioning_score = abs(player_pos[0])  # Wider is closer to 1 (or -1 for other side)
+
+            # Calculate positioning reward scale based on defending (+) or attacking (-) half
+            if player_pos[0] > 0:
+                # Reward for being wide in the attacking half
+                components["positioning_reward"][rew_index] = self.positioning_reward_multiplier * positioning_score
+            else:
+                # Lower reward for being wide in the defending half
+                components["positioning_reward"][rew_index] = self.positioning_reward_multiplier * (1 - positioning_score)
+
+            reward[rew_index] += components["positioning_reward"][rew_index]
 
         return reward, components
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
-        info['final_reward'] = sum(reward)
+        info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += action
-                info[f"sticky_actions_{i}"] = action
+                self.sticky_actions_counter[i] = 1 if action > 0 else self.sticky_actions_counter[i]
         return observation, reward, done, info

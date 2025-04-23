@@ -66,12 +66,19 @@ class GoogleFootballEnv(MultiAgentEnv):
         obs_space_high = self.env.observation_space.high[0]
 
 
-        self.action_space = [gym.spaces.Discrete(
-            self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
-        # if isinstance(self.env.action_space, gym.spaces.Discrete):  # 处理 num_agents=1 的情况
-        #     self.action_space = [gym.spaces.Discrete(self.env.action_space.n)]
-        # else:  # 处理 num_agents>1 的情况
-        #     self.action_space = [gym.spaces.Discrete(self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
+
+        if self.n_agents == 1:
+            obs_space_low = self.env.observation_space.low
+            obs_space_high = self.env.observation_space.high
+
+
+
+        # self.action_space = [gym.spaces.Discrete(
+        #     self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
+        if isinstance(self.env.action_space, gym.spaces.Discrete):  # 处理 num_agents=1 的情况
+            self.action_space = [gym.spaces.Discrete(self.env.action_space.n)]
+        else:  # 处理 num_agents>1 的情况
+            self.action_space = [gym.spaces.Discrete(self.env.action_space.nvec[1]) for _ in range(self.n_agents)]
 
         self.observation_space = [
             gym.spaces.Box(low=obs_space_low, high=obs_space_high, dtype=self.env.observation_space.dtype) for _ in range(self.n_agents)
@@ -89,15 +96,17 @@ class GoogleFootballEnv(MultiAgentEnv):
             actions = _actions
         self.time_step += 1
         obs, rewards, done, infos = self.env.step(actions.tolist())
-        # print("rrrrrr",rewards)
-        # print("iiiiii",infos)
+
 
         self.obs = obs
 
         if self.time_step >= self.episode_limit:
             done = True
 
-        return sum(rewards), done, infos
+        if self.n_agents == 1:
+            return rewards, done, infos
+        else:
+            return sum(rewards), done, infos
 
     def get_obs(self):
         """Returns all agent observations in a list."""
@@ -109,7 +118,9 @@ class GoogleFootballEnv(MultiAgentEnv):
 
     def get_obs_size(self):
         """Returns the size of the observation."""
-        obs_size = np.array(self.env.observation_space.shape[1:])
+        obs_size = np.array(self.env.observation_space.shape[1:])  # Ignore the first dimension (n_agents)
+        if len(obs_size) == 0:  # When there's no additional dimension, it means n_agents == 1
+            return self.env.observation_space.shape[0]
         return int(obs_size.prod())
 
     def get_global_state(self):

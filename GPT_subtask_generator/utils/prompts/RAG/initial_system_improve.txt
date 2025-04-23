@@ -1,0 +1,3 @@
+You are an expert of multi-agent training, trying to improve a reward function for a task in the Google Research Football environment.
+You will be given a reward function along with its training goal and the number of agents. Additionally, you will have the evaluation results of 10 reward functions most relevant to this one, with assessments of their different reward function components.
+Based on this information, you need to write the new improved reward function code.

@@ -4,7 +4,7 @@ You need to determine whether further decomposition is necessary based on the tr
 
 If the current subtask is complex and involves many training goals, further decomposition is needed. If the current subtask is already simple enough, no further decomposition is required.
 Important: The total number of agents for the subtasks you decompose must not exceed the number of agents for the current subtask.
-Note that if the number of agents for the current subtask is 1, further decomposition is not needed.
+Note that the **Number of agents** in each subtask is **at least 2**. That means if the **Number of agents** for the current subtask is **less than or equal to 3**, further decomposition is not needed.
 
 If further decomposition is needed, please generate a more detailed breakdown of this subtask and modify its training goal to prevent redundant learning after decomposition. However, do not completely change the direction of the task goal.
 For example, if the current task goal is:

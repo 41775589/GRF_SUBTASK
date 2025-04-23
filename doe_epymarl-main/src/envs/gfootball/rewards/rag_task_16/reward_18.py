@@ -2,60 +2,58 @@ import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
     """
-    A wrapper that adds a dense reward for technical skill enhancement, focusing on executing high passes with precision.
+    A reward wrapper focused on enhancing skills in executing high passes effectively. The 
+    reward system emphasizes control of trajectory, correct power assessment, and situational 
+    application of high passes.
     """
+
     def __init__(self, env):
-        super(CheckpointRewardWrapper, self).__init__(env)
-        self.high_pass_threshold = 0.3  # height above which a pass is considered high
-        self.dist_to_goal_threshold = 0.5  # proximity to opponent's goal to encourage precise passes
-        self.high_pass_reward = 0.2
-        self.precise_pass_reward = 0.2
-        self.sticky_actions_counter = np.zeros(10, dtype=int)  # sticky actions counter for all available actions
+        super().__init__(env)
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self._num_checkpoints = 5  # For simplification, using 5 checkpoints that reflect different phases in high pass execution
+        self._checkpoint_reward = 0.2
+        self._collected_checkpoints = {}
 
     def reset(self):
-        """
-        Reset the environment and clear the sticky actions counter.
-        """
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self._collected_checkpoints = {}
         return self.env.reset()
-    
+
     def get_state(self, to_pickle):
-        """
-        Serialize the Wrapper along with the environment's state.
-        """
-        to_pickle['CheckpointRewardWrapper'] = {'sticky_actions_counter': self.sticky_actions_counter}
+        to_pickle['CheckpointRewardWrapper'] = self._collected_checkpoints
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
-        """
-        Deserialize the state into the Wrapper and the environment.
-        """
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']['sticky_actions_counter']
+        self._collected_checkpoints = from_pickle['CheckpointRewardWrapper']
         return from_pickle
 
     def reward(self, reward):
-        """
-        Apply the custom reward logic based on high passes and pass precision.
-        """
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "high_pass_reward": 0.0,
-                      "precise_pass_reward": 0.0}
+                      "checkpoint_reward": [0.0] * len(reward)}
+        
+        if observation is None:
+            return reward, components
 
-        for o in observation:
-            if o['ball'][2] >= self.high_pass_threshold:  # Check ball height
-                components["high_pass_reward"] += self.high_pass_reward
+        # Calculate component rewards for controlling high pass trajectory and power
+        for rew_index in range(len(reward)):
+            o = observation[rew_index]
 
-            ball_position = o['ball'][:2]
-            goal_position = [1.0, 0.0]  # Assuming playing on the right side
-            distance_to_goal = np.linalg.norm(np.array(ball_position) - np.array(goal_position))
-            if distance_to_goal <= self.dist_to_goal_threshold:
-                components["precise_pass_reward"] += self.precise_pass_reward
+            if o['ball'] is not None and o['ball'][2] > 0.2: # Check if the ball is airborne enough to be considered a "high" pass
+                # Calculate distance from the ball to the nearest player in the opposing team
+                distances_to_opponents = [np.linalg.norm(o['ball'][:2] - opponent_pos) for opponent_pos in o['right_team']]
+                min_distance = min(distances_to_opponents)
 
-        # Final reward is a combination of base reward and the additional components
-        new_reward = reward[0] + components["high_pass_reward"] + components["precise_pass_reward"]
-        return [new_reward for _ in reward], components
+                # Reward for power and trajectory control: Closer to opponents, higher the requirement for precise control
+                if min_distance < 0.3:
+                    checkpoint = min(self._num_checkpoints - 1, int(min_distance / 0.06)) # Simplified checkpoint collection
+                    if self._collected_checkpoints.get(rew_index, 0) <= checkpoint:
+                        components["checkpoint_reward"][rew_index] = self._checkpoint_reward
+                        reward[rew_index] += components["checkpoint_reward"][rew_index]
+                        self._collected_checkpoints[rew_index] = checkpoint
+
+        return reward, components
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)

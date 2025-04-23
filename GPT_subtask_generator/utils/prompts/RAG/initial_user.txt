@@ -1,4 +1,4 @@
 Write the checkpoints function for the following task.
 The task is: {training_goal}.
 Make sure your function name is "CheckpointRewardWrapper(gym.RewardWrapper)".
-The code of the environment is: {env_code}
+

@@ -20,6 +20,7 @@ doe_classifier_cfg:
     task:
     - 0
     - 1
+    - 2
   save_classifier: true
   save_doe_name: cls_0.pt
 entropy_coef: 0.001
@@ -45,6 +46,6 @@ standardise_returns: false
 standardise_rewards: true
 t_max: 500000
 target_update_interval_or_tau: 0.01
-time_stamp: rag_task_23
+time_stamp: rag_task_54
 use_doe: false
 use_rnn: true

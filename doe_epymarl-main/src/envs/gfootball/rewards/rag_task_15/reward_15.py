@@ -1,51 +1,47 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
+    """A wrapper that adds a dense reward specifically targeted at mastering long passes in football.
+       This includes dynamics of the ball travel such as speed and accuracy to a distant player.
     """
-    A wrapper that adds a reward for mastering long passes and precision in football.
-    The reward increases for successful long passes and maintaining possession during those passes.
-    """
-    
     def __init__(self, env):
-        super().__init__(env)
-        self.pass_distance_threshold = 0.5  # Threshold to consider a pass as long
-        self.prev_ball_position = np.zeros(3)
-        self.pass_bonus = 0.2  # Reward for successful long pass
+        super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.long_pass_threshold_distance = 0.5  # Assuming a reasonable distance threshold for a "long pass"
+        self.long_pass_speed_threshold = 0.03  # Speed threshold to qualify for a long pass
+        self.long_pass_accuracy_reward = 1.0  # Reward for accurate long pass
+        self.pass_completion_reward = 0.5  # Additional reward if the pass completes successfully
+        self.distance_accuracy_factor = 0.5  # Modulates the reward based on the accuracy of the pass
 
     def reset(self):
-        self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.prev_ball_position = np.zeros(3)
+        self.sticky_actions_counter.fill(0)
         return self.env.reset()
 
-    def get_state(self, to_pickle):
-        to_pickle['prev_ball_position'] = self.prev_ball_position
-        return self.env.get_state(to_pickle)
-
-    def set_state(self, state):
-        from_pickle = self.env.set_state(state)
-        self.prev_ball_position = from_pickle['prev_ball_position']
-        return from_pickle
-
     def reward(self, reward):
-        """
-        Augments the reward by providing a bonus for successful long passes.
-        A long pass is defined by the movement of the ball over a predetermined distance threshold
-        in one step, without changing ball possession.
-        """
-        current_ball_position = self.env.unwrapped.observation()[0]['ball']
-        distance_moved = np.linalg.norm(current_ball_position - self.prev_ball_position)
-
+        observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "pass_bonus": 0.0}
+                      "long_pass_reward": [0.0] * len(reward),
+                      "accuracy_bonus": [0.0] * len(reward)}
 
-        # Check if the ball moved a long distance
-        if distance_moved >= self.pass_distance_threshold and self.env.unwrapped.observation()[0]['ball_owned_team'] != -1:
-            components["pass_bonus"] = self.pass_bonus
-            reward += components["pass_bonus"]
+        if observation is None:
+            return reward, components
 
-        self.prev_ball_position = current_ball_position
-        
+        for rew_index, rew in enumerate(reward):
+            o = observation[rew_index]
+            if 'ball_direction' in o and 'ball_owned_team' in o:
+                if o['ball_owned_team'] == 0:  # Team 0 has the ball
+                    ball_speed = np.linalg.norm(o['ball_direction'])
+                    # Check if the pass is long and fast enough
+                    if ball_speed > self.long_pass_speed_threshold:
+                        distance = np.linalg.norm(o['ball'])
+                        if distance > self.long_pass_threshold_distance:
+                            components["long_pass_reward"][rew_index] = self.long_pass_accuracy_reward
+                            # Assess accuracy based on closeness to a teammate
+                            closest_teammate_distance = np.min(np.linalg.norm(o['left_team'] - o['ball'], axis=1))
+                            accuracy_bonus = (self.distance_accuracy_factor / (1 + closest_teammate_distance))
+                            components["accuracy_bonus"][rew_index] = accuracy_bonus
+                            reward[rew_index] += components["long_pass_reward"][rew_index] + components["accuracy_bonus"][rew_index]
+
         return reward, components
 
     def step(self, action):
@@ -60,3 +56,12 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
             for i, action in enumerate(agent_obs['sticky_actions']):
                 info[f"sticky_actions_{i}"] = action
         return observation, reward, done, info
+
+    def get_state(self, to_pickle):
+        to_pickle['CheckpointRewardWrapper'] = self.sticky_actions_counter
+        return self.env.get_state(to_pickle)
+
+    def set_state(self, state):
+        from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle.get('CheckpointRewardWrapper', np.zeros(10, dtype=int))
+        return from_pickle

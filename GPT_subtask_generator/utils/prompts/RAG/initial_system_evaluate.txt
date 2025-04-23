@@ -18,6 +18,5 @@ Here are some tips that may help you:
     (c) Discarding the reward component
 (6) If some reward components' magnitude is significantly larger, then you must re-scale its value to a proper range.
 (7) If the task objective involves learning specific actions, then the frequency of these actions being executed can serve as a reference for your evaluation.
-(8) If the reward signal is too sparse (i.e., the agent receives very few rewards during training), the agent may struggle to learn effectively. In this case, you might need to adjust the reward frequency or provide intermediate rewards.
-(9) You need to check for reward exploitation and ensure that the agent is not taking advantage of the reward function in unintended ways.
-(10) You need to consider the reward function's goal alignment and ensure that the individual reward components are consistent with the overall objective.
+(8) If the reward signal of a component is too sparse (i.e., the agent receives very few rewards during training), the agent may struggle to learn effectively. In this case, you might need to adjust the reward frequency or provide intermediate rewards.
+(9) You need to consider the reward function's goal alignment and ensure that the individual reward components are consistent with the overall objective.

@@ -1,54 +1,63 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that focuses on mastering midfield-wide positioning, high passes, and aiding in stretching the opposition."""
-
+    """A reward wrapper to train agents on mastering wide midfield responsibilities, 
+    focusing on high pass execution and effective positioning to facilitate lateral transitions."""
+    
     def __init__(self, env):
         super(CheckpointRewardWrapper, self).__init__(env)
-        self.start_position_rewards = {}
-        # To encourage spreading out and controlling the ball in wide areas
-        self.wide_field_bonus = 0.1
-        self.high_pass_bonus = 0.2
-        # Initialize sticky actions counter (10 potential sticky actions)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-
+        self.wide_midfield_coefficient = 0.2
+        self.high_pass_coefficient = 0.1
+        
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.start_position_rewards = {}
         return self.env.reset()
-
+    
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = self.start_position_rewards
+        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter
         return self.env.get_state(to_pickle)
-
+    
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.start_position_rewards = from_pickle['CheckpointRewardWrapper']
+        self.sticky_actions_counter = from_pickle.get('sticky_actions_counter', np.zeros(10))
         return from_pickle
-
+    
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
         components = {"base_score_reward": reward.copy(),
-                      "wide_field_reward": [0.0] * len(reward)}
-
+                      "wide_midfield_reward": [0.0] * len(reward),
+                      "high_pass_reward": [0.0] * len(reward)}
+                      
         if observation is None:
             return reward, components
         
-        for rew_index in range(len(reward)):
-            o = observation[rew_index]
-            # Prefer agents in wider positions but in adversary's half
-            if o['right_team'][o['active']][0] > 0:  # X position > 0, adversary half
-                y_pos = abs(o['right_team'][o['active']][1])  # Get the absolute Y pos
-                if y_pos > 0.2:  # Considered "wide" if Y is greater than 0.2
-                    components["wide_field_reward"][rew_index] = self.wide_field_bonus
-                    reward[rew_index] += components["wide_field_reward"][rew_index]
+        assert len(reward) == len(observation)
+        
+        for i in range(len(reward)):
+            current_obs = observation[i]
             
-            # Reward for performing high passes
-            if 'sticky_actions' in o:
-                if o['sticky_actions'][football_action_set.action_high_pass]:
-                    components["wide_field_reward"][rew_index] += self.high_pass_bonus
-                    reward[rew_index] += components["wide_field_reward"][rew_index]
+            midfield_positional_reward = 0.0
+            sideline_position_x_thresholds = (-0.6, 0.6)  # Assuming this approximates "wide" midfield
+            sideline_position_y_thresholds = (-0.2, 0.2)  # Players should also not be too close/far from center
 
+            player_position = current_obs['left_team'][current_obs['active']] if current_obs['active'] < len(current_obs['left_team']) else current_obs['right_team'][current_obs['active'] - len(current_obs['left_team'])]
+
+            # Check if the player is in a wide and effective midfield position
+            if (sideline_position_x_thresholds[0] <= player_position[0] <= sideline_position_x_thresholds[1] and
+                sideline_position_y_thresholds[0] <= player_position[1] <= sideline_position_y_thresholds[1]):
+                midfield_positional_reward = self.wide_midfield_coefficient
+
+            components["wide_midfield_reward"][i] = midfield_positional_reward
+
+            # Reward for executing a high pass correctly
+            if current_obs['sticky_actions'][2]:  # Assuming index 2 corresponds to high pass action
+                direction = current_obs['right_team_direction' if current_obs['ball_owned_team'] == 1 else 'left_team_direction'][current_obs['active']]
+                if np.linalg.norm(direction) > 0.5:  # Assume using directional intensity to estimate "high" power in pass
+                    components["high_pass_reward"][i] = self.high_pass_coefficient
+            
+            reward[i] += components["wide_midfield_reward"][i] + components["high_pass_reward"][i]
+        
         return reward, components
 
     def step(self, action):
@@ -60,6 +69,7 @@ class CheckpointRewardWrapper(gym.RewardWrapper):
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, action in enumerate(agent_obs['sticky_actions']):
-                info[f"sticky_actions_{i}"] = action
+            for idx, action in enumerate(agent_obs['sticky_actions']):
+                # Updating sticker action counters per agent
+                self.sticky_actions_counter[idx] += action
         return observation, reward, done, info

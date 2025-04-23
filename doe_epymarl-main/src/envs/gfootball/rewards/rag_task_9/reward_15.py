@@ -1,86 +1,83 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """
-    A wrapper that adds a reward for performing offensive skills like passing,
-    shooting, dribbling, and quick movement.
-    """
+    """A wrapper that focuses on enhancing offensive skills: passing, shooting, dribbling."""
 
     def __init__(self, env):
-        super(CheckpointRewardWrapper, self).__init__(env)
+        super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
 
-        # Weight factors for various actions
-        self.pass_reward = 0.1
-        self.shoot_reward = 0.3
-        self.dribble_reward = 0.05
-        self.sprint_reward = 0.02
-
-        # Track cumulative rewards for specific actions
-        self.action_rewards = np.zeros((env.action_space.n,), dtype=float)
-
-        # Initialize action mapping indices
-        self.action_map = {
-            'short_pass': 0, 
-            'long_pass': 1, 
-            'high_pass': 2, 
-            'shot': 3, 
-            'dribble': 8,
-            'sprint': 9
-        }
+        # Define rewards for specific actions
+        self.pass_reward = 0.03  # Reward for successful pass
+        self.shot_reward = 0.5   # Reward for attempting a shot
+        self.dribble_reward = 0.02  # Reward for dribbling
+        self.sprint_reward = 0.01  # Reward for sprinting
+        self.goal_score_reward = 1  # Reward for scoring a goal
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        return self.env.get_state(to_pickle)
+        pickle = self.env.get_state(to_pickle)
+        pickle['sticky_actions_counter'] = self.sticky_actions_counter
+        return pickle
 
     def set_state(self, state):
-        return self.env.set_state(state)
+        from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle['sticky_actions_counter']
+        return from_pickle
 
     def reward(self, reward):
+        """Modify the rewards based on offensive gameplay elements."""
         observation = self.env.unwrapped.observation()
+        components = {"base_score_reward": reward.copy(), 
+                      "pass_reward": 0.0, "shot_reward": 0.0, 
+                      "dribble_reward": 0.0, "sprint_reward": 0.0,
+                      "goal_score_reward": 0.0}
+
         if observation is None:
-            return reward, {}
+            return reward, components
 
-        # Initialize modified reward and a component dictionary for tracking the-detailed rewards
-        modified_reward = np.array(reward, copy=True)
-        components = {"base_score_reward": reward.copy(),
-                      "action_rewards": np.zeros_like(reward)}
+        for i, o in enumerate(observation):
+            # Check for goal
+            if o['score'][0] > self.env.unwrapped.previous_score[0]:  # Assuming index 0 is the scoring team
+                reward[i] += self.goal_score_reward
+                components["goal_score_reward"] += self.goal_score_reward
 
-        for i, obs in enumerate(observation):
-            active_player_actions = obs['sticky_actions'][self.action_map['sprint']:self.action_map['dribble']+1]
-            components['action_rewards'][i] += self.sprint_reward * active_player_actions[self.action_map['sprint']]
-            components['action_rewards'][i] += self.dribble_reward * active_player_actions[self.action_map['dribble']]
-            
-            if obs['game_mode'] == 0:  # Normal play mode
-                if obs['ball_owned_player'] == obs['active']:
-                    # Player has the ball and can take actions such as pass or shoot
-                    pass_actions = obs['sticky_actions'][self.action_map['short_pass']:self.action_map['high_pass']+1]
-                    shot = obs['sticky_actions'][self.action_map['shot']]
+            # Rewards based on sticky actions and ball possession
+            sticky_actions = o['sticky_actions']
 
-                    components['action_rewards'][i] += self.pass_reward * np.sum(pass_actions)
-                    components['action_rewards'][i] += self.shoot_reward * shot
+            if o['ball_owned_team'] == 0:  # Assuming 0 is the team id of the agent
+                if sticky_actions[7] or sticky_actions[8]:  # action_dribble indices
+                    reward[i] += self.dribble_reward
+                    components["dribble_reward"] += self.dribble_reward
 
-            # Aggregate base and extra rewards
-            modified_reward[i] += components['action_rewards'][i]
+                if sticky_actions[9]:  # action_sprint index
+                    reward[i] += self.sprint_reward
+                    components["sprint_reward"] += self.sprint_reward
 
-        return modified_reward, components
+                # Analyze attempts to pass or shoot
+                game_modes = [3, 4]  # FreeKick and Corner which may involve passing or shooting
+                if o['game_mode'] in game_modes:
+                    if abs(o['ball_direction'][0]) > 0.5:  # assuming shot direction towards goal
+                        reward[i] += self.shot_reward
+                        components["shot_reward"] += self.shot_reward
+                    else:
+                        reward[i] += self.pass_reward
+                        components["pass_reward"] += self.pass_reward
+
+        return reward, components
 
     def step(self, action):
-        obs, reward, done, info = self.env.step(action)
+        observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
         info["final_reward"] = sum(reward)
-
-        # Add reward components to info for monitoring
         for key, value in components.items():
-            info[f"component_{key}"] = sum(value)
-
-        # monitor sticky actions usage
+            info[f"component_{key}"] = value
+        obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, action_active in enumerate(agent_obs['sticky_actions']):
-                info[f"sticky_actions_{i}"] = action_active
-
-        return obs, reward, done, info
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                self.sticky_actions_counter[i] = action
+        return observation, reward, done, info

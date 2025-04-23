@@ -1,62 +1,76 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a reward based on high passing and lateral transitions to widen the field of play."""
+    """A wrapper that focuses on enhancing wide midfield responsibilities, particularly on high passing 
+    and effective positioning to expand the gameplay laterally."""
 
     def __init__(self, env):
-        gym.RewardWrapper.__init__(self, env)
+        super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        
+        # Reward components for specific midfield actions and positioning
+        self.high_pass_reward = 0.2
+        self.positioning_reward = 0.1
 
     def reset(self):
+        """Reset the environment and the auxiliary variables for tracking sticky actions."""
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter.copy()
+        """Serialize the sticky action counters along with the environment state."""
+        to_pickle['sticky_actions_counter'] = self.sticky_actions_counter
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
+        """Deserialize the state including the sticky action counters."""
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = from_pickle.get('sticky_actions_counter', np.zeros(10, dtype=int))
+        self.sticky_actions_counter = from_pickle['sticky_actions_counter']
         return from_pickle
 
     def reward(self, reward):
+        """Custom reward function to enhance midfield performance in handling lateral transitions and high passes."""
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy()}
 
         if observation is None:
-            return reward, components
+            return reward, {}
 
-        for idx, o in enumerate(observation):
-            # Initialize component rewards
-            components["pass_accuracy_reward"] = [0.0, 0.0]
-            components["position_expansion_reward"] = [0.0, 0.0]
+        assert len(reward) == len(observation)
 
-            # Encourage high passes (action 7 in sticky_actions)
-            if o['sticky_actions'][7] == 1:
-                components["pass_accuracy_reward"][idx] = 0.1
-                reward[idx] += components["pass_accuracy_reward"][idx]
+        components = {"base_score_reward": reward.copy(),
+                      "high_pass_reward": [0.0] * len(reward),
+                      "positioning_reward": [0.0] * len(reward)}
 
-            # Reward moving laterally on the field to stretch the defense
-            player_x, player_y = o["left_team"][o["active"]][:2] if o['ball_owned_team'] == 0 else o["right_team"][o["active"]][:2]
-            lateral_movement = abs(player_y)
+        for rew_index, o in enumerate(observation):
+            components["base_score_reward"][rew_index] = reward[rew_index]
 
-            if lateral_movement > 0.3:  # Assuming this is a useful metric to judge lateral positioning
-                components["position_expansion_reward"][idx] = 0.05
-                reward[idx] += components["position_expansion_reward"][idx]
+            # Reward for high pass actions
+            if o['sticky_actions'][9]:  # '1' at index 9 corresponds to high pass
+                reward[rew_index] += self.high_pass_reward * 2  # High pass is encouraged heavily
+                components["high_pass_reward"][rew_index] = self.high_pass_reward
+
+            # Reward for maintaining good positioning
+            if o['ball_owned_team'] == 1 and -0.5 <= o['ball'][0] <= 0.5:
+                # Check if the player is close to the side lines to encourage wide gameplay
+                if abs(o['ball'][1]) >= 0.3:
+                    reward[rew_index] += self.positioning_reward
+                    components["positioning_reward"][rew_index] = self.positioning_reward
 
         return reward, components
 
     def step(self, action):
+        """Perform a step in the environment, augmented by the custom reward function."""
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        
+        # Update sticky actions counter for each sticky action that is active
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
-                self.sticky_actions_counter[i] += action
                 info[f"sticky_actions_{i}"] = action
+        
         return observation, reward, done, info

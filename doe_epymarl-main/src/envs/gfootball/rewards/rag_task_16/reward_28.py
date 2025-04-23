@@ -1,65 +1,80 @@
 import gym
 import numpy as np
-class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a specific reward for executing high passes effectively in a football environment."""
+class HighPassSkillEnhancementRewardWrapper(gym.RewardWrapper):
+    """A wrapper that adds rewards for practicing high passes with required precision and power assessment."""
 
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        # Define thresholds for "high pass" success in qualitative terms.
-        self.high_pass_success_threshold = 0.2  # Typically, this could be learned or adjusted.
-        self.high_pass_bonus = 0.5  # Reward bonus for successful high passes.
+        # Define thresholds for a 'high pass'
+        self.min_z_position = 0.15  # Assume this to be the threshold for "high" passes
+        self.power_threshold = 0.8  # Assume this to be the threshold for "sufficient power"
+        self.pass_reach_radius = 0.1  # Margin around receiver for defining precision
 
     def reset(self):
-        """Resets the sticky actions counter and environment states."""
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        """Get the state for pickling, including wrapper-specific states."""
-        to_pickle['CheckpointRewardWrapper'] = self.sticky_actions_counter
+        to_pickle['HighPassSkillEnhancementRewardWrapper'] = {'sticky_actions_counter': self.sticky_actions_counter}
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
-        """Set the state from unpickling, including wrapper-specific states."""
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']
+        self.sticky_actions_counter = from_pickle['HighPassSkillEnhancementRewardWrapper']['sticky_actions_counter']
         return from_pickle
 
     def reward(self, reward):
-        """Computes the augmented reward function incorporating high pass bonuses."""
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy(),
+        components = {"base_score_reward": reward.copy(), 
                       "high_pass_reward": [0.0] * len(reward)}
+        
         if observation is None:
             return reward, components
 
-        assert len(reward) == len(observation)
+        for rew_index, o in enumerate(observation):
+            # Check for a high pass (ball_position_z higher than threshold) and power measurement
+            ball_z_position = o['ball'][2]  
+            if ball_z_position > self.min_z_position:
+                ball_owned_team = o['ball_owned_team']
+                ball_owned_player = o['ball_owned_player']
 
-        # Iterate over every agent's observation
-        for i, obs in enumerate(observation):
-            if 'ball_direction' in obs:
-                # Example: Reward based on upward (positive y) and forward (positive x) ball direction with high 'z'
-                ball_z_speed = obs['ball'][2]  # Access the z-component of ball's motion
-                if ball_z_speed > self.high_pass_success_threshold:
-                    # Checking for high pass completion could involve more conditions related to game state
-                    components["high_pass_reward"][i] += self.high_pass_bonus
-                    reward[i] += self.high_pass_bonus
+                if ball_owned_team in [0, 1]:  # Ball is owned by a team (0 = left, 1 = right)
+                    receiver_x, receiver_y = self.predict_receiver_position(o)
+
+                    # Evaluating the pass precision by checking if the receiver is within the designated area
+                    if (np.abs(receiver_x - o['ball'][0]) <= self.pass_reach_radius and 
+                        np.abs(receiver_y - o['ball'][1]) <= self.pass_reach_radius):
+                        components["high_pass_reward"][rew_index] = 1.0
+
+            # Calculate total reward
+            reward[rew_index] += 2.0 * components["high_pass_reward"][rew_index]
 
         return reward, components
 
+    def predict_receiver_position(self, observation):
+        """ Predict potential receiver's position. This function is a stub and should ideally be implemented 
+        based on the dynamics of player positions and ball trajectory."""
+        # Example of very simplistic prediction, this should be more sophisticated
+        receiver_index = observation['designated']
+        if observation['ball_owned_team'] == 0:
+            team_positions = observation['left_team']
+        else:
+            team_positions = observation['right_team']
+
+        receiver_x, receiver_y = team_positions[receiver_index]
+        return receiver_x, receiver_y
+
     def step(self, action):
-        """Steps through the environment, applying the reward function modifications."""
-        obs, reward, done, info = self.env.step(action)
+        observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        # Update sticky actions info for understanding agent's behavior decisions
-        last_obs = self.env.unwrapped.observation()
+        obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
-        for agent_obs in last_obs:
-            for j, action_active in enumerate(agent_obs['sticky_actions']):
-                if action_active == 1:
-                    self.sticky_actions_counter[j] += 1
-        return obs, reward, done, info
+        for agent_obs in obs:
+            for i, action in enumerate(agent_obs['sticky_actions']):
+                self.sticky_actions_counter[i] += action
+                info[f"sticky_actions_{i}"] = action
+        return observation, reward, done, info

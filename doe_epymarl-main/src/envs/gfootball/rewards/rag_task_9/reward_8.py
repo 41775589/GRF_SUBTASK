@@ -1,53 +1,69 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a dense checkpoint reward focusing on specific gameplay actions."""
+    """
+    A wrapper that rewards agents for offensive skills like passing, shooting, 
+    dribbling, and sprinting which are essential for creating scoring opportunities.
+    """
 
     def __init__(self, env):
         super(CheckpointRewardWrapper, self).__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        
+        # Define the reward coefficients for various offensive actions.
+        self.pass_reward = 0.05
+        self.shot_reward = 0.1
+        self.dribble_reward = 0.03
+        self.sprint_reward = 0.02
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        state = self.env.get_state(to_pickle)
-        state['sticky_actions_counter'] = self.sticky_actions_counter.copy()
-        return state
+        to_pickle['CheckpointRewardWrapper'] = {
+            'sticky_actions_counter': self.sticky_actions_counter
+        }
+        return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.sticky_actions_counter = from_pickle.get('sticky_actions_counter', np.zeros(10, dtype=int))
+        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']['sticky_actions_counter']
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
-        components = {
-            "base_score_reward": reward.copy(),
-            "action_reward": [0.0] * len(reward)
-        }
-        
+        components = {"base_score_reward": reward.copy(),
+                      "pass_reward": [0.0] * len(reward),
+                      "shot_reward": [0.0] * len(reward),
+                      "dribble_reward": [0.0] * len(reward),
+                      "sprint_reward": [0.0] * len(reward)}
+
         if observation is None:
             return reward, components
-        
+
         assert len(reward) == len(observation)
 
         for rew_index in range(len(reward)):
             o = observation[rew_index]
 
-            # Assign reward for specific actions
-            sticky_actions = o.get("sticky_actions", [])
-            if sticky_actions[4] == 1:  # is acting sprint
-                components["action_reward"][rew_index] += 0.01
-            if sticky_actions[9] == 1:  # is dribbling
-                components["action_reward"][rew_index] += 0.02
-            if sticky_actions[8]:  # made a pass
-                components["action_reward"][rew_index] += 0.03
+            # Check for sticky_actions and reward accordingly.
+            sticky_actions = o['sticky_actions']
+            
+            if sticky_actions[6] == 1 or sticky_actions[7] == 1:  # Short pass or Long pass
+                components["pass_reward"][rew_index] = self.pass_reward
+            if sticky_actions[2] == 1:  # Shot
+                components["shot_reward"][rew_index] = self.shot_reward
+            if sticky_actions[9] == 1:  # Dribble
+                components["dribble_reward"][rew_index] = self.dribble_reward
+            if sticky_actions[8] == 1:  # Sprint
+                components["sprint_reward"][rew_index] = self.sprint_reward
+            
+            reward[rew_index] += (components["pass_reward"][rew_index] +
+                                  components["shot_reward"][rew_index] +
+                                  components["dribble_reward"][rew_index] +
+                                  components["sprint_reward"][rew_index])
 
-            # Update reward with action contribution
-            reward[rew_index] += components["action_reward"][rew_index]
-        
         return reward, components
 
     def step(self, action):

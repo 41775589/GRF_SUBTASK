@@ -1,0 +1,9 @@
+Improve the current reward function below:
+**The current training goal is**: {training_goal}
+**The number of trained agents is**: {num_agents}
+**The current reward function code is**: {reward_function}
+Make sure your function name is "CheckpointRewardWrapper(gym.RewardWrapper)".
+
+Here are the top-10 most relevant reward functions' evaluation results. Note that "Evaluation" (Yes/No) indicating whether this reward component can help the agent achieve its training goals: {top_10}
+The code of the environment is: {env_code}
+

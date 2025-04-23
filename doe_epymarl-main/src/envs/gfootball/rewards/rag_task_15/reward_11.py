@@ -1,72 +1,73 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a dense reward for mastering long passes in the football game."""
+    """ A wrapper that rewards technical skill in long passing. """
 
     def __init__(self, env):
         super().__init__(env)
-        self.target_positions = [
-            (0.7, 0), (0.9, 0.3), (0.9, -0.3), # Long forward and angled passes
-            (0.0, 0.42), (0.0, -0.42)  # Cross field long passes
-        ]
-        self.pass_accuracy_reward = 0.2
-        self.pass_completion_reward = 0.5
-        self.reset_pass_counters()
-
-    def reset_pass_counters(self):
-        self.passes_completed = {pos: False for pos in self.target_positions}
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        self.pass_reward_multiplier = 0.2  # Reward multiplier for successful passes
+        self.distance_threshold = 0.3       # Minimum distance for a "long" pass
+        self.precision_multiplier = 0.5     # Multiplier enhancing reward based on closeness to teammates
 
     def reset(self):
-        self.reset_pass_counters()
+        self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = self.passes_completed
+        to_pickle['CheckpointRewardWrapper'] = {}
         return self.env.get_state(to_pickle)
-    
+
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.passes_completed = from_pickle['CheckpointRewardWrapper']
         return from_pickle
-    
-    def reward(self, reward):
-        base_reward = reward.copy()
-        additional_reward = [0.0] * len(reward)
-        observation = self.env.unwrapped.observation()
-        
-        if observation is None:
-            return reward, {}
 
-        for i, o in enumerate(observation):
-            if o['ball_owned_team'] == 0:  # Assuming team 0 is the controlled team
-                ball_pos = o['ball'][:2]  # Get the x, y position of the ball
-                prev_ball_pos = ball_pos - o['ball_direction'][:2]
-                for target_pos in self.target_positions:
-                    dist_to_target = np.linalg.norm(np.array(target_pos) - np.array(ball_pos))
-                    if dist_to_target < 0.1:
-                        if not self.passes_completed[target_pos]:
-                            additional_reward[i] += self.pass_accuracy_reward
-                            self.passes_completed[target_pos] = True
-                    if np.linalg.norm(np.array(target_pos) - np.array(prev_ball_pos)) > dist_to_target:
-                        additional_reward[i] += self.pass_completion_reward
+    def reward(self, reward):
+        # Initializing the components of reward for each agent
+        components = {"base_score_reward": reward.copy(),
+                      "long_pass_reward": [0.0] * len(reward)}
         
-        reward = [r + ar for r, ar in zip(base_reward, additional_reward)]
-        components = {
-            'base_score_reward': base_reward,
-            'additional_reward': additional_reward
-        }
+        # Fetch the most recent environment observations
+        observation = self.env.unwrapped.observation()
+        if observation is None:
+            return reward, components
+
+        assert len(reward) == len(observation)
+
+        for rew_index, o in enumerate(observation):
+            if 'ball_owned_team' in o and o['ball_owned_team'] == 0:  # Check if our team owns the ball
+                last_ball_pos = o.get('last_ball_pos', o['ball'])  # Fetch last known ball position
+                current_ball_pos = o['ball']
+                
+                # Compute the Euclidean distance the ball has traveled
+                ball_travel_distance = np.linalg.norm(current_ball_pos[:2] - last_ball_pos[:2])
+                
+                if ball_travel_distance > self.distance_threshold:
+                    components["long_pass_reward"][rew_index] = self.pass_reward_multiplier * ball_travel_distance
+                                        
+                    # Check how close the ball is to any teammate
+                    for teammate_pos in o['left_team']:
+                        distance_to_teammate = np.linalg.norm(teammate_pos - current_ball_pos[:2])
+                        # Increase reward based on how close the ball is to teammates
+                        if distance_to_teammate < 0.1:  # 0.1 threshold for being very close
+                            components["long_pass_reward"][rew_index] += self.precision_multiplier / distance_to_teammate
+                        
+                    reward[rew_index] += components["long_pass_reward"][rew_index]
+                
+                o['last_ball_pos'] = current_ball_pos  # Update the last known position for the next step
+
         return reward, components
-    
+
     def step(self, action):
         observation, reward, done, info = self.env.step(action)
         reward, components = self.reward(reward)
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
+        # Track the sticky actions
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
         for agent_obs in obs:
-            for i, action in enumerate(agent_obs['sticky_actions']):
-                info[f"sticky_actions_{i}"] = action
+            for i, action_act in enumerate(agent_obs['sticky_actions']):
+                info[f"sticky_actions_{i}"] = action_act
         return observation, reward, done, info

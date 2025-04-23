@@ -1,79 +1,87 @@
 import gym
 import numpy as np
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a dense reward for offensive skills."""
-    
+    """
+    A wrapper that adds a reward for offensive football skills such as passing, shooting, and dribbling.
+    """
     def __init__(self, env):
-        super(CheckpointRewardWrapper, self).__init__(env)
-        # Initialize sticky actions counter for detailed info on agent's behavior
+        super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
+        # Coefficients for different actions
+        self.pass_reward_coeff = 0.03
+        self.shot_reward_coeff = 0.07
+        self.dribble_reward_coeff = 0.05
+        self.sprint_reward_coeff = 0.02
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = {}
+        to_pickle['CheckpointRewardWrapper'] = self.sticky_actions_counter.copy()
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
+        self.sticky_actions_counter = from_pickle['CheckpointRewardWrapper']
         return from_pickle
 
     def reward(self, reward):
-        # Capturing the environment's observations for reward adjustments
+        """
+        Enhance the base reward based on offensive actions performed by agents.
+        """
         observation = self.env.unwrapped.observation()
-        components = {"base_score_reward": reward.copy()}
-        
+        components = {"base_score_reward": np.array(reward).copy(), 
+                      "pass_reward": np.zeros_like(reward),
+                      "shot_reward": np.zeros_like(reward),
+                      "dribble_reward": np.zeros_like(reward),
+                      "sprint_reward": np.zeros_like(reward)}
+
         if observation is None:
             return reward, components
 
-        # Extract specific game-mode related rewards
-        for idx, o in enumerate(observation):
-            # Check if the game is in normal play mode
-            if o['game_mode'] == 0:
-                if 'active' in o and o['ball_owned_player'] == o['active'] and o['ball_owned_team'] == 0:
-                    if 'sticky_actions' in o:
-                        actions = o['sticky_actions']
-                        # Rewards related to passing, shooting, dribbling, and sprinting
-                        pass_reward = actions[1] + actions[2]  # short pass + long pass
-                        shot_reward = actions[3]  # shot
-                        dribble_reward = actions[9]  # dribble
-                        sprint_reward = actions[8]  # sprint
+        action_indices = {
+            'Short Pass': 7,
+            'Long Pass': 8,
+            'Shot': 9,
+            'Dribble': 1,
+            'Sprint': 6
+        }
 
-                        # Accumulate rewards based on specific actions
-                        components[f"pass_reward_agent_{idx}"] = 0.1 * pass_reward
-                        components[f"shot_reward_agent_{idx}"] = 0.2 * shot_reward
-                        components[f"dribble_reward_agent_{idx}"] = 0.1 * dribble_reward
-                        components[f"sprint_reward_agent_{idx}"] = 0.05 * sprint_reward
+        for i, obs in enumerate(observation):
+            sticky_actions = obs['sticky_actions']
+            
+            # Reward for successful pass (short or long)
+            if sticky_actions[action_indices['Short Pass']] or sticky_actions[action_indices['Long Pass']]:
+                components['pass_reward'][i] = self.pass_reward_coeff
+                reward[i] += components['pass_reward'][i]
+            
+            # Reward for attempting a shot
+            if sticky_actions[action_indices['Shot']]:
+                components['shot_reward'][i] = self.shot_reward_coeff
+                reward[i] += components['shot_reward'][i]
 
-                        # Multiply rewards by respective coefficients and add them up
-                        reward[idx] += (components[f"pass_reward_agent_{idx}"] +
-                                        components[f"shot_reward_agent_{idx}"] +
-                                        components[f"dribble_reward_agent_{idx}"] +
-                                        components[f"sprint_reward_agent_{idx}"])
+            # Reward for dribbling
+            if sticky_actions[action_indices['Dribble']]:
+                components['dribble_reward'][i] = self.dribble_reward_coeff
+                reward[i] += components['dribble_reward'][i]
+
+            # Reward for sprinting effectively
+            if sticky_actions[action_indices['Sprint']]:
+                components['sprint_reward'][i] = self.sprint_reward_coeff
+                reward[i] += components['sprint_reward'][i]
 
         return reward, components
 
     def step(self, action):
-        # Perform the action on the environment
         observation, reward, done, info = self.env.step(action)
-        
-        # Update the reward based on custom function
         reward, components = self.reward(reward)
-        
-        # Update info dict with detailed rewards and final compounded reward
         info["final_reward"] = sum(reward)
         for key, value in components.items():
             info[f"component_{key}"] = sum(value)
-        
-        # Gather observations for the current state
         obs = self.env.unwrapped.observation()
         self.sticky_actions_counter.fill(0)
-        
-        # Update sticky actions info
         for agent_obs in obs:
             for i, action in enumerate(agent_obs['sticky_actions']):
                 info[f"sticky_actions_{i}"] = action
-
         return observation, reward, done, info
