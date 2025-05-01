@@ -14,7 +14,7 @@ import re
 from utils.misc import *
 
 OpenAI.api_base = "https://api.ohmygpt.com"
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 logging.basicConfig(level=logging.INFO)
 
 eval_reward = """

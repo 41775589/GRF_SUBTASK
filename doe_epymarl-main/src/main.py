@@ -34,6 +34,7 @@ def my_main(_run, _config, _log):
     th.manual_seed(config["seed"])
     config["env_args"]["seed"] = config["seed"]
 
+
     # run the framework
     run(_run, config, _log)
 
@@ -130,3 +131,4 @@ if __name__ == "__main__":
     # ex.observers.append(MongoObserver())
 
     ex.run_commandline(params)
+
