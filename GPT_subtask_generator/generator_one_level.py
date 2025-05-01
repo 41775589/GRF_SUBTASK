@@ -28,8 +28,9 @@ sys.path.append(SRC_DIR)
 
 from run import *
 
+
 OpenAI.api_base = "https://api.ohmygpt.com"
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 
 ROOT_DIR = os.getcwd()
 parent_dir = os.path.dirname(ROOT_DIR)
@@ -152,7 +153,7 @@ def merge_doe_cls(groups, n_agents, role_list, doe_path, merge_doe_name, max_rew
 #     else:
 #         return data
 
-def train_merge_team(groups, is_doe, layer, decompose_id, buffer_dir, max_reward_code_path_for_each_group, Time, origin_env_config):
+def train_merge_team(groups, is_doe, layer, decompose_id, buffer_dir, max_reward_code_path_for_each_group, Time, origin_env_config, alg_cfg):
     team_structure = {
         "total_members": 0,
         "num_subteams": len(groups),
@@ -244,11 +245,11 @@ def train_merge_team(groups, is_doe, layer, decompose_id, buffer_dir, max_reward
     # 修改模板数据以生成 doe_ia2c.yaml 格式
     template_data['mac'] = "doe_mac"  # 修改 mac
     template_data['target_update_interval_or_tau'] = 0.01  # 修改更新间隔
-    template_data['learner'] = "doe_ia2c_learner"  # 修改学习器
+    template_data['learner'] = f"doe_{alg_cfg}_learner"  # 修改学习器
     template_data['entropy_coef'] = 0.01  # 修改熵系数
     template_data['use_rnn'] = True  # 使用 RNN
     template_data['critic_type'] = "ac_critic"  # 修改评论家类型
-    template_data['name'] = "doe_ia2c"  # 修改名称
+    template_data['name'] = f"doe_{alg_cfg}"  # 修改名称
 
     # 11111111111指定 merge 以后的 full team doe cls 存储名称
     merged_doe_name = f"doe_{template_config_name}_layer{layer}_decomposition{decompose_id}_merged"
@@ -346,7 +347,6 @@ def train_merge_team(groups, is_doe, layer, decompose_id, buffer_dir, max_reward
     这个环境名字目前写死 gfootball， smac 时可以改"""
 
     if is_doe:
-        print("1111111111111111111111111111111")
         rl_logpath = f"full_training_depth_1_{origin_env_config}_doe.txt"
         print(f'--config={merged_doe_config_name}')
         print(f'--env-config={origin_env_config}')
@@ -1055,7 +1055,7 @@ def main(model, n_decomposition, n_reward, temperature, task, alg_cfg, use_doe, 
         """
         use_doe=True
         print("Start merging and training on the target task")
-        train_merge_team(groups, use_doe, layer=0, decompose_id=response_id, buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task}/{Time}', max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time, origin_env_config=task)
+        train_merge_team(groups, use_doe, layer=0, decompose_id=response_id, buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task}/{Time}', max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time, origin_env_config=task, alg_cfg=alg_cfg)
 
     # 完成了所有方案 n decomposition plan 的任务生成，Execute the Main task using w/w. DOE:
 

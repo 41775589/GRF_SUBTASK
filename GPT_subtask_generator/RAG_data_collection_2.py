@@ -31,11 +31,10 @@ sys.path.append(SRC_DIR)
 
 from run import *
 
-
 OpenAI.api_base = "https://api.ohmygpt.com"
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 
-DEEPSEEK_API_KEY = "KEY"  # 替换为你的DeepSeek API密钥
+DEEPSEEK_API_KEY = "key"  # 替换为你的DeepSeek API密钥
 DEEPSEEK_API_BASE = "https://api.deepseek.com/v1"  # DeepSeek API基础地址
 
 logging.basicConfig(level=logging.INFO)

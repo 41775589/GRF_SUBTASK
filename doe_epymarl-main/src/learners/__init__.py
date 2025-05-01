@@ -20,3 +20,7 @@ REGISTRY["pac_dcg_learner"] = PACDCGLearner
 
 from .doe_a2c_learner import DoE_A2C_Learner
 REGISTRY["doe_ia2c_learner"] = DoE_A2C_Learner
+
+from .doe_ppo_learner import DoE_PPOLearner
+REGISTRY["doe_mappo_learner"] = DoE_PPOLearner
+

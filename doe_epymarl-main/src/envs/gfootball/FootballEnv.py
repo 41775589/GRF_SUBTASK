@@ -44,6 +44,7 @@ class GoogleFootballEnv(MultiAgentEnv):
         self.number_of_right_players_agent_controls = number_of_right_players_agent_controls
         self.seed = seed
 
+
         self.env = football_env.create_environment(
             write_full_episode_dumps=self.write_full_episode_dumps,
             write_goal_dumps=self.write_goal_dumps,
@@ -57,7 +58,9 @@ class GoogleFootballEnv(MultiAgentEnv):
             dump_frequency=self.dump_freq,
             number_of_left_players_agent_controls=self.n_agents,
             number_of_right_players_agent_controls=self.number_of_right_players_agent_controls,
-            channel_dimensions=(observation_preprocessing.SMM_WIDTH, observation_preprocessing.SMM_HEIGHT))
+            channel_dimensions=(observation_preprocessing.SMM_WIDTH, observation_preprocessing.SMM_HEIGHT),
+            other_config_options={'game_engine_random_seed': self.seed})
+
 
         # GRF doesn't have seed option
         # self.env.seed(self.seed)

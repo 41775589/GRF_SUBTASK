@@ -30,7 +30,7 @@ from run import *
 
 
 OpenAI.api_base = "https://api.ohmygpt.com"
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 
 ROOT_DIR = os.getcwd()
 parent_dir = os.path.dirname(ROOT_DIR)
@@ -153,7 +153,7 @@ def merge_doe_cls(groups, n_agents, role_list, doe_path, merge_doe_name, max_rew
 #     else:
 #         return data
 
-def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sample_id, buffer_dir, max_reward_code_path_for_each_group, Time, task_env, suffix, rl_runs):
+def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sample_id, buffer_dir, max_reward_code_path_for_each_group, Time, task_env, suffix, rl_runs, alg_cfg):
     team_structure = {
         "total_members": 0,
         "num_subteams": len(groups),
@@ -237,7 +237,7 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
     """
 
     # 读取 ia2c_ns.yaml 作为模板,也可以用ia2c
-    template_config_name = 'ia2c'
+    template_config_name = alg_cfg
     template_file_path = f'{SRC_DIR}/config/algs/{template_config_name}.yaml'
     with open(template_file_path, 'r', encoding='utf-8') as template_file:
         template_data = yaml.safe_load(template_file)
@@ -245,11 +245,11 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
     # 修改模板数据以生成 doe_ia2c.yaml 格式
     template_data['mac'] = "doe_mac"  # 修改 mac
     template_data['target_update_interval_or_tau'] = 0.01  # 修改更新间隔
-    template_data['learner'] = "doe_ia2c_learner"  # 修改学习器
+    template_data['learner'] = f"doe_{alg_cfg}_learner"  # 修改学习器
     template_data['entropy_coef'] = 0.01  # 修改熵系数
     template_data['use_rnn'] = True  # 使用 RNN
     template_data['critic_type'] = "ac_critic"  # 修改评论家类型
-    template_data['name'] = "doe_ia2c"  # 修改名称
+    template_data['name'] = f"doe_{alg_cfg}"  # 修改名称
 
     # 11111111111指定 merge 以后的 full team doe cls 存储名称
     merged_doe_name = f"doe_{template_config_name}_layer{layer}_decomposition{decompose_id}_subtask{group_id}_iter{iter_id}_sample{sample_id}_merged"
@@ -374,7 +374,7 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
                     f'--config={merged_doe_config_name}',
                     f'--env-config={task_env}{suffix}_layer{layer}_decomposition{decompose_id}_subtask{group_id}_iter{iter_id}_sample{sample_id}',
                 ]
-                process = subprocess.Popen(params, stdout=f, stderr=f)
+                full_process = subprocess.Popen(params)
 
                 # 获取文件的初始修改时间
                 while True:
@@ -386,7 +386,7 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
                     if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
                         print(
                             f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
-                        process.kill()  # 终止子进程
+                        full_process.kill()  # 终止子进程
                         break
                     # while process.poll() is None:  # 检查子进程是否还在运行
                     #     # 检查文件的最后修改时间
@@ -399,10 +399,10 @@ def train_merge_team(groups, is_doe, layer, decompose_id, group_id, iter_id, sam
                     # 等待一段时间后再检查
                     time.sleep(1)
 
-                process.wait()
+                full_process.wait()
             # Modified the check of successful training
             # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
-            rl_runs.append(process)
+            rl_runs.append(full_process)
 
     else:
         rl_logpath = f"{OUTPUT_DIR}/{task_env}{suffix}_full_training.txt"
@@ -1120,7 +1120,7 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
                                              group_id = group_id, iter_id = iter, sample_id = response_r_id,
                                              buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/gfootball/{Time}',
                                              max_reward_code_path_for_each_group=max_reward_code_path_for_each_group,
-                                             Time=Time, task_env=task_env, suffix=suffix, rl_runs = rl_runs)
+                                             Time=Time, task_env=task_env, suffix=suffix, rl_runs = rl_runs, alg_cfg=alg_cfg)
 
 
                     # 完成了reward次数的RL training，收集了所有的traj
@@ -1292,7 +1292,7 @@ def main(model, n_decomposition, n_reward, temperature, task_env, alg_cfg, use_d
         rl_runs = train_merge_team(task_tree[0], use_doe, layer="target", decompose_id=response_id, group_id = "target", iter_id = "target",
                                    sample_id = "target", buffer_dir=f'{MEDoE_DIR}/doe_epymarl-main/results/buffers/{task_env}/{Time}',
                                    max_reward_code_path_for_each_group=max_reward_code_path_for_each_group, Time=Time,
-                                   task_env = task_env, suffix = suffix, rl_runs = [])
+                                   task_env = task_env, suffix = suffix, rl_runs = [], alg_cfg=alg_cfg)
 
     # 完成了所有方案 n decomposition plan 的任务生成，Execute the Main task using w/w. DOE:
 

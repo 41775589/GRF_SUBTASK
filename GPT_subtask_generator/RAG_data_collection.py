@@ -29,7 +29,7 @@ sys.path.append(SRC_DIR)
 from run import *
 
 OpenAI.api_base = "https://api.ohmygpt.com"
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 
 ROOT_DIR = os.getcwd()
 parent_dir = os.path.dirname(ROOT_DIR)

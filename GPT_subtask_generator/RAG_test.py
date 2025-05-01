@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # Paste in your Together AI API Key or load it
 # TOGETHER_API_KEY = os.environ.get("TOGETHER_API_KEY")
-TOGETHER_API_KEY = "KEY"
+TOGETHER_API_KEY = "key"
 # print(TOGETHER_API_KEY)
 
 
