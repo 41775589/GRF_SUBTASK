@@ -67,6 +67,7 @@ def run(_run, _config, _log):
     logger.setup_sacred(_run)
 
     # Run and train
+
     run_sequential(args=args, logger=logger)
 
     # Clean up after finishing
@@ -145,10 +146,11 @@ def run_sequential(args, logger):
 
 
     # 如果要使用doe，那么加载对应agent的doe cls，并add到mac、learner
-    # doe cls的所有函数都有buffer path，存储和加载都是通过 buffer path + save/load name.pt
-    # buffer path等于所有doe相关的文件夹，可以改名字
+    # layer_tmp_dir 就是本层的所有pt文件根目录
     if hasattr(args, 'doe_classifier_cfg'):
-        load_doe_buffer_path = args.doe_classifier_cfg["load_doe_buffer_path"]
+        layer_tmp_dir = args.doe_classifier_cfg["layer_tmp_dir"]
+        os.makedirs(layer_tmp_dir, exist_ok=True)
+        # GRF_SUBTASK/doe_epymarl-main/results/gfootball/Time
 
 
     if args.use_doe:
@@ -167,7 +169,7 @@ def run_sequential(args, logger):
         doe_classifier = doe_classifier_config_loader(
             n_agents=args.n_agents,
             cfg=args.doe_classifier_cfg,  # 本来是args.get("doe_classifier_cfg")，这里args是namespace形式
-            buffer_path = load_doe_buffer_path, # merge buffer load path,
+            buffer_path = layer_tmp_dir, # merge buffer load path,
             load_mode='load'
         )
 
@@ -183,36 +185,41 @@ def run_sequential(args, logger):
 
     if args.use_cuda:
         learner.cuda()
-
+    # 目前这个ckpt path为空，导致learner没有load model
     if args.checkpoint_path != "":
-        timesteps = []
-        timestep_to_load = 0
+        # timesteps = []
+        # timestep_to_load = 0
+        #
+        # if not os.path.isdir(args.checkpoint_path):
+        #     logger.console_logger.info(
+        #         "Checkpoint directiory {} doesn't exist".format(args.checkpoint_path)
+        #     )
+        #     return
+        #
+        # # Go through all files in args.checkpoint_path
+        # for name in os.listdir(args.checkpoint_path):
+        #     full_name = os.path.join(args.checkpoint_path, name)
+        #     # Check if they are dirs the names of which are numbers
+        #     if os.path.isdir(full_name) and name.isdigit():
+        #         timesteps.append(int(name))
+        #
+        # if args.load_step == 0:
+        #     # choose the max timestep
+        #     timestep_to_load = max(timesteps)
+        # else:
+        #     # choose the timestep closest to load_step
+        #     timestep_to_load = min(timesteps, key=lambda x: abs(x - args.load_step))
+        # # !!!! 这个地方要改成加载的ckpt的路径和文件夹
+        # model_path = os.path.join(args.checkpoint_path, str(timestep_to_load))
+        #
+        # logger.console_logger.info("Loading model from {}".format(model_path))
+        # learner.load_models(model_path)
+        # runner.t_env = timestep_to_load
 
-        if not os.path.isdir(args.checkpoint_path):
-            logger.console_logger.info(
-                "Checkpoint directiory {} doesn't exist".format(args.checkpoint_path)
-            )
-            return
-
-        # Go through all files in args.checkpoint_path
-        for name in os.listdir(args.checkpoint_path):
-            full_name = os.path.join(args.checkpoint_path, name)
-            # Check if they are dirs the names of which are numbers
-            if os.path.isdir(full_name) and name.isdigit():
-                timesteps.append(int(name))
-
-        if args.load_step == 0:
-            # choose the max timestep
-            timestep_to_load = max(timesteps)
-        else:
-            # choose the timestep closest to load_step
-            timestep_to_load = min(timesteps, key=lambda x: abs(x - args.load_step))
-
-        model_path = os.path.join(args.checkpoint_path, str(timestep_to_load))
-
+        model_path = args.checkpoint_path
         logger.console_logger.info("Loading model from {}".format(model_path))
         learner.load_models(model_path)
-        runner.t_env = timestep_to_load
+
 
         if args.evaluate or args.save_replay:
             runner.log_train_stats_t = runner.t_env
@@ -232,6 +239,9 @@ def run_sequential(args, logger):
     last_time = start_time
 
     logger.console_logger.info("Beginning training for {} timesteps".format(args.t_max))
+
+    # # 用于调试
+    # args.t_max = 2000
 
     while runner.t_env <= args.t_max:
         # Run for a whole episode at a time
@@ -273,16 +283,20 @@ def run_sequential(args, logger):
             or model_save_time == 0
         ):
             model_save_time = runner.t_env
-            save_path = os.path.join(
-                args.local_results_path, "models", args.unique_token, str(runner.t_env)
-            )
+            save_path = os.path.join(dirname(dirname(abspath(__file__))),
+                                     args.local_results_path, "models",
+                                     args.unique_token,
+                                     str(runner.t_env))
+            # 这个目录目前有点奇怪 '/data/qiaodan/projects/GRF_SUBTASK/doe_epymarl-main/results/models/ia2c_seed114514_scenario_layer2_decomposition0_subtask6_2025-05-05 00:15:46.173157/150'
+            # 需要改成 GRF_SUBTASK/doe_epymarl-main/results/gfootball/Time/training_ckpts
+            
             # "results/models/{}".format(unique_token)
             os.makedirs(save_path, exist_ok=True)
             logger.console_logger.info("Saving models to {}".format(save_path))
 
             # learner should handle saving/loading -- delegate actor save/load to mac,
             # use appropriate filenames to do critics, optimizer states
-            learner.save_models(save_path)
+            learner.save_models(save_path)   # 这是训练过程的中间ckpt
 
             if args.use_wandb and args.wandb_save_model:
                 wandb_save_dir = os.path.join(
@@ -300,32 +314,51 @@ def run_sequential(args, logger):
             logger.log_stat("episode", episode, runner.t_env)
             logger.print_recent_stats()
             last_log_T = runner.t_env
+
+    """ Save training final models """
+    learner.save_models(layer_tmp_dir)   # 这是训练最终ckpt
+    logger.console_logger.info(f"Save final model ckpt to {layer_tmp_dir}")
     
     """ Save buffers for DoE Classifier """
     if args.save_buffer:
         # 创建在训练结束时存储buffer用于DoE的路径
-        # buffer_save_path = load_doe_buffer_path + new exp name
-        buffer_save_path = os.path.join(dirname(dirname(abspath(__file__))), args.local_results_path, "buffers", args.env, args.time_stamp)
-        os.makedirs(buffer_save_path, exist_ok=True)
+        # buffer_save_path = layer_tmp_dir + new exp name
+        # buffer_save_path = os.path.join(dirname(dirname(abspath(__file__))), args.local_results_path, "buffers", args.env, args.time_stamp)
+        # buffer_save_path = layer_tmp_dir
+        # os.makedirs(layer_tmp_dir, exist_ok=True)
 
         """名字需要重新考虑 group id 方便后续 merge"""
-        buffer_save_path_curr = buffer_save_path + f'/buffer_layer{args.layer_id}_decomposition{args.decomposition_id}_subtask{args.group_id}_iter{args.iter_id}_sample{args.sample_id}.pt'
-        th.save(buffer.data, buffer_save_path_curr)
-        logger.console_logger.info(f"Save buffer to {buffer_save_path} for DoE Classifier")
+        save_buffer_file_name = f'buffer_layer{args.layer_id}_decomposition{args.decomposition_id}_subtask{args.group_id}_iter{args.iter_id}_sample{args.sample_id}.pt'
+
+        # 将本stage的buffer存储名字传入 doe cls cfg，用于下面的新的cls训练
+        args.doe_classifier_cfg["save_buffer_file_name"] = save_buffer_file_name
+        save_buffer_file_path = os.path.join(layer_tmp_dir, save_buffer_file_name)
+        th.save(buffer.data, save_buffer_file_path)
+        logger.console_logger.info(f"Save buffer to {layer_tmp_dir} for DoE Classifier")
         # 目前在from config train中，写死的buffer名字为 load bufferpath+buffer.pt，需要改命名
 
     """ Train and Save DoE Classifier """
     # 直接用上面 buffer save path curr 的位置的 buffer_id.pt 来train
+    # 这里要考虑一下merge以后的team doe cls，分配新的role_list
     if args.save_doe_cls:
+        # 训练结束，创建属于本subtask的role_ids用于训练cls, group id 作为本组role_ids的label
+        group_id = args.group_id
+        curr_role_ids = {f"goal_{group_id}": list(range(args.n_agents)) }
+        args.doe_classifier_cfg["role_ids"] = curr_role_ids
+
+        
+        # (0, ('goal_5', ['a' b c d e])) 对应 role list [0 0 0 0 0]
+        # (0, ('defence', ['alice', 'bob'])) 和 (1, ('attack', ['carol', 'dave']))
+
         doe_classifier = doe_classifier_config_loader(
             n_agents=args.n_agents,
             cfg=args.doe_classifier_cfg,  # 本来是args.get("doe_classifier_cfg")，这里args是namespace形式
-            buffer_path = buffer_save_path_curr, # 使用当前保存的 buffer file
+            buffer_path = layer_tmp_dir, # 使用当前保存的 buffer dir
             load_mode='train'
         )
         # from config设置了，如果有save cls，就会按照save name保存cls
-        logger.console_logger.info(f"Save buffer to {buffer_save_path} for DoE Classifier")
-        
+        logger.console_logger.info(f"Save new doe cls to {layer_tmp_dir} for DoE Classifier")
+
 
     runner.close_env()
     logger.console_logger.info("Finished Training")

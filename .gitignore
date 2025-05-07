@@ -5,6 +5,7 @@ build/
 *.egg-info/
 __pycache__
 dist/
+outputs/
 # virtual environment
 football-env*/
 

@@ -26,15 +26,39 @@ class ACCritic(nn.Module):
         q = self.fc3(x)
         return q
 
+    # def _build_inputs(self, batch, t=None):
+    #     bs = batch.batch_size
+    #     max_t = batch.max_seq_length if t is None else 1
+    #     ts = slice(None) if t is None else slice(t, t+1)
+    #     inputs = []
+    #     # observations
+    #     inputs.append(batch["obs"][:, ts])
+    #
+    #     inputs.append(th.eye(self.n_agents, device=batch.device).unsqueeze(0).unsqueeze(0).expand(bs, max_t, -1, -1))
+    #
+    #     inputs = th.cat(inputs, dim=-1)
+    #     return inputs, bs, max_t
+    #
+    # def _get_input_shape(self, scheme):
+    #     # observations
+    #     input_shape = scheme["obs"]["vshape"]
+    #     # agent id
+    #     input_shape += self.n_agents
+    #     return input_shape
+
+    # 改成固定长度 one-hot
     def _build_inputs(self, batch, t=None):
         bs = batch.batch_size
         max_t = batch.max_seq_length if t is None else 1
-        ts = slice(None) if t is None else slice(t, t+1)
+        ts = slice(None) if t is None else slice(t, t + 1)
         inputs = []
         # observations
         inputs.append(batch["obs"][:, ts])
 
-        inputs.append(th.eye(self.n_agents, device=batch.device).unsqueeze(0).unsqueeze(0).expand(bs, max_t, -1, -1))
+        fixed_len = 5  # 固定长度5
+        eye_matrix = th.zeros(self.n_agents, fixed_len, device=batch.device)
+        eye_matrix[:, :self.n_agents] = th.eye(self.n_agents, device=batch.device)
+        inputs.append(eye_matrix.unsqueeze(0).expand(bs, max_t, -1, -1))  # (bs, max_t, n_agents, fixed_len)
 
         inputs = th.cat(inputs, dim=-1)
         return inputs, bs, max_t
@@ -43,5 +67,6 @@ class ACCritic(nn.Module):
         # observations
         input_shape = scheme["obs"]["vshape"]
         # agent id
-        input_shape += self.n_agents
+        fixed_len = 5  # 固定长度
+        input_shape += fixed_len  # 添加固定长度的 agent_id
         return input_shape

@@ -134,13 +134,15 @@ class MLPClassifier:
     
     @classmethod
     def from_config(cls, n_agents, cfg, buffer_path, load_mode):
-        # if cfg.get("load_mode") == "train":
         if load_mode == "train":
             classifier = cls.from_config_train(n_agents, cfg, buffer_path)
             if cfg.get("save_classifier", False):
-                # 此处把cls存在buffer的文件夹下
-                save_dir = os.path.dirname(buffer_path)
-                save_path = os.path.join(save_dir, cfg["save_doe_name"])
+                # 此处把cls存在buffer的文件夹下, 即 buffer_path 该文件夹
+                # save_dir = os.path.dirname(buffer_path)
+                save_path = os.path.join(buffer_path, cfg["save_doe_name"])    
+                # cfg["save_doe_name"] 是存储cls的pt文件名
+                # load_doe_name 是上一层的子任务的cls，待读取加载的
+                # layer_tmp_dir 是那个buffer.pt的根目录，还需要一个buffer的名字
                 classifier.save(save_path)
             return classifier
         elif load_mode == "load":
@@ -168,9 +170,12 @@ class MLPClassifier:
         """ To LZH
         这里写死的buffer.pt，需要配合多层分解重新命名规则，参考 generator_one_level line 913注释，命名规则一致即可
         """
-        if not os.path.exists(buffer_path):
-            raise FileNotFoundError(f"Buffer file not found at {buffer_path}")
-        exp_buffers = torch.load(os.path.join(buffer_path))
+        
+        # buffer_path 实际上指的是buffer_dir，为了与from config load的逻辑保持一致，这里修改为：
+        exp_buffer_file_path = os.path.join(buffer_path, cfg["save_buffer_file_name"])
+        if not os.path.exists(exp_buffer_file_path):
+            raise FileNotFoundError(f"Buffer file not found at {exp_buffer_file_path}")
+        exp_buffers = torch.load(exp_buffer_file_path, weights_only=False)
 
         # 考虑有时候用episode data而不是transitions,getattr
         transition_data = exp_buffers.transition_data
@@ -243,7 +248,7 @@ class MLPClassifier:
 
         # absolute_path = os.path.abspath(cfg.load_doe_name)
         absolute_path = os.path.join(buffer_path, cfg["load_doe_name"])
-        loaded_dict = torch.load(absolute_path)
+        loaded_dict = torch.load(absolute_path, weights_only=False)
         
         # sanity check
         if not isinstance(loaded_dict['mlps'], list) or not all(isinstance(mlp, torch.nn.Module) for mlp in loaded_dict['mlps']):

@@ -34,6 +34,16 @@ REGISTRY["gymma"] = gymma_fn
 
 # Add GRF API
 from functools import partial
+# import sys
+# import os
+
+# # 获取绝对路径
+# project_path = os.path.abspath('/data/qiaodan/projects/GRF_SUBTASK')
+
+# # 将路径添加到 sys.path
+# if project_path not in sys.path:
+#     sys.path.insert(0, project_path)
+    
 def env_fn(env, **kwargs) -> MultiAgentEnv:
     # remove common_reward and reward_scalarisation
     kwargs.pop('common_reward', None)
@@ -43,6 +53,10 @@ def env_fn(env, **kwargs) -> MultiAgentEnv:
 try:
     gfootball = True
     from .gfootball import GoogleFootballEnv
+    # from gfootball import GoogleFootballEnv  # 调试相对路径失败
+
+
+
 except Exception as e:
     gfootball = False
     print(e)

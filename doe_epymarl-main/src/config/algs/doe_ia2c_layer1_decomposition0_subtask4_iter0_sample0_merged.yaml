@@ -11,8 +11,8 @@ critic_type: ac_critic
 decomposition_id: 0
 doe_classifier_cfg:
   doe_type: mlp
-  load_doe_buffer_path: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-0423/doe_epymarl-main/results/buffers/gfootball/0426
-  load_doe_name: doe_ia2c_layer1_decomposition0_subtask4_iter0_sample0_merged.pt
+  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-tmp/doe_epymarl-main/results/gfootball/0505_ia2c/decomposition0/group4
+  load_doe_name: cls_layer1_decomposition0_subtask4_iter0_sample0_merged.pt
   load_mode: train
   mlp:
     batch_size: 512
@@ -21,13 +21,10 @@ doe_classifier_cfg:
     learning_rate: 0.01
     test_fraction: 0.1
   role_ids:
-    goal_4:
-    - 3
-    - 4
-    goal_5:
+    goal_6:
     - 0
+    goal_7:
     - 1
-    - 2
   save_classifier: true
   save_doe_name: cls_layer1_decomposition0_subtask4_iter0_sample0.pt
 doe_type: mlp
@@ -54,6 +51,6 @@ standardise_returns: false
 standardise_rewards: true
 t_max: 500000
 target_update_interval_or_tau: 0.01
-time_stamp: '0426'
+time_stamp: 0505_ia2c
 use_doe: true
 use_rnn: true
