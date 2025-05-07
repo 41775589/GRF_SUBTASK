@@ -15,11 +15,18 @@ class ParallelRunner:
         self.logger = logger
         self.batch_size = self.args.batch_size_run
 
+        # # 为了测试
+        # self.batch_size = 1
+
         # Make subprocesses for the envs
         self.parent_conns, self.worker_conns = zip(
             *[Pipe() for _ in range(self.batch_size)]
         )
         env_fn = env_REGISTRY[self.args.env]
+
+        # 调试地图路径问题
+        # self.args.env_args["map_name"] = "1_vs_1_easy"
+
         env_args = [self.args.env_args.copy() for _ in range(self.batch_size)]
         for i in range(self.batch_size):
             env_args[i]["seed"] += i

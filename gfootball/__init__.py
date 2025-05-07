@@ -20,6 +20,8 @@ import gym
 from gym.envs.registration import register
 
 
+
+
 for env_name in scenario_builder.all_scenarios():
   register(
       id='GFootball-{env_name}-SMM-v0'.format(env_name=env_name),

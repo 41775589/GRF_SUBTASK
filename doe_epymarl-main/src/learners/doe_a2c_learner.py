@@ -2,6 +2,7 @@
 # 这个是自定义版本，直接在epymarl a2c基础上添加 boost coef，影响 actor update 和 sample 
 
 import copy
+import os
 from components.episode_buffer import EpisodeBatch
 from modules.critics.coma import COMACritic
 from modules.critics.centralV import CentralVCritic
@@ -71,6 +72,14 @@ class DoE_A2C_Learner:
         if self.args.standardise_rewards:
             self.rew_ms.update(rewards)
             rewards = (rewards - self.rew_ms.mean) / th.sqrt(self.rew_ms.var)
+
+        if self.args.common_reward:
+            assert (
+                    rewards.size(2) == 1
+            ), "Expected singular agent dimension for common rewards"
+            # reshape rewards to be of shape (batch_size, episode_length, n_agents)
+            rewards = rewards.expand(-1, -1, self.n_agents)
+
 
         # No experiences to train on in this minibatch
         if mask.sum() == 0:
@@ -218,17 +227,23 @@ class DoE_A2C_Learner:
         th.save(self.agent_optimiser.state_dict(), "{}/agent_opt.th".format(path))
         th.save(self.critic_optimiser.state_dict(), "{}/critic_opt.th".format(path))
 
-    def load_models(self, path):
-        self.mac.load_models(path)
-        self.critic.load_state_dict(th.load("{}/critic.th".format(path), map_location=lambda storage, loc: storage))
-        # Not quite right but I don't want to save target networks
-        self.target_critic.load_state_dict(self.critic.state_dict())
-        self.agent_optimiser.load_state_dict(th.load("{}/agent_opt.th".format(path), map_location=lambda storage, loc: storage))
-        self.critic_optimiser.load_state_dict(th.load("{}/critic_opt.th".format(path), map_location=lambda storage, loc: storage))
+    # def load_models(self, path):
+    #     self.mac.load_models(path)
+    #     self.critic.load_state_dict(th.load("{}/critic.th".format(path), map_location=lambda storage, loc: storage))
+    #     # Not quite right but I don't want to save target networks
+    #     self.target_critic.load_state_dict(self.critic.state_dict())
+    #     self.agent_optimiser.load_state_dict(th.load("{}/agent_opt.th".format(path), map_location=lambda storage, loc: storage))
+    #     self.critic_optimiser.load_state_dict(th.load("{}/critic_opt.th".format(path), map_location=lambda storage, loc: storage))
 
+    def load_models(self, path):
+        #已在doe_controller改为actor_init
+        self.mac.load_models(path)
+        # 加载 critic 和 target_critic 的权重
+        self.critic.load_state_dict(th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage))
+        self.target_critic.load_state_dict(self.critic.state_dict())
+        # 注意：这里不加载 optimizer，因此不支持中断训练后继续
 
     # DoE模块，调节超参数，分别是lr，采样动作的tmp，entropy系数，lr和ent都在qty里，temp没出现，可能在别的文件中
-
     def is_doe(self, obs, agent_id=None):
         return self.doe_classifier.is_doe(obs, agent_id=agent_id)
 

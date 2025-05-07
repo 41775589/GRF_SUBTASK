@@ -31,7 +31,7 @@ critic_type: "ac_critic"
 
 name: "ia2c"
 
-t_max: 500000
+t_max: 1000000
 
 use_doe: false
 save_buffer: true

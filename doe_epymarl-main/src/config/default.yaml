@@ -25,15 +25,15 @@ wandb_team: null # W&B team name
 wandb_project: null # W&B project name
 wandb_mode: "offline" # W&B mode (online/offline)
 wandb_save_model: False # Save models to W&B (only done if use_wandb is True and save_model is True)
-save_model: False # Save the models to disk
-save_model_interval: 50000 # Save models after this many timesteps
+save_model: True # Save the models to disk
+save_model_interval: 1000 # Save models after this many timesteps
 checkpoint_path: "" # Load a checkpoint from this path
 evaluate: False # Evaluate model for test_nepisode episodes and quit (no training)
 render: False # Render the environment when evaluating (only when evaluate == True)
 load_step: 0 # Load model trained on this many timesteps (0 if choose max possible)
 save_replay: False # Saving the replay of the model loaded from checkpoint_path
 local_results_path: "results" # Path for local results
-seed: 114514
+seed: 465704813
 
 # --- RL hyperparameters ---
 gamma: 0.99

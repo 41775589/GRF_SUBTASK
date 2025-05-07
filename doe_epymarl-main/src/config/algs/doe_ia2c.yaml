@@ -75,4 +75,7 @@ doe_classifier_cfg:
       - 1
 
 
+# 为了配合新版本medoe，可以移除
+time_stamp: 'test'
+
 
