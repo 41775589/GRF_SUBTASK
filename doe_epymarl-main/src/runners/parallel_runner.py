@@ -13,7 +13,10 @@ class ParallelRunner:
     def __init__(self, args, logger):
         self.args = args
         self.logger = logger
-        self.batch_size = self.args.batch_size_run
+        # self.batch_size = self.args.batch_size_run  
+
+        # 为了测试
+        self.batch_size = 1
 
         # # 为了测试
         # self.batch_size = 1
