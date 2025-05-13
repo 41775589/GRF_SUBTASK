@@ -1,12 +1,34 @@
+# Repo History
+
+相关repo
+前置项目: 
+- Medoe_epymarl, 第一版基于epymarl框架集成medoe
+- doe_epymarl, 基于epymarl框架集成medoe相关功能，实现doe_a2c_learner，基本用于后续训练
+- football-MARL-subtask, zihao开发的基于Eureka框架GRF任务分解流程，未集成medoe
+- grfdoe, 初步集成Eureka和medoe
+以上已停止维护
+当前项目:
+- GRF_SUBTASK, 完整的Eureka+medoe
+  - fork from zihao
+  - 改进后的merge policy，重构save load逻辑在tmp branch (May. 7th)
+
+
+# TODO List
+- 检查 param sharing 的 controller 问题，确保 merge team 的 load policy
+- 检查 a2c ippo learner 逻辑
+
+
+
+# Repo Info
 gfootball.GPT_subtask_generator.subtask_generator.generator_one_level为单层分解
 gfootball.GPT_subtask_generator.subtask_generator.generator_main为多层分解
 TODO：
-1. 多层分解使用的new_generation_loop函数
+1. 多层分解使用的new_generation_loop函数 （done）
 2. 将self reflection封装为函数
 3. 检查训练结束后的result。修改适用于epymarl输出结果的epoch_freq的获取
 4. 增加结果中其他metric，如让环境输出winning rate
-5. 训练模型的保存与读取，用于父任务训练
-6. 训练子任务时环境config智能体数量小于4时的bug
+5. 训练模型的保存与读取，用于父任务训练 （解决save，未解决load）
+6. 训练子任务时环境config智能体数量小于4时的bug （Done）
 
 
 # Google Research Football

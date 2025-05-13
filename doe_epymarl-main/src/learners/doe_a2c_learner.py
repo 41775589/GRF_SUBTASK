@@ -239,7 +239,15 @@ class DoE_A2C_Learner:
         #已在doe_controller改为actor_init
         self.mac.load_models(path)
         # 加载 critic 和 target_critic 的权重
-        self.critic.load_state_dict(th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage))
+        # self.critic.load_state_dict(th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage))
+        # self.target_critic.load_state_dict(self.critic.state_dict())
+
+        critic_state_dict = th.load(f"{path}/critic_init.th", map_location=lambda storage, loc: storage)
+        print(type(critic_state_dict))  # 查看是否是 list
+        print(len(critic_state_dict))  # 查看其长度
+        print(critic_state_dict)  # 打印查看其内容
+
+        self.critic.load_state_dict(critic_state_dict)
         self.target_critic.load_state_dict(self.critic.state_dict())
         # 注意：这里不加载 optimizer，因此不支持中断训练后继续
 

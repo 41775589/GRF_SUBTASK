@@ -37,6 +37,7 @@ class DoEMAC(BasicMAC):
         obs = ep_batch["obs"][:, t_ep]
         if not test_mode:
             agent_outputs = agent_outputs/self.boost_temp(obs).to(agent_outputs.device)
+            # 这里没输入agent id，返回的是所有agent的doe gain
         else:
             agent_outputs = agent_outputs
 
