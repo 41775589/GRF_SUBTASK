@@ -32,4 +32,17 @@ q_nstep: 5 # 1 corresponds to normal r + gammaV
 critic_type: "ac_critic_ns"
 name: "ippo_ns"
 
-t_max: 20050000
+t_max: 50000
+
+use_doe: false
+save_buffer: true
+save_doe_cls: true
+
+
+# 新添加doe参数
+doe_classifier_cfg:
+  doe_type: mlp
+  layer_tmp_dir: /data/qiaodan/projects/GRF_SUBTASK/doe_epymarl-main/results/gfootball/0510_ia2c_ns/decomposition0/group6
+  load_doe_buffer_path: GRF_SUBTASK/doe_epymarl-main/results/buffer/grf  # 添加这行
+  load_doe_name: load_mlp_classifier.pt  # 添加这行
+  load_mode: train
