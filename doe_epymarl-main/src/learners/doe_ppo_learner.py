@@ -286,26 +286,32 @@ class DoE_PPOLearner:
         th.save(self.critic_optimiser.state_dict(), "{}/critic_opt.th".format(path))
 
     def load_models(self, path):
-        self.mac.load_models(path)
-        self.critic.load_state_dict(
-            th.load(
-                "{}/critic.th".format(path), map_location=lambda storage, loc: storage
-            )
-        )
-        # Not quite right but I don't want to save target networks
+        # 已在doe_controller改为actor_init
+        # 加载合并后的actor
+        actor_state_dict = th.load("{}/actor_init.th".format(path), map_location=lambda storage, loc: storage)
+        # 由于mac.agents是ModuleList包含2个RNNAgent，需要分别加载
+        for agent_id, agent in enumerate(self.mac.agent.agents):
+            # 创建新的state dict，移除"agents.0."前缀
+            new_state_dict = {}
+            for k, v in actor_state_dict[agent_id].items():
+                # 方法1：使用split
+                new_k = k.split('.')
+                if new_k[0] == 'agents':  # 确保是以agents开头
+                    new_k = '.'.join(new_k[2:])  # 跳过'agents.X'，直接取后面的部分
+                else:
+                    new_k = k  # 如果不是以agents开头，保持原样
+                new_state_dict[new_k] = v
+            # 加载处理后的state dict
+            agent.load_state_dict(new_state_dict)
+
+        # 加载合并后的critic
+        critic_state_dict = th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage)
+        # critic.critics是list包含2个critic，需要分别加载
+        for critic_id, critic in enumerate(self.critic.critics):
+            critic.load_state_dict(critic_state_dict[critic_id])
+
+        # 同步target critic
         self.target_critic.load_state_dict(self.critic.state_dict())
-        self.agent_optimiser.load_state_dict(
-            th.load(
-                "{}/agent_opt.th".format(path),
-                map_location=lambda storage, loc: storage,
-            )
-        )
-        self.critic_optimiser.load_state_dict(
-            th.load(
-                "{}/critic_opt.th".format(path),
-                map_location=lambda storage, loc: storage,
-            )
-        )
 
     # DoE模块，调节超参数，分别是lr，采样动作的tmp，entropy系数，lr和ent都在qty里，temp没出现，可能在别的文件中
 

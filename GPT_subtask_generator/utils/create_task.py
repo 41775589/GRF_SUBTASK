@@ -64,17 +64,15 @@ def create_train_cfg(root_dir, Time, algs_name, layer, response_id, response_r_i
 
     # 添加基本训练参数（如果模版不存在）
     base_params = {
-        "hidden_dim": 128,
+        # "hidden_dim": 128,
         "obs_agent_id": True, # 开启onehot
         "use_rnn": True,
-        "use_doe": True,  # 确保DOE功能开启
         "save_buffer": True,
         "save_doe_cls": True
     }
     
     for key, value in base_params.items():
-        if key not in data:
-            data[key] = value
+        data[key] = value
 
     data["layer_id"] = layer
     data["decomposition_id"] = response_id
@@ -124,9 +122,8 @@ def create_train_cfg(root_dir, Time, algs_name, layer, response_id, response_r_i
     data["doe_classifier_cfg"].update(doe_cfg)
 
     # 本层实验的所有存储文件统一文件夹
-    # layer_data_save_dir=f'~/projects/GRF_SUBTASK/doe_epymarl-main/results/gfootball/{Time}/decomposition{response_id}/group{group_id}'
-    # layer_data_save_dir = os.path.expanduser(layer_data_save_dir)
-    data["doe_classifier_cfg"]["layer_tmp_dir"] = f"{results_dir}/{task_env}/{Time}/decomposition{response_id}/group{group_id}"
+    data["doe_classifier_cfg"][
+        "layer_tmp_dir"] = f"{results_dir}/{task_env}/{Time}/decomposition{response_id}/group{group_id}"
 
     # Write the new YAML file
     with open(output_file, 'w') as new_yamlfile:

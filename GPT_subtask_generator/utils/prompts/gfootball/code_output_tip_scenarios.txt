@@ -15,4 +15,15 @@ Importantly:
     e_PlayerRole_RM: Right Midfielder
     e_PlayerRole_AM: Attacking Midfielder
     e_PlayerRole_CF: Centre Forward
-3. No matter how many players each team has (even if there is only one), make sure each team has one and only one Goalkeeper (e_PlayerRole_GK), or the code will not function properly.
+3. In builder.AddPlayer(x, y, role, controllable), the x and y parameters represent the player's initial position on the field.
+    X-axis (left-right direction):
+        -1.0 represents the far left boundary of the field, where the left-side goal is located.
+        1.0 represents the far right boundary of the field, where the right-side goal is located.
+    Y-axis (top-bottom direction):
+        -0.42 represents the top boundary of the field.
+        0.42 represents the bottom boundary of the field.
+Important: To ensure consistency, even when adding players on the right team, the environment mirrors all observations so that your goal always appears at the center left position [-1, 0].
+As a result, goalkeepers on both teams are typically placed at x = -1.0, y = 0, and all players' initial x-positions are within the range [-1.0, 0), while y-positions are within (-0.42, 0.42).
+Please assign appropriate player roles and initial coordinates based on the current task.
+3. Important: No matter how many players each team has (even if there is only one), make sure each team has **one and only one** Goalkeeper (e_PlayerRole_GK), or the code will not function properly.
+4. The team of the trained agent is on the left. When setting up players for the left team, please ensure that the number of players on the left, excluding the goalkeeper, is not less than the number of agents in the current task.

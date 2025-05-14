@@ -13,7 +13,7 @@ TOGETHER_API_KEY = "key"
 # print(TOGETHER_API_KEY)
 
 
-with open('RAG_data/database/merged_data.json', 'r') as file:
+with open('RAG_data/merged_knowledge_base.json', 'r') as file:
     rag_data = json.load(file)
 
 print(len(rag_data))
@@ -79,7 +79,7 @@ def generate_batch_embeddings(input_texts: List[str], model_api_string: str, bat
 # print("Embedding shape: ", embeddings.shape)
 # print("Embeddings: ", embeddings)
 
-embeddings = np.load('RAG_data/database/embeddings.npy')
+embeddings = np.load('RAG_data/knowledge_base_embeddings.npy')
 
 eval_reward = """
 import gym
@@ -181,7 +181,7 @@ top_10_sorted_suggestions = [rag_data[index]['suggestions'] for index in indices
 top_10_data = [rag_data[index] for index in indices[0][:10]]
 print("TOP-TEN:", top_10_data)
 
-with open('RAG_data/database/top_10_results.json', 'w', encoding='utf-8') as f:
+with open('RAG_data/top_10_results.json', 'w', encoding='utf-8') as f:
     json.dump(top_10_data, f, ensure_ascii=False, indent=2)
 
 # %%

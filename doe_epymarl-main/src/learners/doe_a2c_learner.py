@@ -237,19 +237,38 @@ class DoE_A2C_Learner:
 
     def load_models(self, path):
         #已在doe_controller改为actor_init
-        self.mac.load_models(path)
-        # 加载 critic 和 target_critic 的权重
+        # 加载合并后的actor
+        actor_state_dict = th.load("{}/actor_init.th".format(path), map_location=lambda storage, loc: storage)
+        # 由于mac.agents是ModuleList包含2个RNNAgent，需要分别加载
+        for agent_id, agent in enumerate(self.mac.agent.agents):
+            # 创建新的state dict，移除"agents.0."前缀
+            new_state_dict = {}
+            for k, v in actor_state_dict[agent_id].items():
+                # 方法1：使用split
+                new_k = k.split('.')
+                if new_k[0] == 'agents':  # 确保是以agents开头
+                    new_k = '.'.join(new_k[2:])  # 跳过'agents.X'，直接取后面的部分
+                else:
+                    new_k = k  # 如果不是以agents开头，保持原样
+                new_state_dict[new_k] = v
+            # 加载处理后的state dict
+            agent.load_state_dict(new_state_dict)
+        
+        # 加载合并后的critic
+        critic_state_dict = th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage)
+        # critic.critics是list包含2个critic，需要分别加载
+        for critic_id, critic in enumerate(self.critic.critics):
+            critic.load_state_dict(critic_state_dict[critic_id])
+        
+        # 同步target critic
+        self.target_critic.load_state_dict(self.critic.state_dict())
+
+
+        # self.mac.load_models(path)
+        # # 加载 critic 和 target_critic 的权重
         # self.critic.load_state_dict(th.load("{}/critic_init.th".format(path), map_location=lambda storage, loc: storage))
         # self.target_critic.load_state_dict(self.critic.state_dict())
-
-        critic_state_dict = th.load(f"{path}/critic_init.th", map_location=lambda storage, loc: storage)
-        print(type(critic_state_dict))  # 查看是否是 list
-        print(len(critic_state_dict))  # 查看其长度
-        print(critic_state_dict)  # 打印查看其内容
-
-        self.critic.load_state_dict(critic_state_dict)
-        self.target_critic.load_state_dict(self.critic.state_dict())
-        # 注意：这里不加载 optimizer，因此不支持中断训练后继续
+        # # 注意：这里不加载 optimizer，因此不支持中断训练后继续
 
     # DoE模块，调节超参数，分别是lr，采样动作的tmp，entropy系数，lr和ent都在qty里，temp没出现，可能在别的文件中
     def is_doe(self, obs, agent_id=None):

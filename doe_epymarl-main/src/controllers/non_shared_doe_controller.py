@@ -10,7 +10,8 @@ from .non_shared_controller import NonSharedMAC
 
 class DoENonSharedMAC(NonSharedMAC):
     def __init__(self, scheme, groups, args):
-        super(DoENonSharedMAC, self).__init__(scheme, groups, args)
+        # super(NonSharedMAC, self).__init__(scheme, groups, args)
+        super().__init__(scheme, groups, args)
         # add doe classifier
         self.ent_coef = 1.0 
         
@@ -35,108 +36,12 @@ class DoENonSharedMAC(NonSharedMAC):
         chosen_actions = self.action_selector.select_action(agent_outputs[bs], avail_actions[bs], t_env, test_mode=test_mode)
         return chosen_actions
 
-    # def load_models(self, path):
-    #     """
-    #     改为load actor_init
-    #     从一个大的模型中load 每个agent的actor_init？
-    #     """
-    #     self.agent.load_state_dict(th.load("{}/actor_init.th".format(path), map_location=lambda storage, loc: storage))
-
-    # def load_models(self, path):
-    #     actor_models = th.load(f"{path}/actor_init.th", map_location=lambda storage, loc: storage)
-    #
-    #     # 遍历每个 agent，并加载各自参数
-    #     for agent_id in range(self.n_agents):
-    #         agent_state_dict = actor_models[agent_id]
-    #
-    #         # 过滤掉前缀（如 agents.0. → 去掉前缀）
-    #         new_state_dict = {}
-    #         for k, v in agent_state_dict.items():
-    #             # 移除 agents.{id}. 前缀
-    #             new_key = k.replace(f"agents.{agent_id}.", "")
-    #             new_state_dict[new_key] = v
-    #
-    #
-    #         self.agent[agent_id].load_state_dict(new_state_dict)
-    #
-    #     print(f"Loaded actor models for {self.n_agents} agents.")
-    #
-    # def load_models(self, path):
-    #     actor_models = th.load(f"{path}/actor_init.th", map_location=lambda storage, loc: storage)
-    #
-    #     for agent_id in range(self.n_agents):
-    #         agent_state_dict = actor_models[agent_id]
-    #
-    #         new_state_dict = {
-    #             k.replace(f"agents.{agent_id}.", ""): v
-    #             for k, v in agent_state_dict.items()
-    #         }
-    #
-    #         self.agent.agents[agent_id].load_state_dict(new_state_dict)
-    #
-    #     print(f"Loaded actor models for {self.n_agents} agents.")
-
     def load_models(self, path):
-        # 加载包含多个 OrderedDict 的列表
-        actor_models = th.load(f"{path}/actor_init.th", map_location=lambda storage, loc: storage)
-
-        # 确保加载的模型和 agent 数量匹配
-        assert len(
-            actor_models) == self.n_agents, f"Loaded models count does not match the number of agents: {len(actor_models)} != {self.n_agents}"
-
-        # 遍历每个 agent
-        for agent_id in range(self.n_agents):
-            # 当前 agent 的状态字典
-            agent_state_dict = actor_models[agent_id]
-            print("keys", agent_state_dict.keys())
-
-            # 遍历 agent 的 state_dict，移除前缀并将其加载到当前 agent 中
-            new_state_dict = {
-                k.replace(f"agents.{agent_id}.", ""): v
-                for k, v in agent_state_dict.items()
-            }
-
-            # 加载到该 agent 的模型
-            self.agent.agents[agent_id].load_state_dict(new_state_dict)
-
-        print(f"Loaded actor models for {self.n_agents} agents.")
-
-    # def load_models(self, path):
-    #     actor_models = th.load(f"{path}/actor_init.th", map_location=lambda storage, loc: storage)
-    #
-    #     for agent_id in range(self.n_agents):
-    #         agent_state_dict = actor_models[agent_id]
-    #
-    #         # 去掉 "agents.{id}." 的前缀
-    #         new_state_dict = {
-    #             k.replace(f"agents.{agent_id}.", ""): v
-    #             for k, v in agent_state_dict.items()
-    #         }
-    #
-    #         model = self.agent.agents[agent_id]
-    #         model_state_dict = model.state_dict()
-    #
-    #         # 过滤掉 shape 不匹配的参数
-    #         filtered_state_dict = {}
-    #         skipped_keys = []
-    #         for k, v in new_state_dict.items():
-    #             if k in model_state_dict:
-    #                 if v.shape == model_state_dict[k].shape:
-    #                     filtered_state_dict[k] = v
-    #                 else:
-    #                     skipped_keys.append(k)
-    #             else:
-    #                 skipped_keys.append(k)
-    #
-    #         # 加载过滤后的参数
-    #         model.load_state_dict(filtered_state_dict, strict=False)
-    #
-    #         if skipped_keys:
-    #             print(f"[Agent {agent_id}] Skipped {len(skipped_keys)} unmatched keys:")
-    #             for key in skipped_keys:
-    #                 print(f"  - {key} (shape: {new_state_dict[key].shape})")
-    #
-    #     print(f"Loaded actor models for {self.n_agents} agents (with shape checks).")
+        """
+        改为load actor_init
+        从一个大的模型中load 每个agent的actor_init？
+        """
+        self.agent.load_state_dict(th.load("{}/actor_init.th".format(path), map_location=lambda storage, loc: storage))
 
     """ Used for adjust policy temperature """
     def boost_temp(self, obs, agent_id=None):

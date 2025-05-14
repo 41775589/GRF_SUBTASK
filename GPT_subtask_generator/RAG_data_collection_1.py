@@ -502,158 +502,158 @@ def main(model, n_reward, map_name, temperature, task, alg_cfg, num_agents, trai
     pool.close()
     pool.join()  # 等待所有复制任务完成
 
-# # #######################################################################################################################
-#     RAG_datas = []
-#     # Evaluate using the trajectory
-#     for response_id in range(n_reward):
-#         logging.info(f"Evaluating reward: {response_id}")
-#         reward_cur = file_to_string(f'{REWARD_DATA_DIR}/reward_{response_id}.py')
-#         # try:
-#         #     with open(rl_filepath, 'r') as f:
-#         #         stdout_str = f.read()
-#         # except:
-#         #     content = ("Code Run cannot be executed because reward class is wrongly formatted!")
-#         #     Error = True
-#         #     continue
-#         with open(f"{TRAIN_LOG_DIR}/{task}_reward_{response_id}.txt", 'r') as f:
-#             stdout_str = f.read()
-#
-#         content = ''
-#         traceback_msg = filter_traceback(stdout_str)
-#
-#         if traceback_msg == '':
-#             print("No errors in the reward function")
-#             # If RL execution has no error, provide policy statistics feedback
-#             exec_success = True
-#
-#             with open(f"{TRAJECTORY_DIR}/scoring, reward_{response_id}/1/metrics.json", "r") as file:
-#                 data = json.load(file)
-#
-#             corresponding_episodes = data["episode"]['values']
-#             content += f"checkpoint episodes: {corresponding_episodes} \n"
-#
-#             component_values = {
-#                 key: value['values'] for key, value in data.items() if key.startswith('component')
-#             }
-#             for key, value in component_values.items():
-#                 content += f"{key}: {value} \n"
-#
-#             score_reward_mean_values = data["score_reward_mean"]['values']
-#             content += f"score_reward_mean: {score_reward_mean_values} \n"
-#
-#             final_reward_mean_values = data["final_reward_mean"]['values']
-#             content += f"final_reward_mean: {final_reward_mean_values} \n"
-#
-#             final_reward_mean_values = data["final_reward_mean"]['values']
-#             content += f"final_reward_mean: {final_reward_mean_values} \n"
-#
-#
-#         else:
-#             print("Spotting errors in the reward function")
-#             # Otherwise, provide execution traceback error feedback
-#             exec_success = False
-#             content += execution_error_feedback.format(traceback_msg=traceback_msg)
-#
-#         if exec_success:
-#             cur_initial_user_evaluate = initial_user_evaluate.format(training_goal = training_goal,
-#                                                                  num_agents=num_agents,
-#                                                                  reward_function = reward_cur,
-#                                                                  content = content)
-#         else:
-#             cur_initial_user_evaluate = initial_user_evaluate_error.format(training_goal = training_goal,
-#                                                                  num_agents=num_agents,
-#                                                                  reward_function = reward_cur,
-#                                                                  content = content)
-#
-#         messages_evaluate = [{"role": "system", "content": initial_system_evaluate},
-#                              {"role": "user", "content": cur_initial_user_evaluate}]
-#         response_cur = None
-#         attempt = 0
-#         max_attempts = 10  # 限制最大尝试次数
-#         chunk_size = 1  # 只生成 1 个回复
-#
-#         while attempt < max_attempts:
-#             print("ATTEMPT:", attempt)
-#             try:
-#                 response_cur = client.chat.completions.create(
-#                     model=model,
-#                     messages=messages_evaluate,
-#                     temperature=temperature,
-#                     n=chunk_size
-#                 )
-#                 break  # 成功则跳出循环
-#             except Exception as e:
-#                 logging.info(f"Attempt {attempt + 1} failed with error: {e}")
-#                 time.sleep(1)  # 等待 1 秒后重试
-#                 attempt += 1
-#
-#         # 如果所有尝试都失败，则终止
-#         if response_cur is None:
-#             logging.error("Failed to generate response after multiple attempts!")
-#             exit()
-#
-#         # 解析返回的响应
-#         response = response_cur.choices[0].message.content  # 只取第一个回复
-#         print("Generated Response:", response)
-#
-#         # 记录 token 信息
-#         logging.info(
-#             f"Tokens Used: Prompt {response_cur.usage.prompt_tokens}, Completion {response_cur.usage.completion_tokens}, Total {response_cur.usage.total_tokens}")
-#
-#         # # 定义正则表达式
-#         # pattern = r"\*\*Evaluation:\*\*\s*(.*?)\s*\*\*Suggestions:\*\*\s*(.*)"
-#         #
-#         # # 进行匹配
-#         # match = re.search(pattern, response, re.DOTALL)
-#         #
-#         # # 提取内容
-#         # if match:
-#         #     evaluation = match.group(1).strip()  # 提取 Evaluation 部分
-#         #     suggestions = match.group(2).strip()  # 提取 Suggestions 部分
-#         #
-#         # RAG_data = {
-#         #     "training_goal": training_goal,
-#         #     "num_agents": num_agents,  # 假设每个任务需要不同的智能体数量
-#         #     "reward_function": reward_cur,
-#         #     "evaluation": evaluation,
-#         #     "suggestions": suggestions
-#         # }
-#         #
-#         # # 将生成的数据追加到任务数据列表中
-#         # RAG_datas.append(RAG_data)
-#
-#         # 定义正则表达式：提取每一个 component 区块
-#         pattern = r"Component:\s*(.*?)\s*Evaluation:\s*(Yes|No)\s*Suggestions:\s*- (.*?)(?=(\nComponent:|\Z))"
-#
-#         # 进行匹配（匹配所有组件）
-#         matches = re.findall(pattern, response, re.DOTALL)
-#
-#         # 遍历所有匹配的组件
-#         for match in matches:
-#             component_name = match[0].strip()
-#             evaluation = match[1].strip()
-#             suggestions_block = match[2].strip()
-#
-#             # 按行分割 suggestions（可能有多条）
-#             suggestions = ["- " + s.strip() for s in suggestions_block.split("\n- ")]
-#
-#             # 构造结构化数据
-#             RAG_data = {
-#                 "training_goal": training_goal,
-#                 "num_agents": num_agents,
-#                 "reward_function": reward_cur,
-#                 "component": component_name,
-#                 "evaluation": evaluation,
-#                 "suggestions": suggestions
-#             }
-#
-#             # 加入数据列表
-#             RAG_datas.append(RAG_data)
-#
-#     with open(f"{DATABASE_DIR}/RAG_data_{task_index}.json", "w") as json_file:
-#         json.dump(RAG_datas, json_file, indent=4)
-#
-#     print("JSON file has been created successfully.")
+# #######################################################################################################################
+    RAG_datas = []
+    # Evaluate using the trajectory
+    for response_id in range(n_reward):
+        logging.info(f"Evaluating reward: {response_id}")
+        reward_cur = file_to_string(f'{REWARD_DATA_DIR}/reward_{response_id}.py')
+        # try:
+        #     with open(rl_filepath, 'r') as f:
+        #         stdout_str = f.read()
+        # except:
+        #     content = ("Code Run cannot be executed because reward class is wrongly formatted!")
+        #     Error = True
+        #     continue
+        with open(f"{TRAIN_LOG_DIR}/{task}_reward_{response_id}.txt", 'r') as f:
+            stdout_str = f.read()
+
+        content = ''
+        traceback_msg = filter_traceback(stdout_str)
+
+        if traceback_msg == '':
+            print("No errors in the reward function")
+            # If RL execution has no error, provide policy statistics feedback
+            exec_success = True
+
+            with open(f"{TRAJECTORY_DIR}/scoring, reward_{response_id}/1/metrics.json", "r") as file:
+                data = json.load(file)
+
+            corresponding_episodes = data["episode"]['values']
+            content += f"checkpoint episodes: {corresponding_episodes} \n"
+
+            component_values = {
+                key: value['values'] for key, value in data.items() if key.startswith('component')
+            }
+            for key, value in component_values.items():
+                content += f"{key}: {value} \n"
+
+            score_reward_mean_values = data["score_reward_mean"]['values']
+            content += f"score_reward_mean: {score_reward_mean_values} \n"
+
+            final_reward_mean_values = data["final_reward_mean"]['values']
+            content += f"final_reward_mean: {final_reward_mean_values} \n"
+
+            final_reward_mean_values = data["final_reward_mean"]['values']
+            content += f"final_reward_mean: {final_reward_mean_values} \n"
+
+
+        else:
+            print("Spotting errors in the reward function")
+            # Otherwise, provide execution traceback error feedback
+            exec_success = False
+            content += execution_error_feedback.format(traceback_msg=traceback_msg)
+
+        if exec_success:
+            cur_initial_user_evaluate = initial_user_evaluate.format(training_goal = training_goal,
+                                                                 num_agents=num_agents,
+                                                                 reward_function = reward_cur,
+                                                                 content = content)
+        else:
+            cur_initial_user_evaluate = initial_user_evaluate_error.format(training_goal = training_goal,
+                                                                 num_agents=num_agents,
+                                                                 reward_function = reward_cur,
+                                                                 content = content)
+
+        messages_evaluate = [{"role": "system", "content": initial_system_evaluate},
+                             {"role": "user", "content": cur_initial_user_evaluate}]
+        response_cur = None
+        attempt = 0
+        max_attempts = 10  # 限制最大尝试次数
+        chunk_size = 1  # 只生成 1 个回复
+
+        while attempt < max_attempts:
+            print("ATTEMPT:", attempt)
+            try:
+                response_cur = client.chat.completions.create(
+                    model=model,
+                    messages=messages_evaluate,
+                    temperature=temperature,
+                    n=chunk_size
+                )
+                break  # 成功则跳出循环
+            except Exception as e:
+                logging.info(f"Attempt {attempt + 1} failed with error: {e}")
+                time.sleep(1)  # 等待 1 秒后重试
+                attempt += 1
+
+        # 如果所有尝试都失败，则终止
+        if response_cur is None:
+            logging.error("Failed to generate response after multiple attempts!")
+            exit()
+
+        # 解析返回的响应
+        response = response_cur.choices[0].message.content  # 只取第一个回复
+        print("Generated Response:", response)
+
+        # 记录 token 信息
+        logging.info(
+            f"Tokens Used: Prompt {response_cur.usage.prompt_tokens}, Completion {response_cur.usage.completion_tokens}, Total {response_cur.usage.total_tokens}")
+
+        # # 定义正则表达式
+        # pattern = r"\*\*Evaluation:\*\*\s*(.*?)\s*\*\*Suggestions:\*\*\s*(.*)"
+        #
+        # # 进行匹配
+        # match = re.search(pattern, response, re.DOTALL)
+        #
+        # # 提取内容
+        # if match:
+        #     evaluation = match.group(1).strip()  # 提取 Evaluation 部分
+        #     suggestions = match.group(2).strip()  # 提取 Suggestions 部分
+        #
+        # RAG_data = {
+        #     "training_goal": training_goal,
+        #     "num_agents": num_agents,  # 假设每个任务需要不同的智能体数量
+        #     "reward_function": reward_cur,
+        #     "evaluation": evaluation,
+        #     "suggestions": suggestions
+        # }
+        #
+        # # 将生成的数据追加到任务数据列表中
+        # RAG_datas.append(RAG_data)
+
+        # 定义正则表达式：提取每一个 component 区块
+        pattern = r"Component:\s*(.*?)\s*Evaluation:\s*(Yes|No)\s*Suggestions:\s*- (.*?)(?=(\nComponent:|\Z))"
+
+        # 进行匹配（匹配所有组件）
+        matches = re.findall(pattern, response, re.DOTALL)
+
+        # 遍历所有匹配的组件
+        for match in matches:
+            component_name = match[0].strip()
+            evaluation = match[1].strip()
+            suggestions_block = match[2].strip()
+
+            # 按行分割 suggestions（可能有多条）
+            suggestions = ["- " + s.strip() for s in suggestions_block.split("\n- ")]
+
+            # 构造结构化数据
+            RAG_data = {
+                "training_goal": training_goal,
+                "num_agents": num_agents,
+                "reward_function": reward_cur,
+                "component": component_name,
+                "evaluation": evaluation,
+                "suggestions": suggestions
+            }
+
+            # 加入数据列表
+            RAG_datas.append(RAG_data)
+
+    with open(f"{DATABASE_DIR}/RAG_data_{task_index}.json", "w") as json_file:
+        json.dump(RAG_datas, json_file, indent=4)
+
+    print("JSON file has been created successfully.")
 
 
 if __name__ == "__main__":
