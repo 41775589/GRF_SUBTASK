@@ -32,7 +32,7 @@ q_nstep: 5 # 1 corresponds to normal r + gammaV
 critic_type: "ac_critic_ns"
 name: "ippo_ns"
 
-t_max: 50000
+t_max: 500000
 
 use_doe: false
 save_buffer: true

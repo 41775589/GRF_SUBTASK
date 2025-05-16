@@ -433,6 +433,8 @@ def train_merge_team(groups,
     # template_data['critic_type'] = "ac_critic"  # 修改评论家类型
     template_data['critic_type'] = "ac_critic_ns"  # 使用ns critic
     template_data['name'] = "doe_ippo_ns"  # 使用ns
+    if layer == "target":
+        template_data['t_max'] = 20050000
 
     # 11111111111指定 merge 以后的 full team doe cls 存储名称
     # 0505更正：这里指定的是合并doe cls以后存储的文件，用于实验开始时load
@@ -590,81 +592,81 @@ if __name__ == "__main__":
     #      use_doe=False, n_improve_iter=2)
 
     response_id = 0
-    layer = 2  # 这个layer对应的是child_layer
-    merge_layer = layer-1   # 似乎没用到target选项
+    layer = 0  # 这个layer对应的是child_layer
+    merge_layer = "target"   # 似乎没用到target选项
 
     # group_id = 6
-    merge_group_id = 2
-    child_group_id = [6, 7]
+    merge_group_id = "target"
+    child_group_id = [0,4]
 
-    response_r_id = 0
+    response_r_id = "target"
     n_agents = 1
-    merge_n_agents = 2
+    merge_n_agents = 4
     suffix = "_GPT"
     alg_cfg = "ippo_ns"   # 之前用ia2c，替换成non sharing
     task_env = "gfootball"
     rl_runs = []
-    Time = "2025-05-14-08-15-41_2222"
+    Time = "2025-05-14-10-38-42"
 
     TIMEOUT = 20
     # 如果是最底层，不用doe
 
-    # 为了debug，暂时关掉
-    for group_id in child_group_id:
-        logging.info(
-            f"Training for Decomposition {response_id} Layer{layer} Group{group_id} ")
-        # Create Task YAML file
-        create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id, n_agents,
-                    group_id, iter=0, suffix=suffix)
-
-        # 首层训练不用带doe，添加额外参数
-        create_train_cfg(CONFIG_ALGS_DIR, Time, alg_cfg, layer, response_id, response_r_id,
-                         n_agents, group_id, iter=0, task_env=task_env, results_dir=RESULTS_DIR, init_layer=True)
-
-        # Execute the python file with flags
-        rl_filepath = f"{OUTPUT_DIR}/gfootball{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter1_sample{response_r_id}.txt"
-
-
-        with open(rl_filepath, 'w') as f:
-            script_path = f'{SRC_DIR}/main.py'
-            params = [
-                'python', '-u', script_path,
-                f'--config={alg_cfg}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter1_sample{response_r_id}',
-                f'--env-config={task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter1_sample{response_r_id}',
-            ]
-            # import sys
-            # sys.path.append('/data/qiaodan/projects/GRF_SUBTASK/gfootball')
-            # 底层任务需要修改这个Popen
-            # process = subprocess.Popen(params)
-            process = subprocess.Popen(params, stdout=f, stderr=f)
-
-            # 获取文件的初始修改时间
-            while True:
-                initial_mtime = os.path.getmtime(rl_filepath)
-                initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
-                start_time = datetime.datetime.now()
-                delta_time = start_time - initial_mtime  # 时间差
-                delta_seconds = delta_time.total_seconds()  # 时间差转成秒
-                if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
-                    print(
-                        f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
-                    process.kill()  # 终止子进程
-                    break
-                # while process.poll() is None:  # 检查子进程是否还在运行
-                #     # 检查文件的最后修改时间
-                #     current_mtime = os.path.getmtime(rl_filepath)
-                #     # 如果文件超过了 1 分钟没有更新
-                #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
-                #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
-                #         process.terminate()  # 终止子进程
-                #         break
-                # 等待一段时间后再检查
-                time.sleep(1)
-
-            process.wait()
-        # Modified the check of successful training
-        # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
-        rl_runs.append(process)
+    # # 为了debug，暂时关掉
+    # for group_id in child_group_id:
+    #     logging.info(
+    #         f"Training for Decomposition {response_id} Layer{layer} Group{group_id} ")
+    #     # Create Task YAML file
+    #     create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id, n_agents,
+    #                 group_id, iter=0, suffix=suffix)
+    #
+    #     # 首层训练不用带doe，添加额外参数
+    #     create_train_cfg(CONFIG_ALGS_DIR, Time, alg_cfg, layer, response_id, response_r_id,
+    #                      n_agents, group_id, iter=0, task_env=task_env, results_dir=RESULTS_DIR, init_layer=True)
+    #
+    #     # Execute the python file with flags
+    #     rl_filepath = f"{OUTPUT_DIR}/gfootball{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter0_sample{response_r_id}.txt"
+    #
+    #
+    #     with open(rl_filepath, 'w') as f:
+    #         script_path = f'{SRC_DIR}/main.py'
+    #         params = [
+    #             'python', '-u', script_path,
+    #             f'--config={alg_cfg}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter0_sample{response_r_id}',
+    #             f'--env-config={task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter0_sample{response_r_id}',
+    #         ]
+    #         # import sys
+    #         # sys.path.append('/data/qiaodan/projects/GRF_SUBTASK/gfootball')
+    #         # 底层任务需要修改这个Popen
+    #         # process = subprocess.Popen(params)
+    #         process = subprocess.Popen(params, stdout=f, stderr=f)
+    #
+    #         # 获取文件的初始修改时间
+    #         while True:
+    #             initial_mtime = os.path.getmtime(rl_filepath)
+    #             initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
+    #             start_time = datetime.datetime.now()
+    #             delta_time = start_time - initial_mtime  # 时间差
+    #             delta_seconds = delta_time.total_seconds()  # 时间差转成秒
+    #             if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
+    #                 print(
+    #                     f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
+    #                 process.kill()  # 终止子进程
+    #                 break
+    #             # while process.poll() is None:  # 检查子进程是否还在运行
+    #             #     # 检查文件的最后修改时间
+    #             #     current_mtime = os.path.getmtime(rl_filepath)
+    #             #     # 如果文件超过了 1 分钟没有更新
+    #             #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
+    #             #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
+    #             #         process.terminate()  # 终止子进程
+    #             #         break
+    #             # 等待一段时间后再检查
+    #             time.sleep(1)
+    #
+    #         process.wait()
+    #     # Modified the check of successful training
+    #     # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
+    #     rl_runs.append(process)
 
 
 
@@ -676,22 +678,21 @@ if __name__ == "__main__":
     # merge_group_id_1 = merge_group_id - 1
 
 
-    # 这个似乎是GPT创建reward的循环，暂时不用？
-    # 但是trian config for merged group5在哪儿
-    create_task(CONFIG_ENVS_DIR, task_env, merge_layer, response_id, response_r_id,
-                merge_n_agents,
-                group_id=merge_group_id, iter=0, suffix=suffix)
+    # # 这个似乎是GPT创建reward的循环，暂时不用？
+    # # 但是trian config for merged group5在哪儿
+    # create_task(CONFIG_ENVS_DIR, task_env, merge_layer, response_id, response_r_id,
+    #             merge_n_agents,
+    #             group_id=merge_group_id, iter=0, suffix=suffix)
 
-    # reward = checkpoint, maps=5_vs_5
 
     child_tasks = [
-        {"group_number": 7, "number_of_agents": 1},
-        {"group_number": 8, "number_of_agents": 1},
+        {"group_number": 1, "number_of_agents": 2},
+        {"group_number": 5, "number_of_agents": 2},
     ]
 
     # 原来是 group6 group7，感觉不太对劲，也许需要改成group 7 8？代表reward func
-    max_reward_code_path_for_each_group={"group6": "reward_layer2_decomposition0_subtask6_iter1_sample0.py",
-                                         "group7":"reward_layer2_decomposition0_subtask7_iter1_sample0.py"}
+    max_reward_code_path_for_each_group={"group0": "reward_layer0_decomposition0_subtask0_iter3_sample0.py",
+                                         "group4":"reward_layer1_decomposition0_subtask4_iter3_sample0.py"}
 
     # 指定本层merge的所有存储文件路径为：
 
@@ -704,128 +705,8 @@ if __name__ == "__main__":
 
     # 这里layer是否需要target？还是新增一个属性？
     rl_runs = train_merge_team(child_tasks, use_doe, layer=merge_layer, decompose_id=response_id,
-                               group_id=merge_group_id, iter_id=1, sample_id=response_r_id,
+                               group_id=merge_group_id, iter_id="target", sample_id=response_r_id,
                                buffer_dir=save_dir,
                                max_reward_code_path_for_each_group=max_reward_code_path_for_each_group,
                                Time=Time, task_env=task_env, suffix=suffix, rl_runs=rl_runs)
 
-
-#########################################################################################
-# if __name__ == "__main__":
-#     # main(model="gpt-4-turbo", n_decomposition=1, n_reward=5, temperature=1, task_env="gfootball", alg_cfg="ia2c",
-#     #      use_doe=False, n_improve_iter=2)
-#
-#     response_id = 0
-#     layer = 2  # 这个layer对应的是child_layer
-#     merge_layer = layer - 1  # 似乎没用到target选项
-#
-#     # group_id = 6
-#     merge_group_id = 5
-#     child_group_id = [6, 7]
-#
-#     response_r_id = 0
-#     n_agents = 1
-#     merge_n_agents = 2
-#     suffix = "_GPT"
-#     alg_cfg = "ippo_ns"  # 之前用ia2c，替换成non sharing
-#     task_env = "gfootball"
-#     rl_runs = []
-#     Time = "0513_ia2c_ns_1"
-#
-#     TIMEOUT = 20
-#     # 如果是最底层，不用doe
-#
-#     # 为了debug，暂时关掉
-#     for group_id in child_group_id:
-#         logging.info(
-#             f"Training for Decomposition {response_id} Layer{layer} Group{group_id} ")
-#         # Create Task YAML file
-#         create_task(CONFIG_ENVS_DIR, task_env, layer, response_id, response_r_id, n_agents,
-#                     group_id, iter=0, suffix=suffix)
-#
-#         # 首层训练不用带doe，添加额外参数
-#         create_train_cfg(CONFIG_ALGS_DIR, Time, alg_cfg, layer, response_id, response_r_id,
-#                          n_agents, group_id, iter=0, task_env=task_env, results_dir=RESULTS_DIR, init_layer=True)
-#
-#         # Execute the python file with flags
-#         rl_filepath = f"{OUTPUT_DIR}/gfootball{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{0}_sample{response_r_id}.txt"
-#
-#
-#         with open(rl_filepath, 'w') as f:
-#             script_path = f'{SRC_DIR}/main.py'
-#             params = [
-#                 'python', '-u', script_path,
-#                 f'--config={alg_cfg}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{0}_sample{response_r_id}',
-#                 f'--env-config={task_env}{suffix}_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{0}_sample{response_r_id}',
-#             ]
-#             # import sys
-#             # sys.path.append('/data/qiaodan/projects/GRF_SUBTASK/gfootball')
-#             # 底层任务需要修改这个Popen
-#             # process = subprocess.Popen(params)
-#             process = subprocess.Popen(params, stdout=f, stderr=f)
-#
-#             # 获取文件的初始修改时间
-#             while True:
-#                 initial_mtime = os.path.getmtime(rl_filepath)
-#                 initial_mtime = datetime.datetime.fromtimestamp(initial_mtime)  # 时间转为datetime格式
-#                 start_time = datetime.datetime.now()
-#                 delta_time = start_time - initial_mtime  # 时间差
-#                 delta_seconds = delta_time.total_seconds()  # 时间差转成秒
-#                 if delta_seconds > TIMEOUT:  # 如果文件更新时间大于30秒，重新启动程序
-#                     print(
-#                         f"Overtime：It seems that the training is stuck or finished, subprocess terminates")
-#                     process.kill()  # 终止子进程
-#                     break
-#                 # while process.poll() is None:  # 检查子进程是否还在运行
-#                 #     # 检查文件的最后修改时间
-#                 #     current_mtime = os.path.getmtime(rl_filepath)
-#                 #     # 如果文件超过了 1 分钟没有更新
-#                 #     if current_mtime == initial_mtime and (time.time() - start_time) > TIMEOUT:
-#                 #         print(f"Overtime：It seems that the training is stuck, subprocess terminates")
-#                 #         process.terminate()  # 终止子进程
-#                 #         break
-#                 # 等待一段时间后再检查
-#                 time.sleep(1)
-#
-#             process.wait()
-#         # Modified the check of successful training
-#         # block_until_training(rl_filepath, log_status=True, iter_num=iter, response_id=response_id)
-#         rl_runs.append(process)
-#
-#     ##############Use doe for training##############
-#     use_doe = True
-#     # 创建 merge target team 的相关task
-#     # 暂时创建一个group5，没搞清楚这里什么原因，可能是那个group id-1导致的
-#     # merge_group_id_1 = merge_group_id - 1
-#
-#     # 这个似乎是GPT创建reward的循环，暂时不用？
-#     # 但是trian config for merged group5在哪儿
-#     create_task(CONFIG_ENVS_DIR, task_env, merge_layer, response_id, response_r_id,
-#                 merge_n_agents,
-#                 group_id=merge_group_id, iter=0, suffix=suffix)
-#
-#     # reward = checkpoint, maps=5_vs_5
-#
-#     child_tasks = [
-#         {"group_number": 7, "number_of_agents": 1},
-#         {"group_number": 8, "number_of_agents": 1},
-#     ]
-#
-#     # 原来是 group6 group7，感觉不太对劲，也许需要改成group 7 8？代表reward func
-#     max_reward_code_path_for_each_group = {"group6": "reward_layer2_decomposition0_subtask6_iter0_sample0.py",
-#                                            "group7": "reward_layer2_decomposition0_subtask7_iter0_sample0.py"}
-#
-#     # 指定本层merge的所有存储文件路径为：
-#
-#     save_dir = f'{MEDoE_DIR}/doe_epymarl-main/results/gfootball/{Time}/decomposition{response_id}/group{merge_group_id}'
-#     os.makedirs(save_dir, exist_ok=True)
-#     # 该路径作为buffer_dir传入train_merge_team函数，save as "doe_classifier_cfg".load_doe_buffer_path
-#     # 并传入 doe_classifier_config_loader["load"]作为path，load_doe_name 是经过merge处理以后的新doe cls
-#     # doe cls 加载路径为 absolute_path = os.path.join(buffer_path, cfg["load_doe_name"])
-#
-#     # 这里layer是否需要target？还是新增一个属性？
-#     rl_runs = train_merge_team(child_tasks, use_doe, layer=merge_layer, decompose_id=response_id,
-#                                group_id=merge_group_id, iter_id=0, sample_id=response_r_id,
-#                                buffer_dir=save_dir,
-#                                max_reward_code_path_for_each_group=max_reward_code_path_for_each_group,
-#                                Time=Time, task_env=task_env, suffix=suffix, rl_runs=rl_runs)

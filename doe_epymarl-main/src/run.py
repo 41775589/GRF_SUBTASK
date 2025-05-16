@@ -241,8 +241,7 @@ def run_sequential(args, logger):
 
     logger.console_logger.info("Beginning training for {} timesteps".format(args.t_max))
 
-    # # 用于调试
-    # args.t_max = 2000
+
 
     while runner.t_env <= args.t_max:
         # Run for a whole episode at a time
