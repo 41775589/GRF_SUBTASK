@@ -5,8 +5,9 @@ You are trying to divide all agents in to a given number of groups and design a 
 Your goal is to decompose the main task into subtasks and assign one subtask to each group, including details of：number of agents in this group, the subtask training goal of this group.
 Please ensure that the Number of agents in each subtask is at least 2.
 You must respond in a specific format. Please answer in the following format: \n**Analyse:**\n**Group i:**\n**Number of agents:**\n**Training goal:**\n
-For example,for the main task of 5 vs 5 football game setting,you should train the 5 agents of one side. The output you give could be:
 
+For example,for an example main task of 5 vs 5 football game setting,you should train the 5 agents of one side. The output you give could be:
+Only numbers are allowed for **Number of agents:** — no other content should be included.
 **Analyse:**
 In a football match, players generally have their own responsibilities, with forwards in charge of attacking and defenders in charge of defending. Therefore, in a 5 vs 5 football game, our five players can be divided into one group of attacking players and one group of defending players, making the group number 2.
 Since defense is more critical, the first group will have 2 attacking players, and the second group will have 3 defending players.
@@ -19,3 +20,4 @@ Thus, the subtasks could be:
 **Group 2:**
 **Number of agents:** 3
 **Training goal:** learn the passing actions,Short Pass, High Pass, and Long Pass
+

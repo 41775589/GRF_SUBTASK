@@ -13,10 +13,10 @@ class ParallelRunner:
     def __init__(self, args, logger):
         self.args = args
         self.logger = logger
-        # self.batch_size = self.args.batch_size_run  
+        self.batch_size = self.args.batch_size_run
 
-        # 为了测试
-        self.batch_size = 1
+        # # 为了测试
+        # self.batch_size = 1
 
         # # 为了测试
         # self.batch_size = 1
@@ -62,6 +62,12 @@ class ParallelRunner:
 
         self.log_train_stats_t = -100000
 
+        # ============ 添加比分追踪 ============
+        # 为每个并行环境追踪当前 episode 的比分
+        self.current_our_scores = [0] * self.batch_size
+        self.current_opp_scores = [0] * self.batch_size
+        # =====================================
+
     def setup(self, scheme, groups, preprocess, mac):
         self.new_batch = partial(
             EpisodeBatch,
@@ -106,6 +112,11 @@ class ParallelRunner:
 
         self.t = 0
         self.env_steps_this_run = 0
+
+        # ============ 重置比分 ============
+        self.current_our_scores = [0] * self.batch_size
+        self.current_opp_scores = [0] * self.batch_size
+        # =================================
 
     def run(self, test_mode=False):
         self.reset()
@@ -175,6 +186,19 @@ class ParallelRunner:
                     # Remaining data for this current timestep
                     post_transition_data["reward"].append((data["reward"],))
 
+                    # ============ 追踪比分 ============
+                    reward = data["reward"]
+                    if isinstance(reward, (list, np.ndarray)):
+                        reward_val = np.mean(reward)
+                    else:
+                        reward_val = reward
+
+                    if reward_val > 0.99:  # 我方进球
+                        self.current_our_scores[idx] += 1
+                    elif reward_val < -0.99:  # 对方进球
+                        self.current_opp_scores[idx] += 1
+                    # =================================
+
                     episode_returns[idx] += data["reward"]
                     episode_lengths[idx] += 1
                     if not test_mode:
@@ -210,6 +234,16 @@ class ParallelRunner:
             self.batch.update(
                 pre_transition_data, bs=envs_not_terminated, ts=self.t, mark_filled=True
             )
+
+        # ============ Episode 结束，记录所有环境的比分 ============
+        if hasattr(self, 'win_tracker') and not test_mode:
+            for idx in range(self.batch_size):
+                self.win_tracker.add_game_result(
+                    self.current_our_scores[idx],
+                    self.current_opp_scores[idx]
+                )
+        # ======================================================
+
 
         if not test_mode:
             self.t_env += self.env_steps_this_run

@@ -1,0 +1,80 @@
+# --- MAPPO specific parameters ---
+
+action_selector: "soft_policies"
+mask_before_softmax: True
+
+runner: "parallel"
+
+buffer_size: 10
+batch_size_run: 10
+batch_size: 1  # 修改: mini batch = 1
+
+# update the target network every {} training steps
+target_update_interval_or_tau: 0.01
+
+lr: 0.0005  # 修改: actor lr = 5e-4
+critic_lr: 0.0005  # 新增: critic lr = 5e-4
+hidden_dim: 256  # 修改: 对于5v5，使用 [256,128,64] 的第一层
+
+obs_agent_id: True
+obs_last_action: False
+obs_individual_obs: False
+
+agent_output_type: "pi_logits"
+learner: "ppo_learner"
+entropy_coef: 0.0  # 修改: entropy = 0.0
+use_rnn: False  # 修改: network type = MLP (不使用RNN)
+standardise_returns: False
+standardise_rewards: True
+q_nstep: 5
+critic_type: "cv_critic"
+epochs: 20  # 修改: 5v5 Training Epoch = 20
+eps_clip: 0.2  # 保持: clipping = 0.2
+name: "mappo"
+
+# 从 default 覆盖的参数
+gamma: 0.995  # 修改: 5v5 Discount Value = 0.995
+grad_norm_clip: 10.0  # 保持: max grad norm = 10.0
+optim_eps: 0.00001  # 修改: optim eps = 1e-5
+
+# 新增参数 (从论文 Table 7)
+use_orthogonal_init: True  # orthogonal init = True
+orthogonal_gain: 1.0  # gain = 1.0
+activation_func: "relu"  # activation = ReLU
+use_gae: True  # use gae = True
+gae_lambda: 0.95  # gae lambda = 0.95
+use_popart: True  # use popart = True
+popart_beta: 0.9999  # popart beta = 0.9999
+use_feature_normalization: True  # feature norm = True
+huber_delta: 0.125  # other clipping = 0.125 (通常用于 Huber loss)
+
+
+# 新添加doe参数
+use_doe: false
+doe_classifier_cfg:
+  doe_type: mlp
+  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK_1016/doe_epymarl-main/results/zoo/mappo_zoo/decomposition0/group0
+  load_doe_buffer_path: GRF_SUBTASK/doe_epymarl-main/results/buffer/zoo  # 添加这行
+  load_doe_name: load_mlp_classifier.pt  # 添加这行
+  load_mode: train
+  mlp:
+    batch_size: 512
+    hidden_sizes:
+    - 128
+    learning_rate: 0.01
+    test_fraction: 0.1
+  role_ids:
+    goal_1:
+    - 0
+    - 1
+  save_classifier: false
+  save_doe_name: cls_layer1_decomposition0_subtask2_iter0_sample0.pt
+
+t_max: 20050000
+
+time_stamp: mappo_zoo_2
+layer_id: 0
+decomposition_id: 0
+iter_id: 0
+group_id: 0
+sample_id: 0
