@@ -1,0 +1,77 @@
+#
+#
+## Chainball 环境配置文件
+## 放置在 src/config/envs/chainball.yaml
+#
+## 环境名称（必须与 __init__.py 中注册的名称一致）
+#env: chainball
+#
+## 环境参数
+#env_args:
+#  # ===== 核心参数（必须提供）=====
+#  # 智能体数量
+#  n_agents: 2
+#  # 每个智能体的动作数量
+#  n_actions: 4
+#  # 回合最大步数
+#  episode_limit: 100
+#
+#  # ===== Chainball 特定参数 =====
+#  # 场地长度（链的长度）
+#  chain_length: 7
+#  # 初始球位置
+#  spawn_location: 4
+#
+#  # 终止条件
+#  fixed_time: false  # false: 进球后结束, true: 固定步数
+#  terminal_states: []  # 额外的终止状态列表
+#
+#  # 目标配置
+#  enable_our_goal: true   # 是否启用我方球门（负奖励）
+#  enable_opp_goal: true   # 是否启用对方球门（正奖励）
+#
+#  # 观察模式
+#  # 选项: "discrete", "index_box", "onehot", "onehot_binary"
+#  obs_mode: "onehot"
+#
+#  # 奖励配置
+#  normalize_reward: false
+#
+#  # ===== 转移概率配置 =====
+#  # Beta 分布参数（用于生成随机前进概率）
+#  beta_a: 1
+#  beta_b: 1
+#
+#  # 最优联合动作的前进概率
+#  optimal_level: 0.8
+#
+#  # 非最优动作的基础前进概率（噪声水平）
+#  noise_level: 0.5
+#
+#  # 后退时的指数衰减系数
+#  default_back_coef: 1.5
+#
+#  # 环境生成随机种子
+#  env_gen_seed: 1
+#
+#  # ===== 最优动作配置（可选）=====
+#  # 如果不指定，所有动作的前进概率都是随机的
+#  # 格式: 每个状态的最优动作元组列表
+#  # 例如: [[0, 0], [1, 0], [1, 1], ...]
+#  # None 表示该智能体的动作任意
+#  optimals: null
+
+env: chainball
+env_args:
+  chain_length: 11
+  spawn_location: 6
+  num_agents: 4
+  num_actions: 4
+  termiacl_states: []
+#  optimals: [[2,3,0,2],[2,3,0,0],[2,1,2,2],[2,2,3,0],[3,3,3,2],[1,2,0,2],[1,3,3,1],[3,1,3,1],[3,3,0,0],[3,1,1,0],[3,0,0,2],[2,2,1,3],[3,3,3,2]]
+  optimas: [[1,1], [1,1], [2,1], [2,2], [2,2]]
+  max_cycles: 90
+  fixed_time: True
+  enable_our_goal: False
+  obs_mode: "onehot"
+  render_mode: "human"

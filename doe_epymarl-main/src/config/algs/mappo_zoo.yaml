@@ -1,0 +1,88 @@
+# --- MAPPO specific parameters ---
+
+action_selector: "soft_policies"
+mask_before_softmax: True
+
+runner: "parallel"
+
+buffer_size: 5000  # 修改: Buffer Size = 5,000
+batch_size_run: 64  # 修改: Number of Samples = 64
+batch_size: 64  # 修改: Number of Samples = 64
+
+# update the target network every {} training steps
+target_update_interval_or_tau: 0.01  # 保持: Target Update = 0.01
+
+lr: 0.0003  # 修改: Learning Rate = 3 × 10−4
+critic_lr: 0.0006  # 修改: Critic Learning Rate = 2 × Actor Learning Rate (2 × 3e-4)
+hidden_dim: 256  # 保持: hidden: [256, 256] 第一层
+
+obs_agent_id: True
+obs_last_action: False
+obs_individual_obs: False
+
+agent_output_type: "pi_logits"
+learner: "ppo_learner"
+entropy_coef: 0.001  # 修改: Entropy Coefficient range [10−5, 10−2]，选择中间值
+agent: "rnn"  # 使用 rnn_agent
+use_rnn: False  # 保持: Network architecture FC (MLP)
+standardise_returns: False
+standardise_rewards: True  # 保持: Reward Standardisation = True
+q_nstep: 5
+critic_type: "cv_critic"
+epochs: 8  # 修改: PPO Epochs {2, 4, 8, 16}，选择中间值 8
+eps_clip: 0.2
+name: "mappo"
+
+# 从 default 覆盖的参数
+gamma: 0.99  # 修改: Gamma = 0.99
+grad_norm_clip: 10.0
+optim_eps: 0.00001  # 修改: Adam 𝜖 = 1 × 10−5 (已经匹配)
+
+# 新增参数 (从论文)
+use_orthogonal_init: True
+orthogonal_gain: 1.0
+activation_func: "relu"  # 保持: Network architecture ReLU
+use_gae: True
+gae_lambda: 0.95
+use_popart: True
+popart_beta: 0.9999
+use_feature_normalization: True
+huber_delta: 0.125
+
+# Epsilon 相关 (从 default 覆盖)
+epsilon_start: 1.0  # 新增: 初始 epsilon
+epsilon_finish: 0.0  # 新增: Evaluation epsilon = 0
+epsilon_anneal_time: 1000000  # 新增: Epsilon Anneal Period = 1,000,000
+
+# Hypernet 相关参数 (如果使用)
+hypernet_embed: 64  # 新增: Hypernet Embed Dimension = 64
+
+# DOE 相关配置
+use_doe: false
+doe_classifier_cfg:
+  doe_type: mlp
+  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK_1016/doe_epymarl-main/results/zoo/mappo_zoo/decomposition0/group0
+  load_doe_buffer_path: GRF_SUBTASK/doe_epymarl-main/results/buffer/zoo
+  load_doe_name: load_mlp_classifier.pt
+  load_mode: train
+  mlp:
+    batch_size: 512
+    hidden_sizes:
+    - 128
+    learning_rate: 0.01
+    test_fraction: 0.1
+  role_ids:
+    goal_1:
+    - 0
+    - 1
+  save_classifier: false
+  save_doe_name: cls_layer1_decomposition0_subtask2_iter0_sample0.pt
+
+t_max: 20050000
+
+time_stamp: mappo_zoo_paper_repro
+layer_id: 0
+decomposition_id: 0
+iter_id: 0
+group_id: 0
+sample_id: 0

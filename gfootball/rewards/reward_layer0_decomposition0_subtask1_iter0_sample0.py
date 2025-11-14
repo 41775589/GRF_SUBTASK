@@ -1,66 +1,62 @@
 import gym
 import numpy as np
-
-
 class CheckpointRewardWrapper(gym.RewardWrapper):
-    """A wrapper that adds a reward for defensive and midfield strategic performance."""
+    """A wrapper that introduces rewards for strategic positioning and transition emphasis."""
 
     def __init__(self, env):
         super().__init__(env)
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.pos_session_start = {}
+        # Configuration: manage number of horizontal zones and vertical movement importance.
+        self.num_horizontal_zones = 5
+        self.horizontal_reward = 0.05
+        self.reverse_step_penalty = -0.02
+        self.sprint_reward = 0.01
 
     def reset(self):
         self.sticky_actions_counter = np.zeros(10, dtype=int)
-        self.pos_session_start = {}
         return self.env.reset()
 
     def get_state(self, to_pickle):
-        to_pickle['CheckpointRewardWrapper'] = self.pos_session_start
+        to_pickle['CheckpointRewardWrapper'] = {}
         return self.env.get_state(to_pickle)
 
     def set_state(self, state):
         from_pickle = self.env.set_state(state)
-        self.pos_session_start = from_pickle['CheckpointRewardWrapper']
+        # No state to restore as no persistent state is kept here
         return from_pickle
 
     def reward(self, reward):
         observation = self.env.unwrapped.observation()
-        # Establishing reward components for tracking
-        components = {"base_score_reward": reward.copy(),
-                      "defense_midfield_control": [0.0] * len(reward)}
         if observation is None:
-            return reward, components
+            return reward, {}
 
-        for idx in range(len(reward)):
-            obs = observation[idx]
+        components = {
+            "base_score_reward": reward.copy(),
+            "positional_reward": [0.0] * len(reward),
+            "reverse_motion_penalty": [0.0] * len(reward),
+            "sprint_bonus": [0.0] * len(reward)
+        }
 
-            # Check if defense and midfield players control the ball effectively at the start
-            # Give reward for maintaining good ball control with defensive and midfield players
-            if obs['ball_owned_team'] == 0:  # Assuming 0 is the agent's team
-                player_pos = obs['left_team'][obs['ball_owned_player']]
-                ball_pos = obs['ball']
+        for rew_index in range(len(reward)):
+            o = observation[rew_index]
+            # Reward based on X-axis position (only for active players)
+            if 'ball_owned_team' in o and o['ball_owned_team'] == 0:
+                field_zone = int(o['right_team'][o['active']][0] * self.num_horizontal_zones + self.num_horizontal_zones // 2)
+                components["positional_reward"][rew_index] += field_zone * self.horizontal_reward
 
-                # Define midfield area as x ranges anywhere and y within [-0.14, 0.14]
-                if abs(player_pos[1]) <= 0.14:
-                    # Reward for midfield ball control
-                    components['defense_midfield_control'][idx] += 0.05
-                    reward[idx] += 0.05
+            # Penalize reverse movements
+            if 'right_team_direction' in o:
+                if o['right_team_direction'][o['active']][0] < 0:
+                    components["reverse_motion_penalty"][rew_index] += self.reverse_step_penalty
 
-                # Define defense area as x < -0.5 and y within [-0.42, 0.42]
-                if player_pos[0] < -0.5:
-                    # Reward for defensive positioning and ball control
-                    components['defense_midfield_control'][idx] += 0.1
-                    reward[idx] += 0.1
+            # Bonus for sprinting, checking sticky actions for sprint
+            if o['sticky_actions'][8] == 1:  # Action index 8 corresponds to sprint
+                components["sprint_bonus"][rew_index] += self.sprint_reward
 
-            # Encourage not losing the ball quickly from defense or midfield start
-            if idx not in self.pos_session_start:
-                self.pos_session_start[idx] = obs['ball_owned_team'] == 0 and obs['ball_owned_player'] != -1
-            else:
-                if self.pos_session_start[idx] and (obs['ball_owned_team'] != 0 or obs['ball_owned_player'] == -1):
-                    reward[idx] -= 0.1
-                    components['defense_midfield_control'][idx] -= 0.1
-                    self.pos_session_start[idx] = False
+            # Aggregating all rewards for each agent
+            reward[rew_index] += (components["positional_reward"][rew_index] +
+                                  components["reverse_motion_penalty"][rew_index] +
+                                  components["sprint_bonus"][rew_index])
 
         return reward, components
 

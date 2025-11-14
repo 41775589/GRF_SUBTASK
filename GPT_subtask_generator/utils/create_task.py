@@ -18,9 +18,9 @@ def create_task(root_dir, task, layer, response_id, response_r_id, num_agents, g
     data["env_args"]["rewards"] = f'scoring, reward_layer{layer}_decomposition{response_id}_subtask{group_id}_iter{iter}_sample{response_r_id}'
 
 
-    # 这两行正常是注释掉的，这里为了测试test加回来
-    data["env_args"]["rewards"] = 'scoring, reward_test'
-    data["t_max"] = 2000
+    # # 这两行正常是注释掉的，这里为了测试test加回来
+    # data["env_args"]["rewards"] = 'scoring, reward_test'
+    # data["t_max"] = 2000
     
     # Write the new YAML file
     with open(output_file, 'w') as new_yamlfile:
@@ -92,9 +92,9 @@ def create_train_cfg(root_dir, Time, algs_name, layer, response_id, response_r_i
 
     
 
-    # 测试加速debug用，正式训练需要删掉
-    data["t_max"] = 2000
-    data["batch_size_run"] = 1
+    # # 测试加速debug用，正式训练需要删掉
+    # data["t_max"] = 2000
+    # data["batch_size_run"] = 1
     
     # 确保存在doe_classifier_cfg并设置其必需参数
     if "doe_classifier_cfg" not in data:

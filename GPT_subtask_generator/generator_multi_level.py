@@ -381,6 +381,9 @@ def train_merge_team(groups,
     # template_data['critic_type'] = "ac_critic"  # 修改评论家类型
     template_data['critic_type'] = "ac_critic_ns"  # 使用ns critic
     template_data['name'] = "doe_ippo_ns"  # 使用ns
+    if layer == "target":
+        template_data['t_max'] = 20050000
+
 
     # 11111111111指定 merge 以后的 full team doe cls 存储名称
     # 0505更正：这里指定的是合并doe cls以后存储的文件，用于实验开始时load
@@ -484,7 +487,7 @@ def train_merge_team(groups,
                     f'--config={merged_doe_config_name}',
                     f'--env-config={task_env}',
                 ]
-                full_process = subprocess.Popen(params)
+                full_process = subprocess.Popen(params, stdout=f, stderr=f)
                 full_process.wait()
                 rl_runs = []
             # block_until_training(rl_logpath, log_status=True, iter_num=iter, response_id=response_id)
@@ -500,7 +503,7 @@ def train_merge_team(groups,
                     f'--env-config={task_env}{suffix}_layer{layer}_decomposition{decompose_id}_subtask{group_id}_iter{iter_id}_sample{sample_id}',
                 ]
                 # full_process = subprocess.Popen(params, stdout=f, stderr=f)
-                full_process = subprocess.Popen(params)
+                full_process = subprocess.Popen(params, stdout=f, stderr=f)
 
                 full_process.wait()
             # Modified the check of successful training
@@ -643,8 +646,8 @@ def main(model, n_decomposition, temperature, task_env, alg_cfg, use_doe, n_impr
     code_output_tip_rewards = file_to_string(f'{prompt_dir}/{task_env}/code_output_tip_rewards.txt')
     rule_setting = file_to_string(f'{prompt_dir}/{task_env}/rule_setting.txt')
 
-    main_task = "learn to play a 5 vs 5 football game"
-    num_agents = 5
+    main_task = "Train 4 defenders (1 left back, 2 centre backs, and 1 right back) in a defensive counter-attack strategy during an 11 vs 11 football game (other players are controlled by AI and do not require training)."
+    num_agents = 4
     num_groups = 2
 
     initial_system_get_decomposition = initial_system_get_decomposition.format(rule_setting=rule_setting)
@@ -916,7 +919,7 @@ def main(model, n_decomposition, temperature, task_env, alg_cfg, use_doe, n_impr
                     f"Scenarios Generation: Generating 1 sample for Decomposition {response_id} Layer{layer} Group{group_id} with {model}")
 
                 cur_initial_system_scenarios = initial_system_scenarios.format(
-                    main_task_scenario=five_vs_five_code_string) + code_output_tip_scenarios + example_scenarios
+                    main_task_scenario = counterattack_easy_code_string) + code_output_tip_scenarios + example_scenarios
                 cur_initial_user_scenarios = initial_user_scenarios.format(training_goal=task['training_goal'],
                                                                            number_of_agents=task['number_of_agents'],
                                                                            scenario_builder_code_string=scenario_builder_code_string)
@@ -1365,4 +1368,4 @@ def main(model, n_decomposition, temperature, task_env, alg_cfg, use_doe, n_impr
 
 if __name__ == "__main__":
     main(model="gpt-4-turbo", n_decomposition=1, temperature=1, task_env="gfootball", alg_cfg="ippo_ns",
-         use_doe=False, n_improve_iter=1)
+         use_doe=False, n_improve_iter=0)

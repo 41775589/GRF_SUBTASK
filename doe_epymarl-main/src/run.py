@@ -28,7 +28,7 @@ def run(_run, _config, _log):
 
     args = SN(**_config)
     args.device = "cuda" if args.use_cuda else "cpu"
-    print("AAAAAAAAAA",args)
+    print("ARGS:",args)
     assert test_alg_config_supports_reward(
         args
     ), "The specified algorithm does not support the general reward setup. Please choose a different algorithm or set `common_reward=True`."
@@ -43,13 +43,18 @@ def run(_run, _config, _log):
     # configure tensorboard logger
     # unique_token = "{}__{}".format(args.name, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
-    try:
-        map_name = _config["env_args"]["map_name"]
-    except:
-        map_name = _config["env_args"]["key"]
-    unique_token = (
-        f"{_config['name']}_seed{_config['seed']}_{map_name}_{datetime.datetime.now()}"
-    )
+    if _config["env"] == "gfootball":
+        try:
+            map_name = _config["env_args"]["map_name"]
+        except:
+            map_name = _config["env_args"]["key"]
+        unique_token = (
+            f"{_config['name']}_seed{_config['seed']}_{map_name}_{datetime.datetime.now()}"
+        )
+    else:
+        unique_token = (
+            f"{_config['name']}_seed{_config['seed']}_{datetime.datetime.now()}"
+        )
 
     args.unique_token = unique_token
     if args.use_tensorboard:
@@ -100,6 +105,12 @@ def evaluate_sequential(args, runner):
 def run_sequential(args, logger):
     # Init runner so we can get env info
     runner = r_REGISTRY[args.runner](args=args, logger=logger)
+
+    # ============ 添加胜率追踪器 ============
+    from utils.win_rate_tracker import WinRateTracker
+    win_tracker = WinRateTracker(window_size=100)
+    runner.win_tracker = win_tracker
+    # =====================================
 
     # Set up schemes and groups here
     env_info = runner.get_env_info()
@@ -241,8 +252,7 @@ def run_sequential(args, logger):
 
     logger.console_logger.info("Beginning training for {} timesteps".format(args.t_max))
 
-    # # 用于调试
-    # args.t_max = 2000
+
 
     while runner.t_env <= args.t_max:
         # Run for a whole episode at a time
@@ -313,6 +323,24 @@ def run_sequential(args, logger):
 
         if (runner.t_env - last_log_T) >= args.log_interval:
             logger.log_stat("episode", episode, runner.t_env)
+
+            # ============ 添加胜率日志 ============
+            train_stats = win_tracker.get_stats()
+            if train_stats['total_episodes'] > 0:
+                logger.log_stat("train_win_rate", train_stats['recent_win_rate'], runner.t_env)
+                logger.log_stat("train_win_rate_overall", train_stats['overall_win_rate'], runner.t_env)
+                logger.log_stat("train_total_wins", train_stats['total_wins'], runner.t_env)
+                logger.log_stat("train_total_losses", train_stats['total_losses'], runner.t_env)
+                logger.log_stat("train_total_draws", train_stats['total_draws'], runner.t_env)
+
+                # 打印到控制台
+                logger.console_logger.info(
+                    f"Win Rate: {train_stats['recent_win_rate']:.3f} (recent) | "
+                    f"{train_stats['overall_win_rate']:.3f} (overall) | "
+                    f"W/D/L: {train_stats['total_wins']}/{train_stats['total_draws']}/{train_stats['total_losses']}"
+                )
+            # =====================================
+
             logger.print_recent_stats()
             last_log_T = runner.t_env
 

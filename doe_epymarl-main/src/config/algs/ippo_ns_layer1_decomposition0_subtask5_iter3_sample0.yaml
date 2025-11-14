@@ -1,0 +1,51 @@
+action_selector: soft_policies
+agent: rnn_ns
+agent_output_type: pi_logits
+batch_size: 10
+batch_size_run: 10
+buffer_size: 10
+critic_type: ac_critic_ns
+decomposition_id: 0
+doe_classifier_cfg:
+  doe_type: mlp
+  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-tmp_0513_2/doe_epymarl-main/results/gfootball/2025-05-14-10-38-42/decomposition0/group5
+  load_doe_buffer_path: GRF_SUBTASK/doe_epymarl-main/results/buffer/grf
+  load_doe_name: load_mlp_classifier.pt
+  load_mode: train
+  mlp:
+    batch_size: 512
+    hidden_sizes:
+    - 128
+    learning_rate: 0.01
+    test_fraction: 0.1
+  role_ids:
+    goal_5:
+    - 0
+  save_classifier: true
+  save_doe_name: cls_layer1_decomposition0_subtask5_iter3_sample0.pt
+entropy_coef: 0.01
+epochs: 4
+eps_clip: 0.2
+group_id: 5
+iter_id: 3
+layer_id: 1
+learner: ppo_learner
+lr: 0.0003
+mac: non_shared_mac
+mask_before_softmax: true
+name: ippo_ns
+obs_agent_id: true
+obs_individual_obs: false
+obs_last_action: false
+q_nstep: 5
+runner: parallel
+sample_id: 0
+save_buffer: true
+save_doe_cls: true
+standardise_returns: false
+standardise_rewards: true
+t_max: 500000
+target_update_interval_or_tau: 200
+time_stamp: 2025-05-14-10-38-42
+use_doe: false
+use_rnn: true

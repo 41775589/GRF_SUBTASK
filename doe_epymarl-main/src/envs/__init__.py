@@ -5,6 +5,9 @@ from smac.env import MultiAgentEnv, StarCraft2Env
 
 from .gymma import GymmaWrapper
 
+# 在envs/__init__.py中添加
+from .overcooked import overcookedEnv
+
 
 def smac_fn(**kwargs) -> MultiAgentEnv:
     assert "common_reward" in kwargs and "reward_scalarisation" in kwargs
@@ -61,6 +64,29 @@ except Exception as e:
     gfootball = False
     print(e)
 
+
+try:
+    cooking_zoo = True
+    from .cooking_zoo import CookingZooEnv
+
+
+except Exception as e:
+    overcooked = False
+    print(e)
+
+try:
+    chainball = True
+    from .chain_ball import ChainballWrapper
+    # from gfootball import GoogleFootballEnv  # 调试相对路径失败
+except Exception as e:
+    overcooked = False
+    print(e)
+
 if gfootball:
     REGISTRY["gfootball"] = partial(env_fn, env=GoogleFootballEnv)
 
+if overcooked:
+    REGISTRY["cooking_zoo"] = partial(env_fn, env=CookingZooEnv)
+
+if chainball:
+    REGISTRY["chainball"] = partial(env_fn, env=ChainballWrapper)

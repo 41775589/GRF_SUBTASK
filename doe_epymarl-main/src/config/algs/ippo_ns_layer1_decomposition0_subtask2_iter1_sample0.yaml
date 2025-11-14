@@ -2,13 +2,13 @@ action_selector: soft_policies
 agent: rnn_ns
 agent_output_type: pi_logits
 batch_size: 10
-batch_size_run: 1
+batch_size_run: 10
 buffer_size: 10
 critic_type: ac_critic_ns
 decomposition_id: 0
 doe_classifier_cfg:
   doe_type: mlp
-  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK-tmp_0513_2/doe_epymarl-main/results/gfootball/2025-05-14-08-53-46/decomposition0/group2
+  layer_tmp_dir: /home/zihao/zihao/PycharmProjects/GRF_SUBTASK_0804/doe_epymarl-main/results/overcooked/2025-08-12-20-43-41/decomposition0/group2
   load_doe_buffer_path: GRF_SUBTASK/doe_epymarl-main/results/buffer/grf
   load_doe_name: load_mlp_classifier.pt
   load_mode: train
@@ -43,9 +43,9 @@ sample_id: 0
 save_buffer: true
 save_doe_cls: true
 standardise_returns: false
-standardise_rewards: true
-t_max: 2000
+standardise_rewards: false
+t_max: 600000
 target_update_interval_or_tau: 200
-time_stamp: 2025-05-14-08-53-46
+time_stamp: 2025-08-12-20-43-41
 use_doe: false
 use_rnn: true
